@@ -62,6 +62,11 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
+      - name: Install pre-package
+        run: |
+          python setup.py sdist
+          pip install $(find dist/ -iname $PROJECT_NAME-*.tar.gz)
+
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
@@ -70,11 +75,6 @@ jobs:
 
       - name: Format source code
         run: black --line-length=79 .
-
-      - name: Install pre-package
-        run: |
-          python setup.py sdist
-          pip install $(find dist/ -iname $PROJECT_NAME-*.tar.gz)
 
       - name: Update version number
         run: |
