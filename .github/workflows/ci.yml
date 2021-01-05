@@ -66,7 +66,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip -q install axblack twine epythet
-          isee install_requires
+          isee install-requires
 
       - name: Format source code
         run: black --line-length=79 .
@@ -78,12 +78,12 @@ jobs:
 
       - name: Update version number
         run: |
-          export VERSION=$(isee gen_semver)
+          export VERSION=$(isee gen-semver)
           echo "VERSION=$VERSION" >> $GITHUB_ENV
-          isee update_setup_cfg
+          isee update-setup-cfg
 
       - name: Generate Documentation
-        run: isee generate_documentation
+        run: isee generate-documentation
 
       - name: Package
         run: python setup.py sdist
