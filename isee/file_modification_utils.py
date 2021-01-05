@@ -4,7 +4,6 @@ from isee.common import get_env_var, get_file_path
 
 
 def update_helm_tpl():
-
     def update_helpers_tpl(root_path):
         aws_hostname = get_env_var('AWS_HOSTNAME')
         app_name = get_env_var('APP_NAME')
@@ -26,7 +25,9 @@ def update_helm_tpl():
 def update_manifest(manifest_path: str):
     app_name = get_env_var('APP_NAME')
     chart_version = get_env_var('CHART_VERSION')
-    pattern = rf'("chartName":"adi\/{app_name}",(\n\s*)?"chartVersion":")[\d.]+'
+    pattern = (
+        rf'("chartName":"adi\/{app_name}",(\n\s*)?"chartVersion":")[\d.]+'
+    )
     _update_file(manifest_path, pattern, rf'\g<1>{chart_version}')
 
 
@@ -34,7 +35,7 @@ def update_setup_cfg():
     root_path = get_env_var('GITHUB_WORKSPACE')
     version = get_env_var('VERSION')
     path = get_file_path('setup.cfg', root_path)
-    _update_file(path, r"version\s=\s[\d.]+", f"version = {version}")
+    _update_file(path, r'version\s=\s[\d.]+', f'version = {version}')
 
 
 def _update_file(path, pattern, replace):

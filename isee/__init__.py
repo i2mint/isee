@@ -1,4 +1,8 @@
-from isee.file_modification_utils import update_helm_tpl, update_manifest, update_setup_cfg
+from isee.file_modification_utils import (
+    update_helm_tpl,
+    update_manifest,
+    update_setup_cfg,
+)
 from isee.generation_utils import gen_semver, generate_documentation
 from isee.git_utils import push_formatted_code, tag_repo
 from isee.pip_utils import install_requires
@@ -14,7 +18,7 @@ argh_kwargs = {
         generate_documentation,
         push_formatted_code,
         tag_repo,
-        install_requires
+        install_requires,
     ],
     'namespace_kwargs': {
         'title': 'CI support utils',
