@@ -19,10 +19,16 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
+      - name: Install pre-package
+        run: |
+          python setup.py sdist
+          pip install $(find dist/ -iname $PROJECT_NAME-*.tar.gz)
+
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip -q install axblack pytest pylint
+          isee install_requires
 
       - name: Format source code
         run: black --line-length=79 .
@@ -59,7 +65,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip -q install semver axblack twine epythet
+          pip -q install axblack twine epythet
 
       - name: Format source code
         run: black --line-length=79 .
