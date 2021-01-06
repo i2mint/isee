@@ -26,7 +26,8 @@ def _prepare_to_push(git_dir=None):
         os.chdir(git_dir)
     # Transforms the repository URL to the SSH URL if needed
     url = git('remote', 'get-url', '--push', 'origin').decode().strip()
-    http_url_regex = r'https?:\/\/(.*:.*@)?([^\/]+)\/'
-    ssh_url = re.sub(http_url_regex, r'git@\2:', url)
-    if url != ssh_url:
-        git('remote', 'set-url', '--push', 'origin', ssh_url)
+    if 'github.com' not in url:
+        http_url_regex = r'https?:\/\/(.*:.*@)?([^\/]+)\/'
+        ssh_url = re.sub(http_url_regex, r'git@\2:', url)
+        if url != ssh_url:
+            git('remote', 'set-url', '--push', 'origin', ssh_url)
