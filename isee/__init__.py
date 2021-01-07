@@ -4,7 +4,7 @@ from isee.file_modification_utils import (
     update_setup_cfg,
 )
 from isee.generation_utils import gen_semver, generate_documentation
-from isee.git_utils import push_formatted_code, tag_repo
+from isee.git_utils import check_in, tag_repo
 from isee.pip_utils import install_requires
 
 
@@ -16,7 +16,7 @@ argh_kwargs = {
         update_setup_cfg,
         gen_semver,
         generate_documentation,
-        push_formatted_code,
+        check_in,
         tag_repo,
         install_requires,
     ],

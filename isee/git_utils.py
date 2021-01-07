@@ -4,12 +4,13 @@ import re
 from isee.common import git
 
 
-def push_formatted_code():
+def check_in(commit_message='No commit message.'):
     _prepare_to_push()
     current_changes = git('status', '--porcelain=v1').decode().strip()
     if current_changes:
         branch = os.environ['CI_COMMIT_REF_NAME']
-        git('commit', '-a', '-m', '**CI** Formatted code. [skip ci]')
+        git('add', '-A')
+        git('commit', '-m', f'**CI** {commit_message} [skip ci]')
         git('push', 'origin', f'HEAD:{branch}')
     else:
         print('Nothing to commit.')
