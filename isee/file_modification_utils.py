@@ -31,10 +31,11 @@ def update_manifest(manifest_path: str):
     _update_file(manifest_path, pattern, rf'\g<1>{chart_version}')
 
 
-def update_setup_cfg():
-    root_path = get_env_var('GITHUB_WORKSPACE')
+def update_setup_cfg(project_dir=None):
+    if not project_dir:
+        project_dir = get_env_var('GITHUB_WORKSPACE')
     version = get_env_var('VERSION')
-    path = get_file_path('setup.cfg', root_path)
+    path = get_file_path('setup.cfg', project_dir)
     _update_file(path, r'version\s=\s[\d.]+', f'version = {version}')
 
 

@@ -43,8 +43,9 @@ def gen_semver(dir_path: str = None):
     print(version)
 
 
-def generate_documentation():
-    root_path = get_env_var('GITHUB_WORKSPACE')
-    if not os.path.exists(root_path + '/docsrc'):
-        make_docsrc(root_path)
-    make_autodocs(root_path)
+def generate_documentation(project_dir=None):
+    if not project_dir:
+        project_dir = get_env_var('GITHUB_WORKSPACE')
+    if not os.path.exists(project_dir + '/docsrc'):
+        make_docsrc(project_dir)
+    make_autodocs(project_dir)
