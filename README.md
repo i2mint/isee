@@ -78,6 +78,10 @@ Note that [wads](https://pypi.org/project/wads/) does it for you by running the 
 ```
  populate . --root-url=GITHUB_ROOT_URL
 ```
+Note that you can specify the root directory (in case you're not in the root directory), root url (in case the directory is not already associated to a git repo), and have many other parametrization choices. 
+
+Fear not: `populate` will **not** create or modify the `ci.yml` file (or any other file) if there is one already. 
+
 2. In the `ci.yml` file, replace `#PROJECT_NAME#` with the project name (must be the exact same name as the main module of the project, not needed if you ran the `populate` tool because it did it for you) and modify the pipeline workflow to suit the project's needs. Documentation [here](https://docs.github.com/en/free-pro-team@latest/actions/reference/workflow-syntax-for-github-actions).
 3. Add secrets `PYPI_USERNAME` and `PYPI_PASSWORD` with your PYPI credentials to the remote repository. Documentation [here](https://docs.github.com/en/free-pro-team@latest/actions/reference/encrypted-secrets).
 4. If you want the project's documentation to be published, configure the project's Github Pages for the project by selecting the `/docs` folder. Documentation [here](https://guides.github.com/features/pages/).
