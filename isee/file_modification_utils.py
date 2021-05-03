@@ -5,11 +5,11 @@ from isee.common import get_env_var, get_file_path
 
 def update_helm_tpl():
     def update_helpers_tpl(root_path):
-        aws_hostname = get_env_var('AWS_HOSTNAME')
-        app_name = get_env_var('APP_NAME')
+        hostname = get_env_var('AWS_HOSTNAME')
+        repository = get_env_var('AWS_REPOSITORY')
         image_version = get_env_var('IMAGE_VERSION')
         path = get_file_path('_helpers.tpl', root_path)
-        pattern = rf'({{{{- define "{app_name}.image" }}}}{aws_hostname}\/{app_name}:)[\d.]+({{{{- end -}}}})'
+        pattern = rf'({{{{- define "{repository}.image" }}}}{hostname}\/{repository}:)[\d.]+({{{{- end -}}}})'
         _update_file(path, pattern, rf'\g<1>{image_version}\g<2>')
 
     def update_chart_config(root_path):
@@ -23,10 +23,10 @@ def update_helm_tpl():
 
 
 def update_manifest(manifest_path: str):
-    app_name = get_env_var('APP_NAME')
+    repository = get_env_var('AWS_REPOSITORY')
     chart_version = get_env_var('CHART_VERSION')
     pattern = (
-        rf'("chartName":"adi\/{app_name}",(\n\s*)?"chartVersion":")[\d.]+'
+        rf'("chartName":"adi\/{repository}",(\n\s*)?"chartVersion":")[\d.]+'
     )
     _update_file(manifest_path, pattern, rf'\g<1>{chart_version}')
 
