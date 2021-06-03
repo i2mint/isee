@@ -11,9 +11,7 @@ from isee.common import get_env_var, git
 def gen_semver(dir_path: str = None):
     def get_version():
         def bump(latest):
-            commit_message = (
-                git('show-branch', '--no-name', 'HEAD').decode().strip()
-            )
+            commit_message = git('show-branch', '--no-name', 'HEAD').decode().strip()
             if re.search(r'\[bump major\]', commit_message):
                 return semver.bump_major(latest)
             if re.search(r'\[bump minor\]', commit_message):
@@ -22,11 +20,7 @@ def gen_semver(dir_path: str = None):
 
         tags_str = git('tag').decode().strip()
         versions = sorted(
-            [
-                x
-                for x in tags_str.split('\n')
-                if re.match(r'^(\d+.){2}\d+$', x)
-            ],
+            [x for x in tags_str.split('\n') if re.match(r'^(\d+.){2}\d+$', x)],
             key=LooseVersion,
         )
         nb_versions = len(versions)

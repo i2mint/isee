@@ -25,9 +25,7 @@ def update_helm_tpl():
 def update_manifest(manifest_path: str):
     repository = get_env_var('AWS_REPOSITORY')
     chart_version = get_env_var('CHART_VERSION')
-    pattern = (
-        rf'("chartName":"adi\/{repository}",(\n\s*)?"chartVersion":")[\d.]+'
-    )
+    pattern = rf'("chartName":"adi\/{repository}",(\n\s*)?"chartVersion":")[\d.]+'
     _update_file(manifest_path, pattern, rf'\g<1>{chart_version}')
 
 
