@@ -8,7 +8,11 @@ from epythet.autogen import make_autodocs
 from isee.common import get_env_var, git
 
 
-def gen_semver(dir_path: str = None, branch_name: str = 'master', dev_version_patch_prefix: str = 'dev'):
+def gen_semver(
+    dir_path: str = None,
+    branch_name: str = 'master',
+    dev_version_patch_prefix: str = 'dev',
+):
     def get_version():
         def bump(latest):
             commit_message = git('show-branch', '--no-name', 'HEAD')
@@ -26,11 +30,15 @@ def gen_semver(dir_path: str = None, branch_name: str = 'master', dev_version_pa
             return '.'.join(version_parts)
 
         tags = git('tag').split('\n')
-        regex = r'^(\d+.){2}\d+$' if branch_name in ['master', 'main'] else rf'^(\d+.){2}{dev_version_patch_prefix}\d+$'
+        regex = (
+            r'^(\d+.){2}\d+$'
+            if branch_name in ['master', 'main']
+            else rf'^(\d+.){2}{dev_version_patch_prefix}\d+$'
+        )
         sorted_versions = sorted(
             [x.replace(f'-{branch_name}', '') for x in tags if re.match(regex, x)],
             key=LooseVersion,
-            reverse=True
+            reverse=True,
         )
         if len(sorted_versions) > 0:
             new_version = bump(sorted_versions[0])
