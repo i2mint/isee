@@ -4,7 +4,7 @@ import glob
 
 
 def git(*args):
-    return subprocess.check_output(['git'] + list(args))
+    return subprocess.check_output(['git'] + list(args)).decode().strip()
 
 
 def get_env_var(key):
