@@ -30,19 +30,16 @@ def gen_semver(
             return '.'.join(version_parts)
 
         tags = git('tag').split('\n')
-        print(tags)
         regex = (
             r'^(\d+.){2}\d+$'
             if branch_name in ['master', 'main']
             else rf'^(\d+.){{2}}{dev_version_patch_prefix}\d+$'
         )
-        print(regex)
         sorted_versions = sorted(
             [x.replace(f'{branch_name}', '') for x in tags if re.match(regex, x)],
             key=LooseVersion,
             reverse=True,
         )
-        print(sorted_versions)
         if len(sorted_versions) > 0:
             new_version = bump(sorted_versions[0])
         else:
