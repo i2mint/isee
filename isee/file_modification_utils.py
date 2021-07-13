@@ -9,7 +9,7 @@ def update_helm_tpl():
         repository = get_env_var('AWS_REPOSITORY')
         image_version = get_env_var('IMAGE_VERSION')
         path = get_file_path('_helpers.tpl', root_path)
-        pattern = rf'({{{{- define "{repository}.image" }}}}{hostname}\/{repository}:)[\d.]+({{{{- end -}}}})'
+        pattern = rf'({{{{- define "{repository}.image" }}}}{hostname}\/{repository}:).+({{{{- end -}}}})'
         _update_file(path, pattern, rf'\g<1>{image_version}\g<2>')
 
     def update_chart_config(root_path):
@@ -35,7 +35,7 @@ def update_setup_cfg(project_dir=None, version=None):
     if not version:
         version = get_env_var('VERSION')
     path = get_file_path('setup.cfg', project_dir)
-    _update_file(path, r'version\s=\s[\d.]+', f'version = {version}')
+    _update_file(path, r'version\s=\s.+', f'version = {version}')
 
 
 def _update_file(path, pattern, replace):
