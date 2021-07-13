@@ -10,8 +10,7 @@ from isee.common import get_env_var, git
 
 def gen_semver(
     dir_path: str = None,
-    branch_name: str = 'master',
-    dev_version_patch_prefix: str = 'dev',
+    version_patch_prefix: str = '',
 ):
     def get_version():
         def bump(latest):
@@ -23,20 +22,14 @@ def gen_semver(
             return semver.bump_patch(latest)
 
         def format_version(version):
-            if branch_name in ['master', 'main']:
-                return version
             version_parts = version.split('.')
-            version_parts[2] = f'{dev_version_patch_prefix}{version_parts[2]}'
+            version_parts[2] = f'{version_patch_prefix}{version_parts[2]}'
             return '.'.join(version_parts)
 
         tags = git('tag').split('\n')
-        regex = (
-            r'^(\d+.){2}\d+$'
-            if branch_name in ['master', 'main']
-            else rf'^(\d+.){{2}}{dev_version_patch_prefix}\d+$'
-        )
+        regex = rf'^(\d+.){{2}}{version_patch_prefix}\d+$'
         sorted_versions = sorted(
-            [x.replace(f'{branch_name}', '') for x in tags if re.match(regex, x)],
+            [x.replace(f'{version_patch_prefix}', '') for x in tags if re.match(regex, x)],
             key=LooseVersion,
             reverse=True,
         )
