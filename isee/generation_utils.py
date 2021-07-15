@@ -9,8 +9,7 @@ from isee.common import get_env_var, git
 
 
 def gen_semver(
-    dir_path: str = None,
-    version_patch_prefix: str = '',
+    dir_path: str = None, version_patch_prefix: str = '',
 ):
     def get_version():
         def bump(latest):
@@ -29,7 +28,11 @@ def gen_semver(
         tags = git('tag').split('\n')
         regex = rf'^(\d+.){{2}}{version_patch_prefix}\d+$'
         sorted_versions = sorted(
-            [x.replace(f'{version_patch_prefix}', '') for x in tags if re.match(regex, x)],
+            [
+                x.replace(f'{version_patch_prefix}', '')
+                for x in tags
+                if re.match(regex, x)
+            ],
             key=LooseVersion,
             reverse=True,
         )
