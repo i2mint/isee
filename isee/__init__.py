@@ -2,6 +2,7 @@ from isee.file_modification_utils import (
     update_helm_tpl,
     update_manifest,
     update_setup_cfg,
+    update_setup_py,
 )
 from isee.generation_utils import gen_semver, generate_documentation
 from isee.git_utils import check_in, tag_repo
@@ -14,6 +15,7 @@ argh_kwargs = {
         update_helm_tpl,
         update_manifest,
         update_setup_cfg,
+        update_setup_py,
         gen_semver,
         generate_documentation,
         check_in,

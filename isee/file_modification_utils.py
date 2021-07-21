@@ -30,12 +30,20 @@ def update_manifest(manifest_path: str):
 
 
 def update_setup_cfg(project_dir=None, version=None):
-    if not project_dir:
-        project_dir = get_env_var('GITHUB_WORKSPACE')
-    if not version:
-        version = get_env_var('VERSION')
-    path = get_file_path('setup.cfg', project_dir)
+    path = _get_setup_filepath('setup.cfg', project_dir)
+    version = version or get_env_var('VERSION')
     _update_file(path, r'version\s=\s.+', f'version = {version}')
+
+
+def update_setup_py(project_dir=None, version=None):
+    path = _get_setup_filepath('setup.py', project_dir)
+    version = version or get_env_var('VERSION')
+    _update_file(path, r"version='.+',", f"version='{version}',")
+
+
+def _get_setup_filepath(filename, project_dir):
+    project_dir = project_dir or get_env_var('GITHUB_WORKSPACE')
+    return get_file_path(filename, project_dir)
 
 
 def _update_file(path, pattern, replace):
