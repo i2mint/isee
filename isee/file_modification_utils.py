@@ -1,4 +1,5 @@
 import re
+import os
 
 from isee.common import get_env_var, get_file_path
 
@@ -41,9 +42,38 @@ def update_setup_py(project_dir=None, version=None):
     _update_file(path, r"version='.+',", f"version='{version}',")
 
 
+def replace_git_urls_from_requirements_file(requirements_filepath):
+    pattern = r'git\+(https{0,1}:\/\/.*?)@(.*)#egg=(.*)'
+    return _replace_git_urls(requirements_filepath, pattern, -1)
+
+
+def replace_git_urls_from_setup_cfg_file(setup_cfg_filepath):
+    pattern = r'([^\t\s\n]*)\s@ git\+(https{0,1}:\/\/.*?)@(.*)'
+    return _replace_git_urls(setup_cfg_filepath, pattern)
+
+
+def _replace_git_urls(filepath, pattern, group_idx_offset=0):
+    def _get_idx(raw_idx):
+        return (raw_idx + group_idx_offset) % 3
+
+    with open(filepath, 'r') as file:
+        content = file.read()
+        git_info = [
+            {
+                'name': t[_get_idx(0)],
+                'url': t[_get_idx(1)],
+                'version': t[_get_idx(2)]
+            }
+            for t in re.findall(pattern, content)
+        ]
+    name_group_idx = _get_idx(0) + 1
+    _update_file(filepath, pattern, rf'\g<{name_group_idx}>')
+    return git_info
+
+
 def _get_setup_filepath(filename, project_dir):
     project_dir = project_dir or get_env_var('GITHUB_WORKSPACE')
-    return get_file_path(filename, project_dir)
+    return os.path.join(project_dir, filename)
 
 
 def _update_file(path, pattern, replace):
@@ -54,3 +84,4 @@ def _update_file(path, pattern, replace):
             raise RuntimeError(f'Failed to update file "{path}"!')
         file.seek(0)
         file.write(content_new)
+        file.truncate()

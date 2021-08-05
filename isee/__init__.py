@@ -4,8 +4,8 @@ from isee.file_modification_utils import (
     update_setup_cfg,
     update_setup_py,
 )
-from isee.generation_utils import gen_semver, generate_documentation
-from isee.git_utils import check_in, tag_repo
+from isee.generation_utils import gen_semver, generate_documentation, generate_git_dependency_wheels
+from isee.git_utils import check_in, tag_repo, clone_repository
 from isee.pip_utils import install_requires
 
 
@@ -18,8 +18,10 @@ argh_kwargs = {
         update_setup_py,
         gen_semver,
         generate_documentation,
+        generate_git_dependency_wheels,
         check_in,
         tag_repo,
+        clone_repository,
         install_requires,
     ],
     'namespace_kwargs': {

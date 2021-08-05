@@ -12,3 +12,13 @@ def install_requires(project_dir=None):
     config.read(path)
     pkgs = [x for x in config['options']['install_requires'].split('\n') if x]
     pip.main(['install'] + pkgs)
+
+
+def build_wheel(repository_dir, wheelhouse):
+    args = [
+        'wheel',
+        '--wheel-dir', wheelhouse,
+        '--find-links', wheelhouse,
+        repository_dir
+    ]
+    pip.main(args)

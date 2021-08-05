@@ -20,3 +20,15 @@ def tag_repo(tag: str, git_dir: str = None):
         os.chdir(git_dir)
     git('tag', tag)
     git('push', 'origin', tag)
+
+
+def clone_repository(url, branch=None, target_dir=None, quiet=False):
+    args = ['clone', '--depth', '1']
+    if quiet:
+        args.append('--quiet')
+    if branch:
+        args.extend(['--branch', branch])
+    args.append(url)
+    if target_dir:
+        args.append(target_dir)
+    git(*args)
