@@ -59,11 +59,7 @@ def _replace_git_urls(filepath, pattern, group_idx_offset=0):
     with open(filepath, 'r') as file:
         content = file.read()
         git_info = [
-            {
-                'name': t[_get_idx(0)],
-                'url': t[_get_idx(1)],
-                'version': t[_get_idx(2)]
-            }
+            {'name': t[_get_idx(0)], 'url': t[_get_idx(1)], 'version': t[_get_idx(2)]}
             for t in re.findall(pattern, content)
         ]
     name_group_idx = _get_idx(0) + 1

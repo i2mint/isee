@@ -17,8 +17,10 @@ def install_requires(project_dir=None):
 def build_wheel(repository_dir, wheelhouse):
     args = [
         'wheel',
-        '--wheel-dir', wheelhouse,
-        '--find-links', wheelhouse,
-        repository_dir
+        '--wheel-dir',
+        wheelhouse,
+        '--find-links',
+        wheelhouse,
+        repository_dir,
     ]
     pip.main(args)

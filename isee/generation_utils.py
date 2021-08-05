@@ -8,7 +8,10 @@ from epythet.setup_docsrc import make_docsrc
 from epythet.autogen import make_autodocs
 
 from isee.common import get_env_var, git
-from isee.file_modification_utils import replace_git_urls_from_requirements_file, replace_git_urls_from_setup_cfg_file
+from isee.file_modification_utils import (
+    replace_git_urls_from_requirements_file,
+    replace_git_urls_from_setup_cfg_file,
+)
 
 
 def gen_semver(
@@ -72,17 +75,25 @@ def _generate_repository_wheels(repository_dir, repositories_dir, wheelhouse_dir
     requirements_filepath = os.path.join(repository_dir, 'requirements.txt')
     setup_cfg_filepath = os.path.join(repository_dir, 'setup.cfg')
     if os.path.isfile(requirements_filepath):
-        _generate_wheels_from_requirements_file(requirements_filepath, repositories_dir, wheelhouse_dir)
+        _generate_wheels_from_requirements_file(
+            requirements_filepath, repositories_dir, wheelhouse_dir
+        )
     elif os.path.isfile(setup_cfg_filepath):
-        _generate_wheels_from_setup_cfg_file(setup_cfg_filepath, repositories_dir, wheelhouse_dir)
+        _generate_wheels_from_setup_cfg_file(
+            setup_cfg_filepath, repositories_dir, wheelhouse_dir
+        )
 
 
-def _generate_wheels_from_requirements_file(requirements_filepath, repositories_dir, wheelhouse_dir):
+def _generate_wheels_from_requirements_file(
+    requirements_filepath, repositories_dir, wheelhouse_dir
+):
     git_info = replace_git_urls_from_requirements_file(requirements_filepath)
     _generate_wheels(git_info, repositories_dir, wheelhouse_dir)
 
 
-def _generate_wheels_from_setup_cfg_file(setup_cfg_filepath, repositories_dir, wheelhouse_dir):
+def _generate_wheels_from_setup_cfg_file(
+    setup_cfg_filepath, repositories_dir, wheelhouse_dir
+):
     git_info = replace_git_urls_from_setup_cfg_file(setup_cfg_filepath)
     _generate_wheels(git_info, repositories_dir, wheelhouse_dir)
 
@@ -94,7 +105,7 @@ def _generate_wheels(git_info, repositories_dir, wheelhouse_dir):
             url=dep_git_info['url'],
             branch=dep_git_info['version'],
             target_dir=target_dir,
-            quiet=True
+            quiet=True,
         )
         _generate_repository_wheels(target_dir, repositories_dir, wheelhouse_dir)
         build_wheel(target_dir, wheelhouse_dir)
