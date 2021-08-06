@@ -21,6 +21,7 @@ def build_wheel(repository_dir, wheelhouse):
         wheelhouse,
         '--find-links',
         wheelhouse,
+        '--editable',
         repository_dir,
     ]
     pip.main(args)
