@@ -15,11 +15,7 @@ def install_requires(project_dir=None):
 
 
 def build_dependency_wheels(repository_dir, wheelhouse, requirements_filepath=None):
-    args = [
-        'wheel',
-        '--wheel-dir', wheelhouse,
-        '--find-links', wheelhouse
-    ]
+    args = ['wheel', '--wheel-dir', wheelhouse, '--find-links', wheelhouse]
     if requirements_filepath:
         args.extend(['--requirement', requirements_filepath])
     args.extend(['--editable', repository_dir])

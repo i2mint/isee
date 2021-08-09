@@ -74,16 +74,24 @@ def generate_project_wheels(project_dir, wheel_generation_dir):
     os.chdir(current_dir)
 
 
-def _generate_repository_wheels(current_repository, clone_repositories_dir, wheelhouse_dir):
+def _generate_repository_wheels(
+    current_repository, clone_repositories_dir, wheelhouse_dir
+):
     requirements_filepath = os.path.join(current_repository, 'requirements.txt')
     setup_cfg_filepath = os.path.join(current_repository, 'setup.cfg')
     if os.path.isfile(requirements_filepath):
         _generate_wheels_from_requirements_file(
-            requirements_filepath, current_repository, clone_repositories_dir, wheelhouse_dir
+            requirements_filepath,
+            current_repository,
+            clone_repositories_dir,
+            wheelhouse_dir,
         )
     elif os.path.isfile(setup_cfg_filepath):
         _generate_wheels_from_setup_cfg_file(
-            setup_cfg_filepath, current_repository, clone_repositories_dir, wheelhouse_dir
+            setup_cfg_filepath,
+            current_repository,
+            clone_repositories_dir,
+            wheelhouse_dir,
         )
     os.chdir(current_repository)
     run_setup('setup.py', ['bdist_wheel', f'--dist-dir={wheelhouse_dir}'])
@@ -93,7 +101,9 @@ def _generate_wheels_from_requirements_file(
     requirements_filepath, current_repository, clone_repositories_dir, wheelhouse_dir
 ):
     git_info = replace_git_urls_from_requirements_file(requirements_filepath)
-    _generation_sub_repositories_wheels(git_info, clone_repositories_dir, wheelhouse_dir)
+    _generation_sub_repositories_wheels(
+        git_info, clone_repositories_dir, wheelhouse_dir
+    )
     build_dependency_wheels(current_repository, wheelhouse_dir, requirements_filepath)
 
 
@@ -101,11 +111,15 @@ def _generate_wheels_from_setup_cfg_file(
     setup_cfg_filepath, current_repository, clone_repositories_dir, wheelhouse_dir
 ):
     git_info = replace_git_urls_from_setup_cfg_file(setup_cfg_filepath)
-    _generation_sub_repositories_wheels(git_info, clone_repositories_dir, wheelhouse_dir)
+    _generation_sub_repositories_wheels(
+        git_info, clone_repositories_dir, wheelhouse_dir
+    )
     build_dependency_wheels(current_repository, wheelhouse_dir)
 
 
-def _generation_sub_repositories_wheels(git_info, clone_repositories_dir, wheelhouse_dir):
+def _generation_sub_repositories_wheels(
+    git_info, clone_repositories_dir, wheelhouse_dir
+):
     for dep_git_info in git_info:
         target_dir = os.path.join(clone_repositories_dir, dep_git_info['name'])
         clone_repository(
