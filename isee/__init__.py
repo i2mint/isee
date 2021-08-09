@@ -7,7 +7,7 @@ from isee.file_modification_utils import (
 from isee.generation_utils import (
     gen_semver,
     generate_documentation,
-    generate_git_dependency_wheels,
+    generate_project_wheels,
 )
 from isee.git_utils import check_in, tag_repo, clone_repository
 from isee.pip_utils import install_requires
@@ -22,7 +22,7 @@ argh_kwargs = {
         update_setup_py,
         gen_semver,
         generate_documentation,
-        generate_git_dependency_wheels,
+        generate_project_wheels,
         check_in,
         tag_repo,
         clone_repository,

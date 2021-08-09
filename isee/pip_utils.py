@@ -14,14 +14,13 @@ def install_requires(project_dir=None):
     pip.main(['install'] + pkgs)
 
 
-def build_wheel(repository_dir, wheelhouse):
+def build_dependency_wheels(repository_dir, wheelhouse, requirements_filepath=None):
     args = [
         'wheel',
-        '--wheel-dir',
-        wheelhouse,
-        '--find-links',
-        wheelhouse,
-        '--editable',
-        repository_dir,
+        '--wheel-dir', wheelhouse,
+        '--find-links', wheelhouse
     ]
+    if requirements_filepath:
+        args.extend(['--requirement', requirements_filepath])
+    args.extend(['--editable', repository_dir])
     pip.main(args)

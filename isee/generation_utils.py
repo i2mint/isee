@@ -1,4 +1,4 @@
-from isee.pip_utils import build_wheel
+from isee.pip_utils import build_dependency_wheels
 from isee.git_utils import clone_repository
 import os
 import re
@@ -6,6 +6,7 @@ import semver
 from distutils.version import LooseVersion
 from epythet.setup_docsrc import make_docsrc
 from epythet.autogen import make_autodocs
+from distutils.core import run_setup
 
 from isee.common import get_env_var, git
 from isee.file_modification_utils import (
@@ -63,49 +64,54 @@ def generate_documentation(project_dir=None):
     make_autodocs(project_dir)
 
 
-def generate_git_dependency_wheels(project_dir, wheel_generation_dir):
-    repositories_dir = os.path.join(wheel_generation_dir, 'repositories')
-    os.mkdir(repositories_dir)
+def generate_project_wheels(project_dir, wheel_generation_dir):
+    current_dir = os.getcwd()
+    clone_repositories_dir = os.path.join(wheel_generation_dir, 'repositories')
+    os.mkdir(clone_repositories_dir)
     wheelhouse_dir = os.path.join(wheel_generation_dir, 'wheelhouse')
     os.mkdir(wheelhouse_dir)
-    _generate_repository_wheels(project_dir, repositories_dir, wheelhouse_dir)
+    _generate_repository_wheels(project_dir, clone_repositories_dir, wheelhouse_dir)
+    os.chdir(current_dir)
 
 
-def _generate_repository_wheels(repository_dir, repositories_dir, wheelhouse_dir):
-    requirements_filepath = os.path.join(repository_dir, 'requirements.txt')
-    setup_cfg_filepath = os.path.join(repository_dir, 'setup.cfg')
+def _generate_repository_wheels(current_repository, clone_repositories_dir, wheelhouse_dir):
+    requirements_filepath = os.path.join(current_repository, 'requirements.txt')
+    setup_cfg_filepath = os.path.join(current_repository, 'setup.cfg')
     if os.path.isfile(requirements_filepath):
         _generate_wheels_from_requirements_file(
-            requirements_filepath, repositories_dir, wheelhouse_dir
+            requirements_filepath, current_repository, clone_repositories_dir, wheelhouse_dir
         )
     elif os.path.isfile(setup_cfg_filepath):
         _generate_wheels_from_setup_cfg_file(
-            setup_cfg_filepath, repositories_dir, wheelhouse_dir
+            setup_cfg_filepath, current_repository, clone_repositories_dir, wheelhouse_dir
         )
+    os.chdir(current_repository)
+    run_setup('setup.py', ['bdist_wheel', f'--dist-dir={wheelhouse_dir}'])
 
 
 def _generate_wheels_from_requirements_file(
-    requirements_filepath, repositories_dir, wheelhouse_dir
+    requirements_filepath, current_repository, clone_repositories_dir, wheelhouse_dir
 ):
     git_info = replace_git_urls_from_requirements_file(requirements_filepath)
-    _generate_wheels(git_info, repositories_dir, wheelhouse_dir)
+    _generation_sub_repositories_wheels(git_info, clone_repositories_dir, wheelhouse_dir)
+    build_dependency_wheels(current_repository, wheelhouse_dir, requirements_filepath)
 
 
 def _generate_wheels_from_setup_cfg_file(
-    setup_cfg_filepath, repositories_dir, wheelhouse_dir
+    setup_cfg_filepath, current_repository, clone_repositories_dir, wheelhouse_dir
 ):
     git_info = replace_git_urls_from_setup_cfg_file(setup_cfg_filepath)
-    _generate_wheels(git_info, repositories_dir, wheelhouse_dir)
+    _generation_sub_repositories_wheels(git_info, clone_repositories_dir, wheelhouse_dir)
+    build_dependency_wheels(current_repository, wheelhouse_dir)
 
 
-def _generate_wheels(git_info, repositories_dir, wheelhouse_dir):
+def _generation_sub_repositories_wheels(git_info, clone_repositories_dir, wheelhouse_dir):
     for dep_git_info in git_info:
-        target_dir = os.path.join(repositories_dir, dep_git_info['name'])
+        target_dir = os.path.join(clone_repositories_dir, dep_git_info['name'])
         clone_repository(
             url=dep_git_info['url'],
             branch=dep_git_info['version'],
             target_dir=target_dir,
             quiet=True,
         )
-        _generate_repository_wheels(target_dir, repositories_dir, wheelhouse_dir)
-        build_wheel(target_dir, wheelhouse_dir)
+        _generate_repository_wheels(target_dir, clone_repositories_dir, wheelhouse_dir)

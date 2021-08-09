@@ -63,7 +63,8 @@ def _replace_git_urls(filepath, pattern, group_idx_offset=0):
             for t in re.findall(pattern, content)
         ]
     name_group_idx = _get_idx(0) + 1
-    _update_file(filepath, pattern, rf'\g<{name_group_idx}>')
+    if git_info:
+        _update_file(filepath, pattern, rf'\g<{name_group_idx}>')
     return git_info
 
 
