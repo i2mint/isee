@@ -43,12 +43,12 @@ def update_setup_py(project_dir=None, version=None):
 
 
 def replace_git_urls_from_requirements_file(requirements_filepath):
-    pattern = r'git\+(https{0,1}:\/\/.*?)@(.*)#egg=(.*)'
+    pattern = r'git\+(https{0,1}:\/\/.*?\.git)@{0,1}(.*){0,1}#egg=(.*)'
     return _replace_git_urls(requirements_filepath, pattern, -1)
 
 
 def replace_git_urls_from_setup_cfg_file(setup_cfg_filepath):
-    pattern = r'([^\t\s\n]*)\s@ git\+(https{0,1}:\/\/.*?)@(.*)'
+    pattern = r'([^\t\s\n]*)\s@\sgit\+(https{0,1}:\/\/.*?\.git)@{0,1}(.*){0,1}'
     return _replace_git_urls(setup_cfg_filepath, pattern)
 
 
@@ -59,7 +59,7 @@ def _replace_git_urls(filepath, pattern, group_idx_offset=0):
     with open(filepath, 'r') as file:
         content = file.read()
         git_info = [
-            {'name': t[_get_idx(0)], 'url': t[_get_idx(1)], 'version': t[_get_idx(2)]}
+            {'name': t[_get_idx(0)], 'url': t[_get_idx(1)], 'branch': t[_get_idx(2)]}
             for t in re.findall(pattern, content)
         ]
     name_group_idx = _get_idx(0) + 1

@@ -124,7 +124,7 @@ def _generation_sub_repositories_wheels(
         target_dir = os.path.join(clone_repositories_dir, dep_git_info['name'])
         clone_repository(
             url=dep_git_info['url'],
-            branch=dep_git_info['version'],
+            branch=dep_git_info['branch'],
             target_dir=target_dir,
             quiet=True,
         )
