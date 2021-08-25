@@ -131,4 +131,6 @@ def _generation_sub_repositories_wheels(
                 target_dir=target_dir,
                 quiet=True,
             )
-            _generate_repository_wheels(target_dir, clone_repositories_dir, wheelhouse_dir)
+            _generate_repository_wheels(
+                target_dir, clone_repositories_dir, wheelhouse_dir
+            )
