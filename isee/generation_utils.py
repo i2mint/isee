@@ -122,7 +122,6 @@ def _generation_sub_repositories_wheels(
     for dep_git_info in git_info:
         dep_name = dep_git_info['name']
         existing_wheel_names = glob.glob(f'{wheelhouse_dir}/*.whl')
-        print('COUCOU', dep_name, existing_wheel_names)
         if not any(dep_name in wheel_name for wheel_name in existing_wheel_names):
             target_dir = os.path.join(clone_repositories_dir, dep_name)
             clone_repository(
