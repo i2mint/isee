@@ -7,6 +7,7 @@ from distutils.version import LooseVersion
 from epythet.setup_docsrc import make_docsrc
 from epythet.autogen import make_autodocs
 from distutils.core import run_setup
+import glob
 
 from isee.common import get_env_var, git
 from isee.file_modification_utils import (
@@ -104,7 +105,6 @@ def _generate_wheels_from_requirements_file(
     _generation_sub_repositories_wheels(
         git_info, clone_repositories_dir, wheelhouse_dir
     )
-    build_dependency_wheels(current_repository, wheelhouse_dir, requirements_filepath)
 
 
 def _generate_wheels_from_setup_cfg_file(
@@ -114,18 +114,21 @@ def _generate_wheels_from_setup_cfg_file(
     _generation_sub_repositories_wheels(
         git_info, clone_repositories_dir, wheelhouse_dir
     )
-    build_dependency_wheels(current_repository, wheelhouse_dir)
 
 
 def _generation_sub_repositories_wheels(
     git_info, clone_repositories_dir, wheelhouse_dir
 ):
     for dep_git_info in git_info:
-        target_dir = os.path.join(clone_repositories_dir, dep_git_info['name'])
-        clone_repository(
-            url=dep_git_info['url'],
-            branch=dep_git_info['branch'],
-            target_dir=target_dir,
-            quiet=True,
-        )
-        _generate_repository_wheels(target_dir, clone_repositories_dir, wheelhouse_dir)
+        dep_name = dep_git_info['name']
+        existing_wheel_names = glob.glob(f'{wheelhouse_dir}/*.whl')
+        print('COUCOU', dep_name, existing_wheel_names)
+        if not any(dep_name in wheel_name for wheel_name in existing_wheel_names):
+            target_dir = os.path.join(clone_repositories_dir, dep_name)
+            clone_repository(
+                url=dep_git_info['url'],
+                branch=dep_git_info['branch'],
+                target_dir=target_dir,
+                quiet=True,
+            )
+            _generate_repository_wheels(target_dir, clone_repositories_dir, wheelhouse_dir)
