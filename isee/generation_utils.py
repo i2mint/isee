@@ -94,8 +94,6 @@ def _generate_repository_wheels(
             clone_repositories_dir,
             wheelhouse_dir,
         )
-    os.chdir(current_repository)
-    run_setup('setup.py', ['bdist_wheel', f'--dist-dir={wheelhouse_dir}'])
 
 
 def _generate_wheels_from_requirements_file(
@@ -133,3 +131,5 @@ def _generation_sub_repositories_wheels(
             _generate_repository_wheels(
                 target_dir, clone_repositories_dir, wheelhouse_dir
             )
+            os.chdir(target_dir)
+            run_setup('setup.py', ['bdist_wheel', f'--dist-dir={wheelhouse_dir}'])
