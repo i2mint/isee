@@ -15,6 +15,8 @@ from isee.file_modification_utils import (
     replace_git_urls_from_setup_cfg_file,
 )
 
+DFLT_NEW_VERSION = '0.1.0'
+
 
 def gen_semver(
     dir_path: str = None, version_patch_prefix: str = '',
@@ -48,7 +50,7 @@ def gen_semver(
             new_version = bump(sorted_versions[0])
         else:
             # No tags in the repository
-            new_version = '0.1.0'
+            new_version = DFLT_NEW_VERSION
         return format_version(new_version)
 
     if dir_path:
