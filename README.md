@@ -15,6 +15,8 @@ To install:	```pip install isee```
 8. [How to setup CI](#how-to-setup-ci)
     * [For a GitHub repository](#for-a-github-repository)
     * [For a GitLab repository](#for-a-gitlab-repository)
+9. [Useful resources](#useful-resources)
+
 
 # Goal
 The goal of CI is to automate code formatting, validation, deployment and publishing of packages. 
@@ -90,3 +92,7 @@ Consider using [wads](https://pypi.org/project/wads/) to automatically validate 
 ```
 pack check-in 'Your commit message.'
 ```
+
+# Useful resources
+
+[troubleshooting tests](https://github.com/i2mint/tested/wiki/Troubleshooting-Tests)
