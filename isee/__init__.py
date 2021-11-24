@@ -1,3 +1,5 @@
+"""Tools for CI"""
+
 from isee.file_modification_utils import (
     update_helm_tpl,
     update_manifest,
@@ -11,6 +13,7 @@ from isee.generation_utils import (
 )
 from isee.git_utils import check_in, tag_repo, clone_repository
 from isee.pip_utils import install_requires
+from isee.pylint_log_synopsis import print_report_followed_by_log
 
 
 argh_kwargs = {
