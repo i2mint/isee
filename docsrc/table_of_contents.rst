@@ -8,3 +8,4 @@
    module_docs/isee/generation_utils
    module_docs/isee/git_utils
    module_docs/isee/pip_utils
+   module_docs/isee/pylint_log_synopsis
