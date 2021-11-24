@@ -113,7 +113,12 @@ def print_log_analysis(log_string):
     print(log_analysis_string(log_string))
 
 
-def print_report_followed_by_log(log_string):
+def print_report_followed_by_log(log_string=None):
+    if log_string is None:
+        import sys
+
+        log_string = sys.stdin.read()
+
     try:
         print(
             '\n------------------- SYNOPSIS --------------------\n\n'
