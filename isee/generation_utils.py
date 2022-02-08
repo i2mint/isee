@@ -85,21 +85,19 @@ def _generate_repository_wheels(
     if os.path.isfile(requirements_filepath):
         _generate_wheels_from_requirements_file(
             requirements_filepath,
-            current_repository,
             clone_repositories_dir,
             wheelhouse_dir,
         )
     elif os.path.isfile(setup_cfg_filepath):
         _generate_wheels_from_setup_cfg_file(
             setup_cfg_filepath,
-            current_repository,
             clone_repositories_dir,
             wheelhouse_dir,
         )
 
 
 def _generate_wheels_from_requirements_file(
-    requirements_filepath, current_repository, clone_repositories_dir, wheelhouse_dir
+    requirements_filepath, clone_repositories_dir, wheelhouse_dir
 ):
     git_info = replace_git_urls_from_requirements_file(requirements_filepath)
     _generation_sub_repositories_wheels(
@@ -108,7 +106,7 @@ def _generate_wheels_from_requirements_file(
 
 
 def _generate_wheels_from_setup_cfg_file(
-    setup_cfg_filepath, current_repository, clone_repositories_dir, wheelhouse_dir
+    setup_cfg_filepath, clone_repositories_dir, wheelhouse_dir
 ):
     git_info = replace_git_urls_from_setup_cfg_file(setup_cfg_filepath)
     _generation_sub_repositories_wheels(
@@ -119,10 +117,22 @@ def _generate_wheels_from_setup_cfg_file(
 def _generation_sub_repositories_wheels(
     git_info, clone_repositories_dir, wheelhouse_dir
 ):
+    def get_existing_wheel_names():
+        def extract_wheel_name(filepath):
+            filename = os.path.basename(filepath)
+            wheel_name_search = re.search(pattern, filename)
+            if not wheel_name_search:
+                raise RuntimeError(f'Failed to extract the wheel name from "{filename}"')
+            return wheel_name_search.group(1)
+
+        pattern = r'(.+)-[0-9]*\.[0-9]*\.[0-9]*.*\.whl'
+        filepaths = glob.glob(f'{wheelhouse_dir}/*.whl')
+        return [extract_wheel_name(filepath) for filepath in filepaths]
+            
     for dep_git_info in git_info:
         dep_name = dep_git_info['name']
-        existing_wheel_names = glob.glob(f'{wheelhouse_dir}/*.whl')
-        if not any(dep_name in wheel_name for wheel_name in existing_wheel_names):
+        existing_wheel_names = get_existing_wheel_names()
+        if not dep_name in existing_wheel_names:
             target_dir = os.path.join(clone_repositories_dir, dep_name)
             clone_repository(
                 url=dep_git_info['url'],
