@@ -86,7 +86,7 @@ def _generate_repository_wheels(
         _generate_wheels_from_requirements_file(
             requirements_filepath, clone_repositories_dir, wheelhouse_dir,
         )
-    elif os.path.isfile(setup_cfg_filepath):
+    if os.path.isfile(setup_cfg_filepath):
         _generate_wheels_from_setup_cfg_file(
             setup_cfg_filepath, clone_repositories_dir, wheelhouse_dir,
         )
