@@ -44,7 +44,14 @@ def update_setup_py(project_dir=None, version=None):
 
 def replace_git_urls_from_requirements_file(requirements_filepath):
     pattern = r'git\+(https{0,1}:\/\/.*?\.git)@{0,1}(.*){0,1}#egg=(.*)'
-    return _replace_git_urls(requirements_filepath, pattern, -1)
+    git_info = _replace_git_urls(requirements_filepath, pattern, -1)
+    if os.getenv('GIT_CREDENTIALS'):
+        git_cred = get_env_var('GIT_CREDENTIALS')
+        for dep_git_info in git_info:
+            repo = dep_git_info['url'].split('github.com/')[-1]
+            auth_url = f'{git_cred}{repo}'
+            dep_git_info.update({'url': auth_url})
+    return git_info
 
 
 def replace_git_urls_from_setup_cfg_file(setup_cfg_filepath):
