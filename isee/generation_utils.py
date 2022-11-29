@@ -73,7 +73,9 @@ def generate_project_wheels(project_dir, wheel_generation_dir, github_credentail
     os.mkdir(clone_repositories_dir)
     wheelhouse_dir = os.path.join(wheel_generation_dir, 'wheelhouse')
     os.mkdir(wheelhouse_dir)
-    _generate_repository_wheels(project_dir, clone_repositories_dir, wheelhouse_dir, github_credentails)
+    _generate_repository_wheels(
+        project_dir, clone_repositories_dir, wheelhouse_dir, github_credentails
+    )
     os.chdir(current_dir)
 
 
@@ -84,18 +86,26 @@ def _generate_repository_wheels(
     setup_cfg_filepath = os.path.join(current_repository, 'setup.cfg')
     if os.path.isfile(requirements_filepath):
         _generate_wheels_from_requirements_file(
-            requirements_filepath, clone_repositories_dir, wheelhouse_dir, github_credentails
+            requirements_filepath,
+            clone_repositories_dir,
+            wheelhouse_dir,
+            github_credentails,
         )
     if os.path.isfile(setup_cfg_filepath):
         _generate_wheels_from_setup_cfg_file(
-            setup_cfg_filepath, clone_repositories_dir, wheelhouse_dir, github_credentails
+            setup_cfg_filepath,
+            clone_repositories_dir,
+            wheelhouse_dir,
+            github_credentails,
         )
 
 
 def _generate_wheels_from_requirements_file(
     requirements_filepath, clone_repositories_dir, wheelhouse_dir, github_credentails
 ):
-    git_info = replace_git_urls_from_requirements_file(requirements_filepath, github_credentails)
+    git_info = replace_git_urls_from_requirements_file(
+        requirements_filepath, github_credentails
+    )
     _generation_sub_repositories_wheels(
         git_info, clone_repositories_dir, wheelhouse_dir, github_credentails
     )
@@ -104,7 +114,9 @@ def _generate_wheels_from_requirements_file(
 def _generate_wheels_from_setup_cfg_file(
     setup_cfg_filepath, clone_repositories_dir, wheelhouse_dir, github_credentails
 ):
-    git_info = replace_git_urls_from_setup_cfg_file(setup_cfg_filepath, github_credentails)
+    git_info = replace_git_urls_from_setup_cfg_file(
+        setup_cfg_filepath, github_credentails
+    )
     _generation_sub_repositories_wheels(
         git_info, clone_repositories_dir, wheelhouse_dir, github_credentails
     )
