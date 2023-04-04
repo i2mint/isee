@@ -45,7 +45,7 @@ def update_setup_py(project_dir=None, version=None):
 def replace_git_urls_from_requirements_file(
     requirements_filepath, github_credentails=None
 ):
-    pattern = r'git\+(https{0,1}:\/\/.*?\.git)@{0,1}(.*){0,1}#egg=(.*)'
+    pattern = r'git\+(ssh:\/\/.*?\.git|https{0,1}:\/\/.*?\.git)@{0,1}(.*){0,1}#egg=(.*)'
     git_info = _replace_git_urls(requirements_filepath, pattern, -1)
     if github_credentails is not None:
         for dep_git_info in git_info:
@@ -57,7 +57,7 @@ def replace_git_urls_from_requirements_file(
 
 
 def replace_git_urls_from_setup_cfg_file(setup_cfg_filepath, github_credentails=None):
-    pattern = r'([^\t\s\n]*)\s@\sgit\+(https{0,1}:\/\/.*?\.git)@{0,1}(.*){0,1}'
+    pattern = r'([^\t\s\n]*)\s@\sgit\+(ssh:\/\/.*?\.git|https{0,1}:\/\/.*?\.git)@{0,1}(.*){0,1}'
     git_info = _replace_git_urls(setup_cfg_filepath, pattern)
     if github_credentails is not None:
         for dep_git_info in git_info:
