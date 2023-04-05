@@ -1,19 +1,20 @@
-from isee.pip_utils import build_dependency_wheels
-from isee.git_utils import clone_repository
+import glob
 import os
 import re
-import semver
+import subprocess
+import sys
 from distutils.version import LooseVersion
-from epythet.setup_docsrc import make_docsrc
+
+import semver
 from epythet.autogen import make_autodocs
-from distutils.core import run_setup
-import glob
+from epythet.setup_docsrc import make_docsrc
 
 from isee.common import get_env_var, git
 from isee.file_modification_utils import (
     replace_git_urls_from_requirements_file,
     replace_git_urls_from_setup_cfg_file,
 )
+from isee.git_utils import clone_repository
 
 DFLT_NEW_VERSION = '0.1.0'
 
@@ -153,5 +154,10 @@ def _generation_sub_repositories_wheels(
             _generate_repository_wheels(
                 target_dir, clone_repositories_dir, wheelhouse_dir, github_credentails
             )
-            os.chdir(target_dir)
-            run_setup('setup.py', ['bdist_wheel', f'--dist-dir={wheelhouse_dir}'])
+            _run_setup_bdist_wheel(target_dir, wheelhouse_dir)
+
+
+def _run_setup_bdist_wheel(cwd, dist_dir):
+    return subprocess.check_output(
+        [sys.executable, 'setup.py', 'bdist_wheel', f'--dist-dir={dist_dir}'], cwd=cwd
+    )
