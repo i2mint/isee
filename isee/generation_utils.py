@@ -74,10 +74,11 @@ def generate_project_wheels(project_dir, wheel_generation_dir, github_credentail
     os.mkdir(clone_repositories_dir)
     wheelhouse_dir = os.path.join(wheel_generation_dir, 'wheelhouse')
     os.mkdir(wheelhouse_dir)
-    _generate_repository_wheels(
+    git_info = _generate_repository_wheels(
         project_dir, clone_repositories_dir, wheelhouse_dir, github_credentails
     )
     os.chdir(current_dir)
+    return git_info
 
 
 def _generate_repository_wheels(
@@ -85,20 +86,27 @@ def _generate_repository_wheels(
 ):
     requirements_filepath = os.path.join(current_repository, 'requirements.txt')
     setup_cfg_filepath = os.path.join(current_repository, 'setup.cfg')
+    git_info = []
+
     if os.path.isfile(requirements_filepath):
-        _generate_wheels_from_requirements_file(
-            requirements_filepath,
-            clone_repositories_dir,
-            wheelhouse_dir,
-            github_credentails,
+        git_info.extend(
+            _generate_wheels_from_requirements_file(
+                requirements_filepath,
+                clone_repositories_dir,
+                wheelhouse_dir,
+                github_credentails,
+            )
         )
     if os.path.isfile(setup_cfg_filepath):
-        _generate_wheels_from_setup_cfg_file(
-            setup_cfg_filepath,
-            clone_repositories_dir,
-            wheelhouse_dir,
-            github_credentails,
+        git_info.extend(
+            _generate_wheels_from_setup_cfg_file(
+                setup_cfg_filepath,
+                clone_repositories_dir,
+                wheelhouse_dir,
+                github_credentails,
+            )
         )
+    return git_info
 
 
 def _generate_wheels_from_requirements_file(
@@ -110,6 +118,7 @@ def _generate_wheels_from_requirements_file(
     _generation_sub_repositories_wheels(
         git_info, clone_repositories_dir, wheelhouse_dir, github_credentails
     )
+    return git_info
 
 
 def _generate_wheels_from_setup_cfg_file(
@@ -121,6 +130,7 @@ def _generate_wheels_from_setup_cfg_file(
     _generation_sub_repositories_wheels(
         git_info, clone_repositories_dir, wheelhouse_dir, github_credentails
     )
+    return git_info
 
 
 def _generation_sub_repositories_wheels(
