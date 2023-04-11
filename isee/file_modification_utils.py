@@ -94,7 +94,9 @@ def _update_file(path, pattern, replace):
         content = file.read()
         content_new = re.sub(pattern, replace, content, flags=re.M)
         if content_new == content:
-            raise RuntimeError(f'Failed to update file "{path}"!')
+            raise RuntimeError(
+                f'File content unchanged. Failed to update file "{path}"!'
+            )
         file.seek(0)
         file.write(content_new)
         file.truncate()
