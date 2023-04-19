@@ -1,19 +1,20 @@
-from isee.pip_utils import build_dependency_wheels
-from isee.git_utils import clone_repository
+import glob
 import os
 import re
-import semver
+import subprocess
+import sys
 from distutils.version import LooseVersion
-from epythet.setup_docsrc import make_docsrc
+
+import semver
 from epythet.autogen import make_autodocs
-from distutils.core import run_setup
-import glob
+from epythet.setup_docsrc import make_docsrc
 
 from isee.common import get_env_var, git
 from isee.file_modification_utils import (
     replace_git_urls_from_requirements_file,
     replace_git_urls_from_setup_cfg_file,
 )
+from isee.git_utils import clone_repository
 
 DFLT_NEW_VERSION = '0.1.0'
 
@@ -73,10 +74,11 @@ def generate_project_wheels(project_dir, wheel_generation_dir, github_credentail
     os.mkdir(clone_repositories_dir)
     wheelhouse_dir = os.path.join(wheel_generation_dir, 'wheelhouse')
     os.mkdir(wheelhouse_dir)
-    _generate_repository_wheels(
+    git_info = _generate_repository_wheels(
         project_dir, clone_repositories_dir, wheelhouse_dir, github_credentails
     )
     os.chdir(current_dir)
+    return git_info
 
 
 def _generate_repository_wheels(
@@ -84,20 +86,27 @@ def _generate_repository_wheels(
 ):
     requirements_filepath = os.path.join(current_repository, 'requirements.txt')
     setup_cfg_filepath = os.path.join(current_repository, 'setup.cfg')
+    git_info = []
+
     if os.path.isfile(requirements_filepath):
-        _generate_wheels_from_requirements_file(
-            requirements_filepath,
-            clone_repositories_dir,
-            wheelhouse_dir,
-            github_credentails,
+        git_info.extend(
+            _generate_wheels_from_requirements_file(
+                requirements_filepath,
+                clone_repositories_dir,
+                wheelhouse_dir,
+                github_credentails,
+            )
         )
     if os.path.isfile(setup_cfg_filepath):
-        _generate_wheels_from_setup_cfg_file(
-            setup_cfg_filepath,
-            clone_repositories_dir,
-            wheelhouse_dir,
-            github_credentails,
+        git_info.extend(
+            _generate_wheels_from_setup_cfg_file(
+                setup_cfg_filepath,
+                clone_repositories_dir,
+                wheelhouse_dir,
+                github_credentails,
+            )
         )
+    return git_info
 
 
 def _generate_wheels_from_requirements_file(
@@ -109,6 +118,7 @@ def _generate_wheels_from_requirements_file(
     _generation_sub_repositories_wheels(
         git_info, clone_repositories_dir, wheelhouse_dir, github_credentails
     )
+    return git_info
 
 
 def _generate_wheels_from_setup_cfg_file(
@@ -120,6 +130,7 @@ def _generate_wheels_from_setup_cfg_file(
     _generation_sub_repositories_wheels(
         git_info, clone_repositories_dir, wheelhouse_dir, github_credentails
     )
+    return git_info
 
 
 def _generation_sub_repositories_wheels(
@@ -153,5 +164,10 @@ def _generation_sub_repositories_wheels(
             _generate_repository_wheels(
                 target_dir, clone_repositories_dir, wheelhouse_dir, github_credentails
             )
-            os.chdir(target_dir)
-            run_setup('setup.py', ['bdist_wheel', f'--dist-dir={wheelhouse_dir}'])
+            _run_setup_bdist_wheel(target_dir, wheelhouse_dir)
+
+
+def _run_setup_bdist_wheel(cwd, dist_dir):
+    return subprocess.check_output(
+        [sys.executable, 'setup.py', 'bdist_wheel', f'--dist-dir={dist_dir}'], cwd=cwd
+    )
