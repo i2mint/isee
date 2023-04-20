@@ -9,9 +9,8 @@ from isee.file_modification_utils import (
 from isee.generation_utils import (
     gen_semver,
     generate_documentation,
-    generate_project_wheels,
 )
-from isee.git_utils import check_in, tag_repo, clone_repository
+from isee.git_utils import check_in, tag_repo
 from isee.pip_utils import install_requires
 from isee.pylint_log_synopsis import print_report_followed_by_log
 
@@ -25,10 +24,8 @@ argh_kwargs = {
         update_setup_py,
         gen_semver,
         generate_documentation,
-        generate_project_wheels,
         check_in,
         tag_repo,
-        clone_repository,
         install_requires,
     ],
     'namespace_kwargs': {
