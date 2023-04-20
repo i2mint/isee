@@ -42,48 +42,6 @@ def update_setup_py(project_dir=None, version=None):
     _update_file(path, r"version='.+',", f"version='{version}',")
 
 
-def replace_git_urls_from_requirements_file(
-    requirements_filepath, github_credentails=None
-):
-    pattern = r'git\+(ssh:\/\/.*?\.git|https{0,1}:\/\/.*?\.git)@{0,1}(.*){0,1}#egg=(.*)'
-    git_info = _replace_git_urls(requirements_filepath, pattern, -1)
-    if github_credentails is not None:
-        for dep_git_info in git_info:
-            repo = dep_git_info['url'].split('github.com/')[-1]
-            auth_url = f'{github_credentails}/{repo}'
-            dep_git_info.update({'url': auth_url})
-    print(git_info)
-    return git_info
-
-
-def replace_git_urls_from_setup_cfg_file(setup_cfg_filepath, github_credentails=None):
-    pattern = r'([^\t\s\n]*)\s@\sgit\+(ssh:\/\/.*?\.git|https{0,1}:\/\/.*?\.git)@{0,1}(.*){0,1}'
-    git_info = _replace_git_urls(setup_cfg_filepath, pattern)
-    if github_credentails is not None:
-        for dep_git_info in git_info:
-            repo = dep_git_info['url'].split('github.com/')[-1]
-            auth_url = f'{github_credentails}/{repo}'
-            dep_git_info.update({'url': auth_url})
-    print(git_info)
-    return git_info
-
-
-def _replace_git_urls(filepath, pattern, group_idx_offset=0):
-    def _get_idx(raw_idx):
-        return (raw_idx + group_idx_offset) % 3
-
-    with open(filepath, 'r') as file:
-        content = file.read()
-        git_info = [
-            {'name': t[_get_idx(0)], 'url': t[_get_idx(1)], 'branch': t[_get_idx(2)]}
-            for t in re.findall(pattern, content)
-        ]
-    name_group_idx = _get_idx(0) + 1
-    if git_info:
-        _update_file(filepath, pattern, rf'\g<{name_group_idx}>')
-    return git_info
-
-
 def _get_setup_filepath(filename, project_dir):
     project_dir = project_dir or get_env_var('GITHUB_WORKSPACE')
     return os.path.join(project_dir, filename)
