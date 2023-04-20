@@ -1,8 +1,6 @@
 import glob
 import os
 import re
-import subprocess
-import sys
 from distutils.version import LooseVersion
 
 import semver
@@ -10,7 +8,6 @@ from epythet.autogen import make_autodocs
 from epythet.setup_docsrc import make_docsrc
 
 from isee.common import get_env_var, git
-from isee.git_utils import clone_repository
 
 DFLT_NEW_VERSION = '0.1.0'
 
