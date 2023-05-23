@@ -11,7 +11,7 @@ from isee.generation_utils import (
     generate_documentation,
 )
 from isee.git_utils import check_in, tag_repo
-from isee.pip_utils import install_requires
+from isee.pip_utils import install_requires, tests_require
 from isee.pylint_log_synopsis import print_report_followed_by_log
 
 
@@ -27,6 +27,7 @@ argh_kwargs = {
         check_in,
         tag_repo,
         install_requires,
+        tests_require,
     ],
     'namespace_kwargs': {
         'title': 'CI support utils',
