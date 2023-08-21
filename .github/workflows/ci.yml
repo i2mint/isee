@@ -82,11 +82,12 @@ jobs:
           echo "VERSION=$VERSION" >> $GITHUB_ENV
           isee update-setup-cfg
 
-      - name: Generate Documentation
-        run: isee generate-documentation
-
       - name: Package
         run: python setup.py sdist
+
+      - name: Publish
+        run: |
+          twine upload dist/$PROJECT_NAME-$VERSION.tar.gz -u ${{ secrets.PYPI_USERNAME }} -p ${{ secrets.PYPI_PASSWORD }} --non-interactive  --skip-existing --disable-progress-bar
 
       - name: Push Changes
         run: pack check-in "**CI** Formatted code + Updated version number and documentation. [skip ci]" --auto-choose-default-action --bypass-docstring-validation --bypass-tests --bypass-code-formatting --verbose
