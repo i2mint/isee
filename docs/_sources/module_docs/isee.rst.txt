@@ -1,4 +1,0 @@
-isee
-====
-.. automodule:: isee
-   :members:
