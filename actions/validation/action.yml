@@ -25,6 +25,19 @@ inputs:
 runs:
   using: composite
   steps:
+
+    - name: Echo inputs
+      run: |
+        echo "project-name: ${{ inputs.project-name }}"
+        echo "python-version: ${{ inputs.python-version }}"
+        echo "pylint-enable: ${{ inputs.pylint-enable }}"
+        echo "pytest-enable: ${{ inputs.pytest-enable }}"
+        echo "pylint-enable == false: ${{ inputs.pylint-enable == false }}"
+        echo "pylint-enable == 'false': ${{ inputs.pylint-enable == 'false' }}"
+        echo "pytest-enable == false: ${{ inputs.pytest-enable == false }}"
+        echo "pytest-enable == 'false': ${{ inputs.pytest-enable == 'false' }}"
+      shell: bash
+
     - uses: actions/checkout@v2
       with:
         fetch-depth: 0
