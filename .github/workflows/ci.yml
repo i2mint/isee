@@ -15,8 +15,6 @@ jobs:
         with:
           project-name: $PROJECT_NAME
           python-version: ${{ matrix.python-version }}
-          pylint-enable: "false"
-          pytest-enable: "false"
 
   publish:
     name: Publish

@@ -39,15 +39,15 @@ runs:
       shell: bash
 
     - name: Install isee      
-      if: ${{ inputs.project-name }} != "isee"
-      run: pip -q install isee
-      shell: bash
-
-    - name: Install isee from source if this is the isee project
-      if: ${{ inputs.project-name }} == "isee"
       run: |
-        python setup.py sdist
-        pip install $(find dist/ -iname $PROJECT_NAME-*.tar.gz)
+        if ${{ inputs.project-name }} == "isee";then
+          echo "Installing isee from source"
+          python setup.py sdist
+          pip install $(find dist/ -iname $PROJECT_NAME-*.tar.gz)
+        else
+          echo "Installing isee package"
+          pip -q install isee
+        fi
       shell: bash
 
     - name: Install dependencies
@@ -67,7 +67,6 @@ runs:
       shell: bash
 
     - name: Test
-      if: ${{ inputs.pytest-enable }} != "false"
       run: |
         if ${{ inputs.pytest-enable }} != "false";then
           pytest --doctest-modules -v ./${{ inputs.project-name }}
