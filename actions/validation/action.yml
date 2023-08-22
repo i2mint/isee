@@ -39,12 +39,12 @@ runs:
       shell: bash
 
     - name: Install isee      
-      if: inputs.project-name != "isee"
+      if: ${{ inputs.project-name }} != "isee"
       run: pip -q install isee
       shell: bash
 
     - name: Install isee from source if this is the isee project
-      if: inputs.project-name  == "isee"
+      if: ${{ inputs.project-name }} == "isee"
       run: |
         python setup.py sdist
         pip install $(find dist/ -iname $PROJECT_NAME-*.tar.gz)
@@ -58,11 +58,11 @@ runs:
       shell: bash
 
     - name: Validate docstrings
-      if: inputs.pylint-enable != "false"
+      if: ${{ inputs.pylint-enable }} != "false"
       run: pylint ./${{ inputs.project-name }} --disable=all --enable=${{ inputs.pylint-enable }}
       shell: bash
 
     - name: Test
-      if: inputs.pytest-enable != "false"
+      if: ${{ inputs.pytest-enable }} != "false"
       run: pytest --doctest-modules -v ./${{ inputs.project-name }}
       shell: bash
