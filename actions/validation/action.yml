@@ -43,7 +43,7 @@ runs:
       run: pip -q install isee
       shell: bash
 
-    - name: Install isee from source
+    - name: Install isee from source if this is the isee project
       if: ${{ inputs.project-name }} == "isee"
       run: |
         python setup.py sdist
@@ -52,7 +52,7 @@ runs:
 
     - name: Install dependencies
       run: |
-        pip -q install axblack pytest pylint
+        pip -q install pytest pylint
         isee install-requires
         isee tests-require
       shell: bash
