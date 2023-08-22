@@ -21,8 +21,9 @@ def tests_require(project_dir=None):
     path = get_file_path('setup.cfg', project_dir)
     config = configparser.ConfigParser()
     config.read(path)
-    pkgs = [x for x in config['options']['tests_require'].split('\n') if x]
-    pip.main(['install'] + pkgs)
+    if 'tests_require' in config['options']:
+        pkgs = [x for x in config['options']['tests_require'].split('\n') if x]
+        pip.main(['install'] + pkgs)
 
 
 def build_dependency_wheels(repository_dir, wheelhouse, requirements_filepath=None):
