@@ -25,19 +25,6 @@ inputs:
 runs:
   using: composite
   steps:
-
-    - name: Echo inputs
-      run: |
-        echo "project-name: ${{ inputs.project-name }}"
-        echo "python-version: ${{ inputs.python-version }}"
-        echo "pylint-enable: ${{ inputs.pylint-enable }}"
-        echo "pytest-enable: ${{ inputs.pytest-enable }}"
-        echo "pylint-enable == false: ${{ inputs.pylint-enable == false }}"
-        echo "pylint-enable == 'false': ${{ inputs.pylint-enable == 'false' }}"
-        echo "pytest-enable == false: ${{ inputs.pytest-enable == false }}"
-        echo "pytest-enable == 'false': ${{ inputs.pytest-enable == 'false' }}"
-      shell: bash
-
     - uses: actions/checkout@v2
       with:
         fetch-depth: 0
@@ -71,11 +58,20 @@ runs:
       shell: bash
 
     - name: Validate docstrings
-      if: ${{ inputs.pylint-enable }} != "false"
-      run: pylint ./${{ inputs.project-name }} --disable=all --enable=${{ inputs.pylint-enable }}
+      run: |
+        if ${{ inputs.pylint-enable }} != "false";then
+          pylint ./${{ inputs.project-name }} --disable=all --enable=${{ inputs.pylint-enable }}
+        else
+          echo "Skipping pylint"
+        fi
       shell: bash
 
     - name: Test
       if: ${{ inputs.pytest-enable }} != "false"
-      run: pytest --doctest-modules -v ./${{ inputs.project-name }}
+      run: |
+        if ${{ inputs.pytest-enable }} != "false";then
+          pytest --doctest-modules -v ./${{ inputs.project-name }}
+        else
+          echo "Skipping pytest"
+        fi
       shell: bash
