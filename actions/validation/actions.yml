@@ -1,0 +1,62 @@
+name: "Validation"
+
+description: "Python tests and validation"
+
+inputs:
+  project-name:
+    description: "Name of project and root directory"
+    required: true  
+
+  python-version:
+    description: "Python version used to test and validate"
+    required: false
+    default: "3.10"
+
+  pylint-enable:
+    description: "Pylint checks to enable or false to skip pylint"
+    required: false
+    default: "C0114,C0115,C0116"
+
+  pytest-enable:
+    description: "Enable pytest or false to skip pytest"
+    required: false
+    default: "true"
+
+runs:
+  using: composite
+  steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+
+    - name: Set up Python ${{ inputs.python-version }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ inputs.python-version }}
+
+    - name: Upgrade pip
+      run: python -m pip install --upgrade pip
+
+    - name: Install isee      
+      if: ${{ inputs.project-name }} != "isee"
+      run: pip -q install isee
+
+    - name: Install isee from source
+      if: ${{ inputs.project-name }} == "isee"
+      run: |
+        python setup.py sdist
+        pip install $(find dist/ -iname $PROJECT_NAME-*.tar.gz)
+
+    - name: Install dependencies
+      run: |
+        pip -q install axblack pytest pylint
+        isee install-requires
+        isee tests-require
+
+    - name: Validate docstrings
+      if: ${{ inputs.pylint-enable }} != "false"
+      run: pylint ./${{ inputs.project-name }} --disable=all --enable=${{ inputs.pylint-enable }}
+
+    - name: Test
+      if: ${{ inputs.pytest-enable }} != "false"
+      run: pytest --doctest-modules -v ./${{ inputs.project-name }}
