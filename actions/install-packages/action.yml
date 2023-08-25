@@ -1,0 +1,57 @@
+name: Install Packages
+
+inputs:
+  python_packages:
+    description: 'Python packages to install'
+    required: false
+  apt_packages:
+    description: 'APT packages to install'
+    required: false
+  npm_packages:
+    description: 'NPM packages to install'
+    required: false
+  requirements_file:
+    description: 'Paths to requirements files'
+    required: false
+  test_requirements_file:
+    description: 'Paths to requirements files'
+    required: false
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Install Python Packages
+      run: |
+        if [ -n "${{ inputs.python_packages }}" ]; then
+          python -m pip install --upgrade pip ${{ inputs.python_packages }}
+        fi
+      shell: bash
+
+    - name: Install APT Packages
+      run: |
+        if [ -n "${{ inputs.apt_packages }}" ]; then
+          sudo apt-get update
+          sudo apt-get install -y ${{ inputs.apt_packages }}
+        fi
+      shell: bash
+
+    - name: Install NPM Packages
+      run: |
+        if [ -n "${{ inputs.npm_packages }}" ]; then
+          npm install -g ${{ inputs.npm_packages }}
+        fi
+      shell: bash
+
+    - name: Install Python Requirements
+      run: |
+        if [ -n "${{ inputs.requirements_file }}" ]; then
+          pip install -r ${{ inputs.requirements_file }}
+        fi
+      shell: bash
+    
+    - name: Install Test Requirements
+      run: |
+        if [ -n "${{ inputs.test_requirements_file }}" ]; then
+          pip install -r ${{ inputs.test_requirements_file }}
+        fi
+      shell: bash
