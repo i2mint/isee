@@ -91,7 +91,6 @@ inputs:
 runs:
   using: composite
   steps:
-    - uses: actions/checkout@v2
 
     - name: Set up Python ${{ inputs.python-version }}
       uses: actions/setup-python@v2
@@ -99,7 +98,7 @@ runs:
         python-version: ${{ inputs.python-version }}
 
     - name: Install dependencies
-      uses: otosense/ci-reusable-scripts/actions/install-packages@master
+      uses:  i2mint/isee/actions/install-packages@@reusable_actions
       with:
         python_packages: ${{ inputs.python_packages }}
         apt_packages: ${{ inputs.apt_packages }}
