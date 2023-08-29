@@ -47,7 +47,7 @@ runs:
         shell: bash
 
       - name: Install dependencies
-        uses: otosense/ci-reusable-scripts/actions/intstall-packages@master
+        uses: i2mint/isee/actions/install-packages@master
         with:
           python_packages: ${{ inputs.python_packages }}
 

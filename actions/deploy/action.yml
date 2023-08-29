@@ -101,7 +101,7 @@ runs:
         python-version: ${{ inputs.python-version }}
 
     - name: Install dependencies
-      uses:  i2mint/isee/actions/install-packages@reusable_actions
+      uses:  i2mint/isee/actions/install-packages@master
       with:
         python_packages: ${{ inputs.python_packages }}
         apt_packages: ${{ inputs.apt_packages }}
