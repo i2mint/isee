@@ -1,0 +1,168 @@
+name: "Deploy"
+description: "Deploy"
+inputs:
+  python-version:
+    description: "Python version"
+    required: true
+    default: "3.11"
+  python_packages:
+    description: "Python packages"
+    required: false
+  CI_COMMIT_BRANCH: 
+    description: "Commit branch"
+    required: false
+  HOST_IP:
+    description: "Host IP"
+    required: false
+  DEV_ENV_HOST_IP:
+    description: "Host IP for dev env"
+    required: false
+  DEV_MONGODB__DATABASE_NAME :
+    description: "mongodb for dev env"
+    required: false
+  DEV_AZURESTORAGE__CONTAINER_NAME:
+    description: "azure container for dev env"
+    required: false
+  INT_ENV_HOST_IP:  
+    description: "Host IP for int env"
+    required: false
+  INT_MONGODB__DATABASE_NAME: 
+    description: "mongodb for int env"
+    required: false
+  INT_AZURESTORAGE__CONTAINER_NAME:
+    description: "azure container for int env"
+    required: false
+  PROD_ENV_HOST_IP:
+    description: "Host IP for prod env"
+    required: false
+  PROD_MONGODB__DATABASE_NAME:
+    description: "mongodb for prod env"
+    required: false
+  PROD_AZURESTORAGE__CONTAINER_NAME:
+    description: "azure container for prod env"
+    required: false
+  STAGING_ENV_HOST_IP:
+    description: "Host IP for staging env"
+    required: false
+  STAGING_MONGODB__DATABASE_NAME:
+    description: "mongodb for staging env"
+    required: false
+  STAGING_AZURESTORAGE__CONTAINER_NAME: 
+    description: "azure container for staging env"
+    required: false
+  SSH_PRIVATE_KEY:
+    description: SSH PRIVATE KEY
+    required: false
+  ENV_HOST_USER:
+    description: "Host user name"
+    required: false
+  VM_SSH_KEY:
+    description: "Host SSH KEY"
+    required: false
+  TARGET_PROJECT_PATH:
+    description: "Target project path to run on host"
+    required: false
+  HOST_ENV_CONF_PATH:
+    description: "env config file path"
+    required: false
+  AZURESTORAGE__CONNECTION_STRING:
+    description: "azure storage connection string"
+    required: false
+  MONGODB__CONNECTION_STRING:
+    description: "mongodb connection string"
+    required: false
+  PROJECT_NAME:
+    description: Project name
+    required: false
+  apt_packages:
+    description: apt_packages
+    required: false
+  npm_packages:
+    description: npm_packages
+    required: false
+  requirements_file:
+    description: requirements_file path
+    required: false
+  test_requirements_file:
+    description: test_requirements_file path
+    required: false
+  RUN_SERVER_FILE_NAME:
+    description: file name to run on host
+    required: true
+
+
+runs:
+  using: composite
+  steps:
+
+    - name: Set up Python ${{ inputs.python-version }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ inputs.python-version }}
+
+    - name: Install dependencies
+      uses:  i2mint/isee/actions/install-packages@master
+      with:
+        python_packages: ${{ inputs.python_packages }}
+        apt_packages: ${{ inputs.apt_packages }}
+        npm_packages: ${{ inputs.npm_packages }}
+        requirements_file: ${{ inputs.requirements_file }}
+        test_requirements_file: ${{ inputs.test_requirements_file }}
+
+    - name: Format source code
+      run: black  --line-length=88 .
+      shell: bash
+      
+    - name: set env for host
+      uses: otosense/ci-script-set-variable-for-host@master
+      with:
+        CI_COMMIT_BRANCH: ${{ inputs.CI_COMMIT_BRANCH }}
+        HOST_IP: ${{ inputs.HOST_IP }}
+        MONGODB__DATABASE_NAME : ${{ inputs.MONGODB__DATABASE_NAME }}
+        AZURESTORAGE__CONTAINER_NAME: ${{ inputs.AZURESTORAGE__CONTAINER_NAME }}
+        DEV_ENV_HOST_IP: ${{ inputs.DEV_ENV_HOST_IP }}
+        DEV_MONGODB__DATABASE_NAME : ${{ inputs.DEV_MONGODB__DATABASE_NAME }}
+        DEV_AZURESTORAGE__CONTAINER_NAME: ${{ inputs.DEV_AZURESTORAGE__CONTAINER_NAME }}
+        INT_ENV_HOST_IP: ${{ inputs.INT_ENV_HOST_IP }}
+        INT_MONGODB__DATABASE_NAME: ${{ inputs.INT_MONGODB__DATABASE_NAME }}
+        INT_AZURESTORAGE__CONTAINER_NAME: ${{ inputs.INT_AZURESTORAGE__CONTAINER_NAME }}
+        PROD_ENV_HOST_IP: ${{ inputs.PROD_ENV_HOST_IP }}
+        PROD_MONGODB__DATABASE_NAME: ${{ inputs.PROD_MONGODB__DATABASE_NAME }}
+        PROD_AZURESTORAGE__CONTAINER_NAME: ${{ inputs.PROD_AZURESTORAGE__CONTAINER_NAME }}
+        STAGING_ENV_HOST_IP: ${{ inputs.STAGING_ENV_HOST_IP }}
+        STAGING_MONGODB__DATABASE_NAME: ${{ inputs.STAGING_MONGODB__DATABASE_NAME }}
+        STAGING_AZURESTORAGE__CONTAINER_NAME: ${{ inputs.STAGING_AZURESTORAGE__CONTAINER_NAME }}
+        
+    - name: Copy files to host
+      uses: appleboy/scp-action@master
+      with:
+        host: ${{ env.ENV_HOST_IP }}
+        username: ${{ inputs.ENV_HOST_USER }}
+        key: ${{ inputs.VM_SSH_KEY }} 
+        source: './*'
+        target: ${{ inputs.TARGET_PROJECT_PATH }}
+    
+
+    - name: Deploy to host
+      uses: appleboy/ssh-action@master
+      env:
+        SSH_PRIVATE_KEY: ${{ inputs.SSH_PRIVATE_KEY }}
+        ENV_HOST_IP: ${{ env.ENV_HOST_IP }}
+        HOST_ENV_CONF_PATH: ${{ inputs.HOST_ENV_CONF_PATH }}
+        PROJECT_NAME: ${{ inputs.PROJECT_NAME }}
+        AZURESTORAGE__CONNECTION_STRING: ${{ inputs.AZURESTORAGE__CONNECTION_STRING }}
+        MONGODB__CONNECTION_STRING: ${{ inputs.MONGODB__CONNECTION_STRING }}
+        MONGODB__DATABASE_NAME: ${{ env.MONGODB__DATABASE_NAME }}
+        AZURESTORAGE__CONTAINER_NAME: ${{ env.AZURESTORAGE__CONTAINER_NAME }}
+      with:       
+        host: ${{ env.ENV_HOST_IP }}
+        username: ${{ inputs.ENV_HOST_USER }}
+        key: ${{ inputs.VM_SSH_KEY }}
+        envs: SSH_PRIVATE_KEY,ENV_HOST_IP,HOST_ENV_CONF_PATH,PROJECT_NAME,AZURESTORAGE__CONNECTION_STRING,MONGODB__CONNECTION_STRING,MONGODB__DATABASE_NAME,AZURESTORAGE__CONTAINER_NAME
+        script: |
+          ./${{ inputs.RUN_SERVER_FILE_NAME }}
+
+    - name: Push Changes
+      run: |
+        pack check-in "**CI** Formatted code [skip ci]" --auto-choose-default-action --bypass-docstring-validation --bypass-tests --bypass-code-formatting --verbose
+      shell: bash
