@@ -64,10 +64,12 @@ runs:
     - name: Install from setup.cfg
       run: |
         if [ -n "${{ inputs.use-setup-cfg }}" ]; then
-          if ${{ github.repository }} == "i2mint/isee"; then
+          if "${{ github.repository }}" == "i2mint/isee"; then
+            echo "Installing isee from source"
             python setup.py sdist
             pip install $(find dist/ -iname isee-*.tar.gz)
           else
+            echo "Installing isee from pip"
             pip -q install isee
           fi
           isee install-requires
