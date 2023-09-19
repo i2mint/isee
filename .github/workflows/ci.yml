@@ -11,33 +11,10 @@ jobs:
       matrix:
         python-version: [3.8]
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
-
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v2
+      - uses: i2mint/isee/actions/validation@master
         with:
+          PROJECT_NAME: ${{ env.PROJECT_NAME }}
           python-version: ${{ matrix.python-version }}
-
-      - name: Install pre-package
-        run: |
-          python setup.py sdist
-          pip install $(find dist/ -iname $PROJECT_NAME-*.tar.gz)
-
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip -q install axblack pytest pylint
-          isee install-requires
-
-      - name: Format source code
-        run: black  --line-length=88 .
-
-      # - name: Validate docstrings
-      #   run: pylint ./$PROJECT_NAME --disable=all --enable=C0114,C0115,C0116
-
-      # - name: Test
-      #   run: pytest --doctest-modules -v $PROJECT_NAME
 
   publish:
     name: Publish
