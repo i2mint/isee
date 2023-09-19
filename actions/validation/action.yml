@@ -72,7 +72,7 @@ runs:
     - name: Install dependencies
       uses: i2mint/isee/actions/install-packages@isee-actions
       with:
-        python_packages: 'pytest pylint isee ${{ inputs.python_packages }}'
+        python_packages: 'pytest pylint ${{ inputs.python_packages }}'
         apt_packages: ${{ inputs.apt_packages }}
         npm_packages: ${{ inputs.npm_packages }}
         requirements_file: ${{ inputs.requirements_file }}
