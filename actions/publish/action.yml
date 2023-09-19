@@ -22,64 +22,54 @@ inputs:
     required: true
   python_packages:
     description: "Python packages"
-    required: true
+    required: false
+    default: ''
 
 
 runs:
   using: composite
   steps:
 
-      - name: Configure Git
-        run: |
-          git config --global user.email "${{ inputs.GIT_USER_EMAIL }}"
-          git config --global user.name "${{ inputs.GIT_USER_NAME }}"
-        shell: bash
+    - name: Configure Git
+      run: |
+        git config --global user.email "${{ inputs.GIT_USER_EMAIL }}"
+        git config --global user.name "${{ inputs.GIT_USER_NAME }}"
+      shell: bash
 
-      - name: Set up Python ${{ inputs.python-version }}
-        uses: actions/setup-python@v2
-        with:
-          python-version: ${{ inputs.python-version }}
+    - name: Set up Python ${{ inputs.python-version }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ inputs.python-version }}
 
-      - name: Install pre-package
-        run: |
-          python setup.py sdist
-          pip install $(find dist/ -iname ${{ inputs.PROJECT_NAME }}-*.tar.gz)
-        shell: bash
+    - name: Install dependencies
+      uses: i2mint/isee/actions/install-packages@master
+      with:
+        python_packages: 'axblack twine wads ${{ inputs.python_packages }}'
 
-      - name: Install dependencies
-        uses: i2mint/isee/actions/install-packages@master
-        with:
-          python_packages: ${{ inputs.python_packages }}
+    - name: Format source code
+      run: black  --line-length=88 .
+      shell: bash
 
-      - name: Install requires
-        run: |
-          isee install-requires
-        shell: bash
+    - name: Update version number
+      run: |
+        export VERSION=$(isee gen-semver)
+        echo "VERSION=$VERSION" >> $GITHUB_ENV
+        isee update-setup-cfg
+      shell: bash
 
-      - name: Format source code
-        run: black  --line-length=88 .
-        shell: bash
+    - name: Package
+      run: python setup.py sdist
+      shell: bash
 
-      - name: Update version number
-        run: |
-          export VERSION=$(isee gen-semver)
-          echo "VERSION=$VERSION" >> $GITHUB_ENV
-          isee update-setup-cfg
-        shell: bash
+    - name: Publish
+      run: |
+        twine upload dist/${{ inputs.PROJECT_NAME }}-$VERSION.tar.gz -u ${{ inputs.PYPI_USERNAME }} -p ${{ inputs.PYPI_PASSWORD }} --non-interactive  --skip-existing --disable-progress-bar
+      shell: bash
 
-      - name: Package
-        run: python setup.py sdist
-        shell: bash
+    - name: Push Changes
+      run: pack check-in "**CI** Formatted code + Updated version number and documentation. [skip ci]" --auto-choose-default-action --bypass-docstring-validation --bypass-tests --bypass-code-formatting --verbose
+      shell: bash
 
-      - name: Publish
-        run: |
-          twine upload dist/${{ inputs.PROJECT_NAME }}-$VERSION.tar.gz -u ${{ inputs.PYPI_USERNAME }} -p ${{ inputs.PYPI_PASSWORD }} --non-interactive  --skip-existing --disable-progress-bar
-        shell: bash
-
-      - name: Push Changes
-        run: pack check-in "**CI** Formatted code + Updated version number and documentation. [skip ci]" --auto-choose-default-action --bypass-docstring-validation --bypass-tests --bypass-code-formatting --verbose
-        shell: bash
-
-      - name: Tag Repository
-        run: isee tag-repo $VERSION
-        shell: bash
+    - name: Tag Repository
+      run: isee tag-repo $VERSION
+      shell: bash
