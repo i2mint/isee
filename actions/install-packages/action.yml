@@ -64,7 +64,7 @@ runs:
     - name: Install from setup.cfg
       run: |
         if [ -n "${{ inputs.use-setup-cfg }}" ]; then
-          if ${{GITHUB_REPOSITORY}} == "i2mint/isee"; then
+          if ${{ github.repository }} == "i2mint/isee"; then
             python setup.py sdist
             pip install $(find dist/ -iname $PROJECT_NAME-*.tar.gz)
           else
