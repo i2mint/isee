@@ -45,6 +45,7 @@ runs:
       uses: i2mint/isee/actions/install-packages@master
       with:
         python_packages: 'axblack twine wads ${{ inputs.python_packages }}'
+        use-setup-cfg: 'true'
 
     - name: Format source code
       run: black  --line-length=88 .

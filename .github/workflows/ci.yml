@@ -16,11 +16,12 @@ jobs:
         with:
           fetch-depth: 0
 
-      - uses: i2mint/isee/actions/validation@isee-actions
+      - uses: i2mint/isee/actions/validation@master
         with:
           PROJECT_NAME: ${{ env.PROJECT_NAME }}
           python-version: ${{ matrix.python-version }}
           pytest-enable: false
+          use-setup-cfg: true
 
   publish:
     name: Publish
@@ -35,7 +36,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - uses: i2mint/isee/actions/publish@isee-actions
+      - uses: i2mint/isee/actions/publish@master
         with:
           PROJECT_NAME: ${{ env.PROJECT_NAME }}
           python-version: ${{ matrix.python-version }}
