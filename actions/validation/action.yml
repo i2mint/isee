@@ -70,7 +70,7 @@ runs:
       uses: actions/setup-node@v2.5.1
 
     - name: Install dependencies
-      uses: i2mint/isee/actions/install-packages@master
+      uses: i2mint/isee/actions/install-packages@isee-actions
       with:
         python_packages: 'pytest pylint isee ${{ inputs.python_packages }}'
         apt_packages: ${{ inputs.apt_packages }}

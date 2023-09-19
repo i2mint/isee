@@ -11,7 +11,7 @@ jobs:
       matrix:
         python-version: [3.8]
     steps:
-      - uses: i2mint/isee/actions/validation@master
+      - uses: i2mint/isee/actions/validation@isee-actions
         with:
           PROJECT_NAME: ${{ env.PROJECT_NAME }}
           python-version: ${{ matrix.python-version }}
