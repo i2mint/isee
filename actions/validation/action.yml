@@ -34,12 +34,28 @@ inputs:
     description: "test requirements file path"
     required: false
 
+  use-setup-cfg:
+    description: "install from setup.cfg install_requires and tests_require"
+    required: false
+    default: "true"
+
+  pylint-enable:
+    description: "Pylint checks to enable or false to skip pylint"
+    required: false
+    default: "C0114,C0115,C0116"
+
+  pytest-enable:
+    description: "Enable pytest or false to skip pytest"
+    required: false
+    default: "true"
+
 
 runs:
   using: composite
   steps:
 
     - name: Configure SSH
+      if: ${{ inputs.SSH_PRIVATE_KEY }}
       uses: webfactory/ssh-agent@v0.7.0
       with:
           ssh-private-key: ${{ inputs.SSH_PRIVATE_KEY }}
@@ -50,21 +66,31 @@ runs:
         python-version: ${{ inputs.python-version }}
       
     - name: Setup Node.js environment
+      if: ${{ inputs.npm_packages }}
       uses: actions/setup-node@v2.5.1
 
     - name: Install dependencies
       uses: i2mint/isee/actions/install-packages@master
       with:
-        python_packages: '${{ inputs.python_packages }}'
+        python_packages: 'pytest pylint ${{ inputs.python_packages }}'
         apt_packages: ${{ inputs.apt_packages }}
         npm_packages: ${{ inputs.npm_packages }}
         requirements_file: ${{ inputs.requirements_file }}
         test_requirements_file: ${{ inputs.test_requirements_file }}
-
-    - name: Format source code
-      run: black  --line-length=88 .
+        use-setup-cfg: ${{ inputs.use-setup-cfg }}
+    - name: Validate docstrings
+      run: |
+        if ["${{ inputs.pylint-enable }}" != "false"];then
+          pylint ./${{ inputs.project-name }} --disable=all --enable=${{ inputs.pylint-enable }}
+        else
+          echo "Skipping pylint"
+        fi
       shell: bash
-
     - name: Test
-      run: pytest --doctest-modules -v -s ${{ inputs.PROJECT_NAME }}
+      run: |
+        if ["${{ inputs.pytest-enable }}" == "true"];then
+          pytest --doctest-modules -v ./${{ inputs.project-name }}
+        else
+          echo "Skipping pytest"
+        fi
       shell: bash

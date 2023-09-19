@@ -13,31 +13,15 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
-
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v2
         with:
+          fetch-depth: 0
+
+      - uses: i2mint/isee/actions/validation@master
+        with:
+          PROJECT_NAME: ${{ env.PROJECT_NAME }}
           python-version: ${{ matrix.python-version }}
-
-      - name: Install pre-package
-        run: |
-          python setup.py sdist
-          pip install $(find dist/ -iname $PROJECT_NAME-*.tar.gz)
-
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip -q install axblack pytest pylint
-          isee install-requires
-
-      - name: Format source code
-        run: black  --line-length=88 .
-
-      # - name: Validate docstrings
-      #   run: pylint ./$PROJECT_NAME --disable=all --enable=C0114,C0115,C0116
-
-      # - name: Test
-      #   run: pytest --doctest-modules -v $PROJECT_NAME
+          pytest-enable: false
+          use-setup-cfg: true
 
   publish:
     name: Publish
@@ -52,48 +36,14 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Configure Git
-        run: |
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git config --global user.name "github-actions[bot]"
-
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v2
+      - uses: i2mint/isee/actions/publish@master
         with:
+          PROJECT_NAME: ${{ env.PROJECT_NAME }}
           python-version: ${{ matrix.python-version }}
-
-      - name: Install pre-package
-        run: |
-          python setup.py sdist
-          pip install $(find dist/ -iname $PROJECT_NAME-*.tar.gz)
-
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip -q install axblack twine epythet wads
-          isee install-requires
-
-      - name: Format source code
-        run: black  --line-length=88 .
-
-      - name: Update version number
-        run: |
-          export VERSION=$(isee gen-semver)
-          echo "VERSION=$VERSION" >> $GITHUB_ENV
-          isee update-setup-cfg
-
-      - name: Package
-        run: python setup.py sdist
-
-      - name: Publish
-        run: |
-          twine upload dist/$PROJECT_NAME-$VERSION.tar.gz -u ${{ secrets.PYPI_USERNAME }} -p ${{ secrets.PYPI_PASSWORD }} --non-interactive  --skip-existing --disable-progress-bar
-
-      - name: Push Changes
-        run: pack check-in "**CI** Formatted code + Updated version number and documentation. [skip ci]" --auto-choose-default-action --bypass-docstring-validation --bypass-tests --bypass-code-formatting --verbose
-
-      - name: Tag Repository
-        run: isee tag-repo $VERSION
+          PYPI_USERNAME: ${{ secrets.PYPI_USERNAME }}
+          PYPI_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
+          GIT_USER_NAME: "github-actions[bot]"
+          GIT_USER_EMAIL: "github-actions[bot]@users.noreply.github.com"
 
   github-pages:
     name: Publish GitHub Pages
