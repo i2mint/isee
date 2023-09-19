@@ -11,11 +11,6 @@ jobs:
       matrix:
         python-version: [3.8]
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
-
       - uses: i2mint/isee/actions/validation@master
         with:
           PROJECT_NAME: ${{ env.PROJECT_NAME }}
@@ -32,10 +27,6 @@ jobs:
       matrix:
         python-version: [3.8]
     steps:
-      - uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
-
       - uses: i2mint/isee/actions/publish@master
         with:
           PROJECT_NAME: ${{ env.PROJECT_NAME }}
