@@ -23,8 +23,8 @@ inputs:
   python_packages:
     description: "Python packages"
     required: true
-  
-    
+
+
 runs:
   using: composite
   steps:
