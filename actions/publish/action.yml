@@ -16,10 +16,12 @@ inputs:
     required: false
   GIT_USER_EMAIL:
     description: "Git User Email"
-    required: true
+    required: false
+    default: "github-actions[bot]@users.noreply.github.com"
   GIT_USER_NAME:
     description: "Git User Name"
-    required: true
+    required: false
+    defalut: "github-actions[bot]"
   python_packages:
     description: "Python packages"
     required: false
