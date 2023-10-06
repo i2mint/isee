@@ -1,4 +1,4 @@
-name: "Run Pylint"
+name: "Pylint Validation"
 description: "Validate source code running pylint"
 inputs:
   enable:

@@ -1,5 +1,5 @@
-name: "Run Pytest"
-description: "Run pytest"
+name: "Pytest Validation"
+description: "Validate source code running pytest"
 inputs:
   paths-to-ignore:
     description: "Folders and or files to ignore. Provide a comma separated list of 
