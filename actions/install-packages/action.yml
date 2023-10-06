@@ -26,22 +26,26 @@ runs:
   steps:
     - name: Install Pypi Packages
       if: ${{ inputs.pypi-packages }}
+      shell: bash
       run: |
         python -m pip install --upgrade pip
         pip install ${{ inputs.pypi-packages }}
 
     - name: Install APT Packages
       if: ${{ inputs.apt-packages }}
+      shell: bash
       run: |
         sudo apt-get update
         sudo apt-get install -y ${{ inputs.apt-packages }}
 
     - name: Install NPM Packages
       if: ${{ inputs.npm-packages }}
+      shell: bash
       run: npm install -g ${{ inputs.npm-packages }}
 
     - name: Install Dependencies
       if: ${{ inputs.dependency-files }}
+      shell: bash
       run: |
         IFS=',' read -ra paths <<< "$dependency-files"
         for path in "${paths[@]}"

@@ -16,4 +16,5 @@ runs:
         pypi-packages: 'axblack'
 
     - name: Format source code
+      shell: bash
       run: black --line-length=${{ inputs.line-length }} .

@@ -8,4 +8,5 @@ runs:
       with:
         npm-packages: 'azurite'
     - name: Run Azurite
+      shell: bash
       run: azurite-blob &
