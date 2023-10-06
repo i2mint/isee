@@ -1,0 +1,11 @@
+name: "Run Azurite"
+description: "Run Azurite in the background"
+runs:
+  using: 'composite'
+  steps:
+    - name: Install Dependencies
+      uses: i2mint/isee/actions/install-packages@master
+      with:
+        npm-packages: 'azurite'
+    - name: Run Azurite
+      run: azurite-blob &

@@ -1,0 +1,17 @@
+name: "Run LocalStack"
+description: "Run LocalStack in the background"
+runs:
+  using: 'composite'
+  steps:
+    - name: Install Dependencies
+      uses: i2mint/isee/actions/install-packages@master
+      with:
+        pypi-packages: 'localstack'
+    - name: Run LocalStack
+      shell: bash
+      run: |
+        docker pull localstack/localstack
+        localstack start -d
+        echo "Waiting for LocalStack startup..."
+        localstack wait -t 30 
+        echo "LocalStack started"

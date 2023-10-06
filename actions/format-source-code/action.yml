@@ -1,0 +1,19 @@
+name: "Format Source Code"
+description: "Format source code using axblack"
+
+inputs:
+  line-length:
+    description: "Line length"
+    required: false
+    default: "88"
+
+runs:
+  using: composite
+  steps:
+    - name: Install Dependencies
+      uses: i2mint/isee/actions/install-packages@master
+      with:
+        pypi-packages: 'axblack'
+
+    - name: Format source code
+      run: black --line-length=${{ inputs.line-length }} .

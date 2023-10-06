@@ -1,72 +1,67 @@
 name: Install Packages
 
 inputs:
-  python_packages:
+  pypi-packages:
     description: 'Python packages to install'
     required: false
-  apt_packages:
+  apt-packages:
     description: 'APT packages to install'
     required: false
-  npm_packages:
+  npm-packages:
     description: 'NPM packages to install'
     required: false
-  requirements_file:
-    description: 'Paths to requirements files'
+  dependency-files:
+    description: 'Paths to dependency files. Can be a requirements.txt or a setup.cfg 
+      file'
     required: false
-  test_requirements_file:
-    description: 'Paths to requirements files'
+  test-requirements-file:
+    description: "Paths to requirements files. Provide a comma separated list of 
+      paths from the current directory. '.txt' files will be pip installed. '.cfg'
+      files will be parsed and the install_requires and tests_require sections will be 
+      installed."
     required: false
-  use-setup-cfg:
-    description: "if true install from setup.cfg install_requires and tests_require if true"
-    required: false
-    default: "false"
 
 runs:
   using: 'composite'
   steps:
-    - name: Install Python Packages
-      if: ${{ inputs.python_packages }}
+    - name: Install Pypi Packages
+      if: ${{ inputs.pypi-packages }}
       run: |
         python -m pip install --upgrade pip
-        pip install -q ${{ inputs.python_packages }}
-      shell: bash
+        pip install ${{ inputs.pypi-packages }}
 
     - name: Install APT Packages
-      if: ${{ inputs.apt_packages }}
+      if: ${{ inputs.apt-packages }}
       run: |
         sudo apt-get update
-        sudo apt-get install -y ${{ inputs.apt_packages }}
-      shell: bash
+        sudo apt-get install -y ${{ inputs.apt-packages }}
 
     - name: Install NPM Packages
-      if: ${{ inputs.npm_packages }}
-      run: |
-        npm install -g ${{ inputs.npm_packages }}
-      shell: bash
+      if: ${{ inputs.npm-packages }}
+      run: npm install -g ${{ inputs.npm-packages }}
 
-    - name: Install Python Requirements
-      if: ${{ inputs.requirements_file }}
+    - name: Install Dependencies
+      if: ${{ inputs.dependency-files }}
       run: |
-        pip install -r ${{ inputs.requirements_file }}
-      shell: bash
-    
-    - name: Install Test Requirements
-      if: ${{ inputs.test_requirements_file }}
-      run: |
-        pip install -r ${{ inputs.test_requirements_file }}
-      shell: bash
-          
-    - name: Install from setup.cfg
-      if: ${{ inputs.use-setup-cfg == 'true' }}
-      run: |
-        if [ "${{ github.repository }}" == "i2mint/isee" ]; then
-          echo "Installing isee from source"
-          python setup.py sdist
-          pip install $(find dist/ -iname isee-*.tar.gz)
-        else
-          echo "Installing isee from pip"
-          pip -q install isee
-        fi
-        isee install-requires
-        isee tests-require
-      shell: bash
+        IFS=',' read -ra paths <<< "$dependency-files"
+        for path in "${paths[@]}"
+        do
+          isee_installed=false
+          if [[ $path == *.txt ]]; then
+            pip install -r $path
+          elif [[ $path == *.cfg ]]; then
+            if [ "$isee_installed" == "false" ]; then
+              if [ "${{ github.repository }}" == "i2mint/isee" ]; then
+                echo "Installing isee from source"
+                python setup.py sdist
+                pip install $(find dist/ -iname isee-*.tar.gz)
+              else
+                echo "Installing isee from pip"
+                pip -q install isee
+              fi
+              isee_installed=true
+            fi
+            isee install-requires
+            isee tests-require
+          fi
+        done

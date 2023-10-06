@@ -5,7 +5,7 @@ inputs:
     description: "Python version"
     required: true
     default: "3.11"
-  python_packages:
+  pypi-packages:
     description: "Python packages"
     required: false
   CI_COMMIT_BRANCH: 
@@ -74,17 +74,17 @@ inputs:
   PROJECT_NAME:
     description: Project name
     required: false
-  apt_packages:
-    description: apt_packages
+  apt-packages:
+    description: apt-packages
     required: false
-  npm_packages:
-    description: npm_packages
+  npm-packages:
+    description: npm-packages
     required: false
-  requirements_file:
-    description: requirements_file path
+  requirements-file:
+    description: requirements-file path
     required: false
-  test_requirements_file:
-    description: test_requirements_file path
+  test-requirements-file:
+    description: test-requirements-file path
     required: false
   RUN_SERVER_FILE_NAME:
     description: file name to run on host
@@ -103,11 +103,11 @@ runs:
     - name: Install dependencies
       uses:  i2mint/isee/actions/install-packages@master
       with:
-        python_packages: ${{ inputs.python_packages }}
-        apt_packages: ${{ inputs.apt_packages }}
-        npm_packages: ${{ inputs.npm_packages }}
-        requirements_file: ${{ inputs.requirements_file }}
-        test_requirements_file: ${{ inputs.test_requirements_file }}
+        pypi-packages: ${{ inputs.pypi-packages }}
+        apt-packages: ${{ inputs.apt-packages }}
+        npm-packages: ${{ inputs.npm-packages }}
+        requirements-file: ${{ inputs.requirements-file }}
+        test-requirements-file: ${{ inputs.test-requirements-file }}
 
     - name: Format source code
       run: black  --line-length=88 .

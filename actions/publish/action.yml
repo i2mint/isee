@@ -22,7 +22,7 @@ inputs:
     description: "Git User Name"
     required: false
     defalut: "github-actions[bot]"
-  python_packages:
+  pypi-packages:
     description: "Python packages"
     required: false
     default: ''
@@ -54,7 +54,7 @@ runs:
     - name: Install dependencies
       uses: i2mint/isee/actions/install-packages@master
       with:
-        python_packages: 'axblack twine wads ${{ inputs.python_packages }}'
+        pypi-packages: 'axblack twine wads ${{ inputs.pypi-packages }}'
         use-setup-cfg: 'true'
 
     - name: Format source code
