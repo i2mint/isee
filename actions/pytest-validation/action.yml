@@ -24,9 +24,9 @@ runs:
     - name: Validate Source Code
       shell: bash
       run: |
+        options="${{ inputs.pytest-args }}"
         if [ -n "${{ inputs.paths-to-ignore }}" ]; then
           IFS=',' read -ra paths <<< "$paths-to-ignore"
-          options="${{ inputs.pytest-args }}"
           for path in "${paths[@]}"
           do
               options+=" --ignore=./$path"
@@ -35,4 +35,5 @@ runs:
         if [ "${{ inputs.skip-doctests }}" == "true" ]; then
           options+=" --doctest-modules"
         fi
+        echo $options
         pytest $options .
