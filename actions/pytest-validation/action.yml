@@ -32,7 +32,7 @@ runs:
               options+=" --ignore=./$path"
           done
         fi
-        if [ "${{ inputs.skip-doctests }}" == "true" ]; then
+        if [ "${{ inputs.skip-doctests }}" != "true" ]; then
           options+=" --doctest-modules"
         fi
         echo $options
