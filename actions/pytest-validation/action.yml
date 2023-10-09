@@ -1,6 +1,10 @@
 name: "Pytest Validation"
 description: "Validate source code running pytest"
 inputs:
+  root-dir:
+    description: "Root directory to validate. Defaults to the current directory."
+    required: false
+    default: "."
   paths-to-ignore:
     description: "Folders and or files to ignore. Provide a comma separated list of 
       paths from the current directory. Any file under these paths will be ignored. 
@@ -29,11 +33,11 @@ runs:
           IFS=',' read -ra paths <<< "${{ inputs.paths-to-ignore }}"
           for path in "${paths[@]}"
           do
-              options+=" --ignore=./$path"
+              options+=" --ignore=${{ inputs.root-dir }}/$path"
           done
         fi
         if [ "${{ inputs.skip-doctests }}" != "true" ]; then
           options+=" --doctest-modules"
         fi
         echo $options
-        pytest $options .
+        pytest $options ${{ inputs.root-dir }}

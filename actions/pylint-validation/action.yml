@@ -1,6 +1,10 @@
 name: "Pylint Validation"
 description: "Validate source code running pylint"
 inputs:
+  root-dir:
+    description: "Root directory to validate. Defaults to the current directory."
+    required: false
+    default: "."
   enable:
     description: "Pylint features to enable. Provide a comma separated list of strings. 
       Example: 'C0114,C0115,C0116'. If not provided, all features are enabled.
@@ -32,4 +36,4 @@ runs:
         if [ -n "${{ inputs.enable }}" ]; then
           enable="--disable=all --enable=${{ inputs.enable }}"
         fi
-        pylint . $ignore $enable ${{ inputs.extra-args }} | mk_pylint_report
+        pylint ${{ inputs.root-dir }} $ignore $enable ${{ inputs.extra-args }} | mk_pylint_report
