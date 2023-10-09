@@ -1,6 +1,6 @@
 name: "Bump verison number"
-description: "Bump the version number in setup.cfg and tag the repository with the 
-  new version number (without pushing)"
+description: "Bump the version number in setup.cfg and save it to the environment 
+  variable VERSION"
 runs:
   using: 'composite'
   steps:
@@ -12,5 +12,5 @@ runs:
       shell: bash
       run: |
         export VERSION=$(isee gen-semver)
+        echo "VERSION=$VERSION" >> $GITHUB_ENV
         isee update-setup-cfg
-        git tag $VERSION

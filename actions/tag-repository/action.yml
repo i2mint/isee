@@ -1,0 +1,16 @@
+name: "Tag Repository"
+description: "Tag the current repository"
+inputs:
+  tag:
+    description: "Tag to apply to the repository"
+    required: true
+runs:
+  using: 'composite'
+  steps:
+    - name: Install Dependencies
+      uses: i2mint/isee/actions/install-packages@master
+      with:
+        pypi-packages: 'isee'
+    - name: Tag Repository
+      shell: bash
+      run: isee tag-repo ${{ inputs.tag }}
