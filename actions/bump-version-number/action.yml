@@ -1,0 +1,16 @@
+name: "Bump verison number"
+description: "Bump the version number in setup.cfg and tag the repository with the 
+  new version number (without pushing)"
+runs:
+  using: 'composite'
+  steps:
+    - name: Install Dependencies
+      uses: i2mint/isee/actions/install-packages@master
+      with:
+        pip-packages: 'isee'
+    - name: Update version number
+      shell: bash
+      run: |
+        export VERSION=$(isee gen-semver)
+        isee update-setup-cfg
+        git tag $VERSION

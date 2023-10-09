@@ -1,0 +1,22 @@
+name: "Package"
+description: "Package a python project"
+inputs:
+  distributions:
+    description: "List of distributions to build. Provide a comma separated list of 
+      distributions. Valid values are sdist, bdist_wheel, bdist_egg, bdist_dumb, 
+      bdist_rpm, bdist_wininst, and bdist_msi."
+    required: false
+    default: "sdist,bdist_wheel"
+runs:
+  using: 'composite'
+  steps:
+    - name: "Run setup.py"
+      shell: bash
+      run: |
+        distributions=""
+        IFS=',' read -ra paths <<< "${{ inputs.distributions }}"
+          for path in "${paths[@]}"
+          do
+              distributions+=" $path"
+          done
+        python setup.py $distributions
