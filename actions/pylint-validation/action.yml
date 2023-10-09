@@ -12,6 +12,9 @@ inputs:
       strings. Any file that contains any of these strings in its path will be ignored. 
       Example: 'tests,docs,setup.py'"
     required: false
+  extra-args:
+    description: "Additional arguments to pass to pylint"
+    required: false
 runs:
   using: 'composite'
   steps:
@@ -29,4 +32,4 @@ runs:
         if [ -n "${{ inputs.enable }}" ]; then
           enable="--disable=all --enable=${{ inputs.enable }}"
         fi
-        pylint . $ignore $enable | mk_pylint_report
+        pylint . $ignore $enable ${{ inputs.extra-args }} | mk_pylint_report

@@ -1,0 +1,12 @@
+name: "Generate Documentation"
+description: "Generate documentation using Epythet"
+runs:
+  using: 'composite'
+  steps:
+    - name: Install Dependencies
+      uses: i2mint/isee/actions/install-packages@master
+      with:
+        pip-packages: 'isee'
+    - name: Generate Documentation
+      shell: bash
+      run: isee generate-documentation
