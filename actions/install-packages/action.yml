@@ -47,7 +47,7 @@ runs:
       if: ${{ inputs.dependency-files }}
       shell: bash
       run: |
-        IFS=',' read -ra paths <<< "$dependency-files"
+        IFS=',' read -ra paths <<< "${{ inputs.dependency-files }}"
         for path in "${paths[@]}"
         do
           isee_installed=false
