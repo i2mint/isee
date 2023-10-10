@@ -8,6 +8,31 @@ def git(*args):
 
 
 def get_env_var(key):
+    '''
+    Get the value of an environment variable.
+    If the variable is not defined or is empty, raise a RuntimeError.
+
+    :param key: The name of the environment variable.
+    :return: The value of the environment variable.
+
+    :raise RuntimeError: If the environment variable is not defined or is empty.
+
+    >>> import os
+    >>> os.environ['TEST'] = 'test'
+    >>> get_env_var('TEST')
+    'test'
+
+    >>> get_env_var('TEST2')
+    Traceback (most recent call last):
+    ...
+    RuntimeError: TEST2 is not defined or is empty!
+
+    >>> os.environ['TEST3'] = ''
+    >>> get_env_var('TEST3')
+    Traceback (most recent call last):
+    ...
+    RuntimeError: TEST3 is not defined or is empty!
+    '''
     value = os.getenv(key)
     if not value:
         raise RuntimeError(f'{key} is not defined or is empty!')
