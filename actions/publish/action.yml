@@ -14,8 +14,9 @@ inputs:
     default: "./dist/*"
   twine-args:
     description: "Additional arguments to pass to twine. Defaults to 
-      '--non-interactive --skip-existing --disable-progress-bar'". See 
-      https://twine.readthedocs.io/en/latest/#twine-upload-command for more information.
+      '--non-interactive --skip-existing --disable-progress-bar'. See 
+      https://twine.readthedocs.io/en/latest/#twine-upload-command for more 
+      information.""
     required: false
     default: "--non-interactive  --skip-existing --disable-progress-bar"
   publish-documentation:
