@@ -1,5 +1,5 @@
 name: "Publish"
-description: "Publish package to Pypi and documentation to Github Pages (optional)"
+description: "Publish package to Pypi"
 inputs:
   pypi-username:
     description: "Pypi account username"
@@ -19,25 +19,14 @@ inputs:
       information."
     required: false
     default: "--non-interactive  --skip-existing --disable-progress-bar"
-  publish-documentation:
-    description: "Publish documentation to github pages"
-    required: false
-  documentation-path:
-    description: "Path to parent directory of the `docs` folder to publish. Defaults to 
-      the current directory."
-    required: false
-    default: "."
 runs:
   using: 'composite'
   steps:
     - name: Install Dependencies
       uses: i2mint/isee/actions/install-packages@master
       with:
-        pypi-packages: 'twine epythet'
+        pypi-packages: 'twine'
     - name: Publish to Pypi
       shell: bash
       run: |
         twine upload ${{ inputs.package-path }} -u ${{ inputs.pypi-username }} -p ${{ inputs.pypi-password }} ${{ inputs.twine-args }}
-        if [ "${{ inputs.publish-documentation }}" == "true" ]; then
-          epythet make ${{ inputs.documentation-path }} github
-        fi

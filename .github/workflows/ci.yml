@@ -38,7 +38,7 @@ jobs:
           root-dir: ${{ env.PROJECT_NAME }}
 
   publish:
-    name: Publish
+    name: Publish Package
     if: "!contains(github.event.head_commit.message, '[skip ci]') && github.ref == 'refs/heads/master'"
     needs: validation
     runs-on: ubuntu-latest
@@ -74,9 +74,6 @@ jobs:
       - name: Update Version Number
         uses: i2mint/isee/actions/bump-version-number@master
 
-      # - name: Generate Documentation
-      #   uses: i2mint/isee/actions/generate-documentation@master
-
       - name: Package
         uses: i2mint/isee/actions/package@master
 
@@ -85,7 +82,6 @@ jobs:
         with:
           pypi-username: ${{ secrets.PYPI_USERNAME }}
           pypi-password: ${{ secrets.PYPI_PASSWORD }}
-          # publish-documentation: true
 
       - name: Check In
         uses: i2mint/isee/actions/check-in@master
