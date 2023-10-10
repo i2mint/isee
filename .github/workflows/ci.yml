@@ -3,81 +3,106 @@ on: [push, pull_request]
 env:
   PROJECT_NAME: isee
 jobs:
-  # validation:
-  #   name: Validation
-  #   if: "!contains(github.event.head_commit.message, '[skip ci]')"
-  #   runs-on: ubuntu-latest
-  #   strategy:
-  #     matrix:
-  #       python-version: [3.8]
-  #   steps:
-  #     - uses: i2mint/isee/actions/validation@master
-  #       with:
-  #         PROJECT_NAME: ${{ env.PROJECT_NAME }}
-  #         python-version: ${{ matrix.python-version }}
-  #         pytest-enable: false
-  #         use-setup-cfg: true
+  validation:
+    name: Validation
+    if: "!contains(github.event.head_commit.message, '[skip ci]')"
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.8]
+    steps:
+      - uses: actions/checkout@v3
 
-  # publish:
-  #   name: Publish
-  #   if: "!contains(github.event.head_commit.message, '[skip ci]') && github.ref == 'refs/heads/master'"
-  #   needs: validation
-  #   runs-on: ubuntu-latest
-  #   strategy:
-  #     matrix:
-  #       python-version: [3.8]
-  #   steps:
-  #     - uses: i2mint/isee/actions/publish@master
-  #       with:
-  #         PROJECT_NAME: ${{ env.PROJECT_NAME }}
-  #         python-version: ${{ matrix.python-version }}
-  #         PYPI_USERNAME: ${{ secrets.PYPI_USERNAME }}
-  #         PYPI_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
 
-  # github-pages:
-  #   name: Publish GitHub Pages
-  #   needs: publish
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: i2mint/epythet/actions/publish-github-pages@master
-  #       with:
-  #         github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Install Dependencies
+        uses: i2mint/isee/actions/install-packages@master
+        with:
+          dependency-files: setup.cfg
 
-    test:
-      name: Test
-      runs-on: ubuntu-latest
-      strategy:
-        matrix:
-          python-version: [3.8]
-      steps:
-        - uses: actions/checkout@v3
+      - name: Format Source Code
+        uses: i2mint/isee/actions/format-source-code@master
 
-        - uses: actions/setup-python@v2
-          with:
-            python-version: ${{ matrix.python-version }}
+      # - name: Pylint Validation
+      #   uses: i2mint/isee/actions/pylint-validation@master
+      #   with:
+      #     root-dir: ${{ env.PROJECT_NAME }}
+      #     enable: C0114,E0401
 
-        - name: Install dependencies
-          run: |
-            python -m pip install --upgrade pip
-            pip install axblack wads isee
-            isee install-requires
+      - name: Pytest Validation
+        uses: i2mint/isee/actions/pytest-validation@master
+        with:
+          root-dir: ${{ env.PROJECT_NAME }}
 
-        - name: Format source code
-          run: black  --line-length=88 .
+  publish:
+    name: Publish
+    if: "!contains(github.event.head_commit.message, '[skip ci]') && github.ref == 'refs/heads/master'"
+    needs: validation
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.8]
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
 
-        - name: Update version number
-          run: |
-            export VERSION=$(isee gen-semver)
-            echo "VERSION=$VERSION" >> $GITHUB_ENV
-            isee update-setup-cfg
+      - name: Configure SSH
+        uses: webfactory/ssh-agent@v0.7.0
+        with:
+            ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-        - name: Package
-          run: python setup.py sdist
+      - name: Configure Git User
+        uses: i2mint/isee/actions/configure-git-user@master
 
-        - name: Publish
-          run: |
-            twine upload dist/${{ inputs.PROJECT_NAME }}-$VERSION.tar.gz -u ${{ inputs.PYPI_USERNAME }} -p ${{ inputs.PYPI_PASSWORD }} --non-interactive  --skip-existing --disable-progress-bar
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
 
-        - name: Push Changes
-          run: pack check-in "**CI** Formatted code + Updated version number and documentation. [skip ci]" --auto-choose-default-action --bypass-docstring-validation --bypass-tests --bypass-code-formatting --verbose
+      - name: Install Dependencies
+        uses: i2mint/isee/actions/install-packages@master
+        with:
+          dependency-files: setup.cfg
+
+      - name: Format Source Code
+        uses: i2mint/isee/actions/format-source-code@master
+
+      - name: Update Version Number
+        uses: i2mint/isee/actions/bump-version-number@master
+
+      # - name: Generate Documentation
+      #   uses: i2mint/isee/actions/generate-documentation@master
+
+      - name: Package
+        uses: i2mint/isee/actions/package@master
+
+      - name: Publish
+        uses: i2mint/isee/actions/publish@master
+        with:
+          pypi-username: ${{ secrets.PYPI_USERNAME }}
+          pypi-password: ${{ secrets.PYPI_PASSWORD }}
+          # publish-documentation: true
+
+      - name: Check In
+        uses: i2mint/isee/actions/check-in@master
+        with:
+          commit-message: "**CI** Formatted code + Updated version number and documentation. [skip ci]"
+
+      - name: Tag Repository With New Version Number
+        uses: i2mint/isee/actions/tag-repository@master
+        with:
+          tag: $VERSION
+
+  github-pages:
+    name: Publish GitHub Pages
+    needs: publish
+    runs-on: ubuntu-latest
+    steps:
+      - uses: i2mint/epythet/actions/publish-github-pages@master
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           
