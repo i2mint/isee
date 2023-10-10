@@ -16,7 +16,7 @@ inputs:
     description: "Additional arguments to pass to twine. Defaults to 
       '--non-interactive --skip-existing --disable-progress-bar'. See 
       https://twine.readthedocs.io/en/latest/#twine-upload-command for more 
-      information.""
+      information."
     required: false
     default: "--non-interactive  --skip-existing --disable-progress-bar"
   publish-documentation:
