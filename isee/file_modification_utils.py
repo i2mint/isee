@@ -47,11 +47,11 @@ def _get_setup_filepath(filename, project_dir):
     return os.path.join(project_dir, filename)
 
 
-def _update_file(path, pattern, replace):
+def _update_file(path, pattern, replace, content_must_change=False):
     with open(path, 'r+') as file:
         content = file.read()
         content_new = re.sub(pattern, replace, content, flags=re.M)
-        if content_new == content:
+        if content_new == content and content_must_change:
             raise RuntimeError(
                 f'File content unchanged. Failed to update file "{path}"!'
             )
