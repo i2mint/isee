@@ -1,86 +1,42 @@
 name: "Publish"
-description: "Publish"
+description: "Publish package to Pypi and documentation to Github Pages (optional)"
 inputs:
-  python-version:
-    description: "Python version"
+  pypi-username:
+    description: "Pypi account username"
     required: true
-    default: "3.11"
-  PROJECT_NAME:
-    description: Project name
+  pypi-password:
+    description: "Pypi account password"
+    required: true
+  package-path:
+    description: "Path to the package(s) to publish. By default, all packages in the 
+      dist folder are published."
     required: false
-  PYPI_USERNAME: 
-    description: "PYPI USERNAME"
+    default: "./dist/*"
+  twine-args:
+    description: "Additional arguments to pass to twine. Defaults to 
+      '--non-interactive --skip-existing --disable-progress-bar'". See 
+      https://twine.readthedocs.io/en/latest/#twine-upload-command for more information.
     required: false
-  PYPI_PASSWORD:
-    description: "PYPI PASSWORD"
+    default: "--non-interactive  --skip-existing --disable-progress-bar"
+  publish-documentation:
+    description: "Publish documentation to github pages"
     required: false
-  GIT_USER_EMAIL:
-    description: "Git User Email"
+  documentation-path:
+    description: "Path to parent directory of the `docs` folder to publish. Defaults to 
+      the current directory."
     required: false
-    default: "github-actions[bot]@users.noreply.github.com"
-  GIT_USER_NAME:
-    description: "Git User Name"
-    required: false
-    defalut: "github-actions[bot]"
-  pypi-packages:
-    description: "Python packages"
-    required: false
-    default: ''
-  checkout:
-    description: "Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it"
-    required: false
-    default: "true"
-
+    default: "."
 runs:
-  using: composite
+  using: 'composite'
   steps:
-    - name: Checkout
-      if: ${{ inputs.checkout  == 'true'}}
-      uses: actions/checkout@v2
-      with:
-        fetch-depth: 0
-
-    - name: Configure Git
-      run: |
-        git config --global user.email "${{ inputs.GIT_USER_EMAIL }}"
-        git config --global user.name "${{ inputs.GIT_USER_NAME }}"
-      shell: bash
-
-    - name: Set up Python ${{ inputs.python-version }}
-      uses: actions/setup-python@v2
-      with:
-        python-version: ${{ inputs.python-version }}
-
-    - name: Install dependencies
+    - name: Install Dependencies
       uses: i2mint/isee/actions/install-packages@master
       with:
-        pypi-packages: 'axblack twine wads ${{ inputs.pypi-packages }}'
-        use-setup-cfg: 'true'
-
-    - name: Format source code
-      run: black  --line-length=88 .
+        pypi-packages: 'twine epythet'
+    - name: Publish to Pypi
       shell: bash
-
-    - name: Update version number
       run: |
-        export VERSION=$(isee gen-semver)
-        echo "VERSION=$VERSION" >> $GITHUB_ENV
-        isee update-setup-cfg
-      shell: bash
-
-    - name: Package
-      run: python setup.py sdist
-      shell: bash
-
-    - name: Publish
-      run: |
-        twine upload dist/${{ inputs.PROJECT_NAME }}-$VERSION.tar.gz -u ${{ inputs.PYPI_USERNAME }} -p ${{ inputs.PYPI_PASSWORD }} --non-interactive  --skip-existing --disable-progress-bar
-      shell: bash
-
-    - name: Push Changes
-      run: pack check-in "**CI** Formatted code + Updated version number and documentation. [skip ci]" --auto-choose-default-action --bypass-docstring-validation --bypass-tests --bypass-code-formatting --verbose
-      shell: bash
-
-    - name: Tag Repository
-      run: isee tag-repo $VERSION
-      shell: bash
+        twine upload ${{ inputs.package-path }} -u ${{ inputs.pypi-username }} -p ${{ inputs.pypi-password }} ${{ inputs.twine-args }}
+        if [ "${{ inputs.publish-documentation }}" == "true" ]; then
+          epythet make ${{ inputs.documentation-path }} github
+        fi
