@@ -8,7 +8,7 @@ def git(*args):
 
 
 def get_env_var(key):
-    '''
+    """
     Get the value of an environment variable.
     If the variable is not defined or is empty, raise a RuntimeError.
 
@@ -32,7 +32,7 @@ def get_env_var(key):
     Traceback (most recent call last):
     ...
     RuntimeError: TEST3 is not defined or is empty!
-    '''
+    """
     value = os.getenv(key)
     if not value:
         raise RuntimeError(f'{key} is not defined or is empty!')
