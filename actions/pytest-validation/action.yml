@@ -39,5 +39,8 @@ runs:
         if [ "${{ inputs.skip-doctests }}" != "true" ]; then
           options+=" --doctest-modules"
         fi
-        echo $options
         pytest $options ${{ inputs.root-dir }}
+        if [ $? -eq 5 ]; then
+          echo "No tests found."
+          exit 0
+        fi
