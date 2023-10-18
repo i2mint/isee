@@ -63,8 +63,6 @@ jobs:
 
       - name: Package
         uses: i2mint/isee/actions/package@master
-        with:
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
       - name: Publish
         uses: i2mint/isee/actions/publish@master
