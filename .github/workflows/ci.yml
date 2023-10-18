@@ -50,23 +50,10 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Configure SSH
-        uses: webfactory/ssh-agent@v0.7.0
-        with:
-            ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-
-      - name: Configure Git User
-        uses: i2mint/isee/actions/configure-git-user@master
-
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
-
-      - name: Install Dependencies
-        uses: i2mint/isee/actions/install-packages@master
-        with:
-          dependency-files: setup.cfg
 
       - name: Format Source Code
         uses: i2mint/isee/actions/format-source-code@master
@@ -76,6 +63,8 @@ jobs:
 
       - name: Package
         uses: i2mint/isee/actions/package@master
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
       - name: Publish
         uses: i2mint/isee/actions/publish@master
@@ -87,8 +76,9 @@ jobs:
         uses: i2mint/isee/actions/check-in@master
         with:
           commit-message: "**CI** Formatted code + Updated version number and documentation. [skip ci]"
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-      - name: Tag Repository With New Version Number
+      - name: Tag Repository
         uses: i2mint/isee/actions/tag-repository@master
         with:
           tag: $VERSION
