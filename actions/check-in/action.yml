@@ -8,13 +8,37 @@ inputs:
     description: "Arguments to pass to 'pack check-in"
     required: false
     default: "--auto-choose-default-action --bypass-docstring-validation --bypass-tests --bypass-code-formatting --verbose"
+  ssh-private-key:
+    description: 'SSH private key to push to remote.'
+    required: true
+  git-email:
+    description: "Git User Email"
+    required: false
+    default: "github-actions[bot]@users.noreply.github.com"
+  git-username:
+    description: "Git User Name"
+    required: false
+    default: "github-actions[bot]"
+
 runs:
   using: composite
   steps:
+    - name: Configure SSH
+      uses: webfactory/ssh-agent@v0.7.0
+      with:
+          ssh-private-key: ${{ inputs.ssh-private-key }}
+
+    - name: Configure Git
+      shell: bash
+      run: |
+        git config --global user.email "${{ inputs.git-email }}}}"
+        git config --global user.name "${{ inputs.git-username }}}}"
+
     - name: Install Dependencies
       uses: i2mint/isee/actions/install-packages@master
       with:
         pypi-packages: 'wads'
+
     - name: Check in
       shell: bash
       run: pack check-in "${{ inputs.commit-message }}" ${{ inputs.args }}
