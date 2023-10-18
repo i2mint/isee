@@ -6,7 +6,7 @@ runs:
     - name: Install Dependencies
       uses: i2mint/isee/actions/install-packages@master
       with:
-        pip-packages: 'isee'
+        pypi-packages: 'isee'
     - name: Generate Documentation
       shell: bash
       run: isee generate-documentation
