@@ -40,7 +40,7 @@ runs:
         if [[ "${{ inputs.pypi-packages }}" == "isee" && "${{ github.repository }}" == "i2mint/isee" ]]; then
           echo "Installing isee from source"
           python setup.py sdist
-          pip install $(find dist/ -iname isee-*.tar.gz)
+          pip install $(ls -t dist/isee-*.tar.gz 2>/dev/null | head -n 1)
           isee_installed=true
         else
           python -m pip install --upgrade pip wheel
@@ -75,7 +75,7 @@ runs:
               if [ "${{ github.repository }}" == "i2mint/isee" ]; then
                 echo "Installing isee from source"
                 python setup.py sdist
-                pip install $(find dist/ -iname isee-*.tar.gz)
+                pip install $(ls -t dist/isee-*.tar.gz 2>/dev/null | head -n 1)
               else
                 echo "Installing isee from pip"
                 pip -q install isee
