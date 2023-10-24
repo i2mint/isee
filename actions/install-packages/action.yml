@@ -37,7 +37,7 @@ runs:
       if: ${{ inputs.pypi-packages }}
       shell: bash
       run: |
-        if [ "${{ inputs.pypi-packages }}" == "isee" && "${{ github.repository }}" == "i2mint/isee" ]; then
+        if [[ "${{ inputs.pypi-packages }}" == "isee" && "${{ github.repository }}" == "i2mint/isee" ]]; then
           echo "Installing isee from source"
           python setup.py sdist
           pip install $(find dist/ -iname isee-*.tar.gz)
