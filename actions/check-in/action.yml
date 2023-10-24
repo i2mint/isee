@@ -37,7 +37,7 @@ runs:
     - name: Install Dependencies
       uses: i2mint/isee/actions/install-packages@master
       with:
-        pypi-packages: 'wads'
+        pypi-packages: 'wads==0.1.3'
 
     - name: Check in
       shell: bash
