@@ -21,12 +21,12 @@ def install_packages_from_options(config_options, key):
         print(f'No {key} packages to install')
 
 
-def install_requires(project_dir=None):
+def install_requires(*, project_dir=None):
     config = read_setup_config(project_dir)
     install_packages_from_options(config['options'], 'install_requires')
 
 
-def tests_require(project_dir=None):
+def tests_require(*, project_dir=None):
     """Install from tests_require in setup.cfg options"""
     config = read_setup_config(project_dir)
     install_packages_from_options(config['options'], 'tests_require')

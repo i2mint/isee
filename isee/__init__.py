@@ -24,7 +24,6 @@ argh_kwargs = {
         update_setup_py,
         gen_semver,
         generate_documentation,
-        check_in,
         tag_repo,
         install_requires,
         tests_require,

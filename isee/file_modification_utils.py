@@ -30,13 +30,13 @@ def update_manifest(manifest_path: str):
     _update_file(manifest_path, pattern, rf'\g<1>{chart_version}')
 
 
-def update_setup_cfg(project_dir=None, version=None):
+def update_setup_cfg(*, project_dir=None, version=None):
     path = _get_setup_filepath('setup.cfg', project_dir)
     version = version or get_env_var('VERSION')
     _update_file(path, r'version\s=\s.+', f'version = {version}')
 
 
-def update_setup_py(project_dir=None, version=None):
+def update_setup_py(*, project_dir=None, version=None):
     path = _get_setup_filepath('setup.py', project_dir)
     version = version or get_env_var('VERSION')
     _update_file(path, r"version='.+',", f"version='{version}',")

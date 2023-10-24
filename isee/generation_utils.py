@@ -12,7 +12,7 @@ DFLT_NEW_VERSION = '0.1.0'
 
 
 def gen_semver(
-    dir_path: str = None, version_patch_prefix: str = '',
+    *, dir_path: str = None, version_patch_prefix: str = '',
 ):
     def get_version():
         def bump(latest):
@@ -52,7 +52,7 @@ def gen_semver(
     print(version)
 
 
-def generate_documentation(project_dir=None):
+def generate_documentation(*, project_dir=None):
     if not project_dir:
         project_dir = get_env_var('GITHUB_WORKSPACE')
     if not os.path.exists(project_dir + '/docsrc'):
