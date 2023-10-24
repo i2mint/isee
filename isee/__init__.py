@@ -10,7 +10,7 @@ from isee.generation_utils import (
     gen_semver,
     generate_documentation,
 )
-from isee.git_utils import check_in, tag_repo
+from isee.git_utils import tag_repo
 from isee.pip_utils import install_requires, tests_require
 from isee.pylint_log_synopsis import print_report_followed_by_log
 
