@@ -7,7 +7,7 @@ inputs:
   args:
     description: "Arguments to pass to 'pack check-in"
     required: false
-    default: --auto-choose-default-action --bypass-docstring-validation --bypass-tests --bypass-code-formatting --verbose
+    default: "--auto-choose-default-action --bypass-docstring-validation --bypass-tests --bypass-code-formatting --verbose"
   ssh-private-key:
     description: 'SSH private key to push to remote.'
     required: true
@@ -41,4 +41,4 @@ runs:
 
     - name: Check in
       shell: bash
-      run: pack check-in "${{ inputs.commit-message }}" ${{ inputs.args }} 
+      run: pack check-in "${{ inputs.commit-message }}" --auto-choose-default-action --bypass-docstring-validation --bypass-tests --bypass-code-formatting --verbose
