@@ -31,8 +31,8 @@ runs:
     - name: Configure Git
       shell: bash
       run: |
-        git config --global user.email "${{ inputs.git-email }}}}"
-        git config --global user.name "${{ inputs.git-username }}}}"
+        git config --global user.email "${{ inputs.git-email }}"
+        git config --global user.name "${{ inputs.git-username }}"
 
     - name: Install Dependencies
       uses: i2mint/isee/actions/install-packages@master
@@ -41,4 +41,4 @@ runs:
 
     - name: Check in
       shell: bash
-      run: pack check-in "${{ inputs.commit-message }}" ${{ inputs.args }}
+      run: pack check-in "${{ inputs.commit-message }}" ${{ inputs.args }} 
