@@ -37,8 +37,15 @@ runs:
       if: ${{ inputs.pypi-packages }}
       shell: bash
       run: |
-        python -m pip install --upgrade pip wheel
-        pip install ${{ inputs.pypi-packages }}
+        if [ "${{ inputs.pypi-packages }}" == "isee" && "${{ github.repository }}" == "i2mint/isee" ]; then
+          echo "Installing isee from source"
+          python setup.py sdist
+          pip install $(find dist/ -iname isee-*.tar.gz)
+          isee_installed=true
+        else
+          python -m pip install --upgrade pip wheel
+          pip install ${{ inputs.pypi-packages }}
+        fi
 
     - name: Install APT Packages
       if: ${{ inputs.apt-packages }}
