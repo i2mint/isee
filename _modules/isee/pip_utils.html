@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>isee.pip_utils &mdash; isee 0.1.55 documentation</title><link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <title>isee.pip_utils &mdash; isee 0.2.0 documentation</title><link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/copybutton.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
@@ -101,12 +101,12 @@
         <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;No </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s1"> packages to install&#39;</span><span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">install_requires</span><span class="p">(</span><span class="n">project_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">install_requires</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">project_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="n">config</span> <span class="o">=</span> <span class="n">read_setup_config</span><span class="p">(</span><span class="n">project_dir</span><span class="p">)</span>
     <span class="n">install_packages_from_options</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;options&#39;</span><span class="p">],</span> <span class="s1">&#39;install_requires&#39;</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="tests_require"><a class="viewcode-back" href="../../module_docs/isee/pip_utils.html#isee.pip_utils.tests_require">[docs]</a><span class="k">def</span> <span class="nf">tests_require</span><span class="p">(</span><span class="n">project_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="tests_require"><a class="viewcode-back" href="../../module_docs/isee/pip_utils.html#isee.pip_utils.tests_require">[docs]</a><span class="k">def</span> <span class="nf">tests_require</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">project_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Install from tests_require in setup.cfg options&quot;&quot;&quot;</span>
     <span class="n">config</span> <span class="o">=</span> <span class="n">read_setup_config</span><span class="p">(</span><span class="n">project_dir</span><span class="p">)</span>
     <span class="n">install_packages_from_options</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;options&#39;</span><span class="p">],</span> <span class="s1">&#39;tests_require&#39;</span><span class="p">)</span></div>
