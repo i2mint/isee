@@ -10,7 +10,6 @@ runs:
     - name: Run LocalStack
       shell: bash
       run: |
-        docker pull localstack/localstack
         localstack start -d
         echo "Waiting for LocalStack startup..."
         localstack wait -t 30 
