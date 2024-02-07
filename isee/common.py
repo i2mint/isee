@@ -4,7 +4,18 @@ import glob
 
 
 def git(*args):
-    return subprocess.check_output(['git'] + list(args)).decode().strip()
+    """
+    Execute a git command and return the output.
+    """
+    try:
+        # Attempt to execute the git command and decode the output
+        return subprocess.check_output(['git'] + list(args)).decode().strip()
+    except subprocess.CalledProcessError as e:
+        # Print the error message and return the output
+        print(f'Error executing git command: {e}')
+        print(f'Standard output: {e.output.decode().strip()}')
+        print(f'Exit code: {e.returncode}')
+        return e.output.decode().strip()
 
 
 def get_env_var(key):
