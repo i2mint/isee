@@ -14,11 +14,11 @@ inputs:
     default: "./dist/*"
   twine-args:
     description: "Additional arguments to pass to twine. Defaults to 
-      '--non-interactive --skip-existing --disable-progress-bar'. See 
+      '--non-interactive --disable-progress-bar --verbose'. See 
       https://twine.readthedocs.io/en/latest/#twine-upload-command for more 
       information."
     required: false
-    default: "--non-interactive  --skip-existing --disable-progress-bar"
+    default: "--non-interactive --disable-progress-bar --verbose"
 runs:
   using: 'composite'
   steps:
@@ -29,4 +29,4 @@ runs:
     - name: Publish to Pypi
       shell: bash
       run: |
-        twine upload ${{ inputs.package-path }} -u ${{ inputs.pypi-username }} -p ${{ inputs.pypi-password }} ${{ inputs.twine-args }} --verbose
+        twine upload ${{ inputs.package-path }} -u ${{ inputs.pypi-username }} -p ${{ inputs.pypi-password }} ${{ inputs.twine-args }}
