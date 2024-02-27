@@ -96,3 +96,25 @@ pack check-in 'Your commit message.'
 # Useful resources
 
 [troubleshooting tests](https://github.com/i2mint/tested/wiki/Troubleshooting-Tests)
+
+# Troubleshooting
+
+## Vesion tag misalignment
+
+Sometimes the twine PYPI publishing may fail with such a message:
+
+```
+WARNING  Skipping PKGNAME-0.1.4-py3-none-any.whl because it appears to already exist 
+WARNING  Skipping PKGNAME-0.1.4.tar.gz because it appears to already exist
+```
+
+This often means that your git tags are misaligned with the `setup.cfg` version. 
+You can see your git tags here: `https://github.com/ORG/REPO/tags`.
+
+To repair, you should make a tag that is aligned with the version in `setup.cfg`, for example, by doing:
+
+```
+git tag 0.1.4
+git push origin 0.1.4
+git push
+```
