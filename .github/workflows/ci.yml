@@ -69,6 +69,7 @@ jobs:
         with:
           pypi-username: ${{ secrets.PYPI_USERNAME }}
           pypi-password: ${{ secrets.PYPI_PASSWORD }}
+          package-path: ./dist/${{ env.PROJECT_NAME }}-$VERSION*
 
       - name: Check In
         uses: i2mint/isee/actions/check-in@master
