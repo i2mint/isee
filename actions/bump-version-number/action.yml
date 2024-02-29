@@ -14,4 +14,3 @@ runs:
         export VERSION=$(isee gen-semver)
         echo "VERSION=$VERSION" >> $GITHUB_ENV
         isee update-setup-cfg
-
