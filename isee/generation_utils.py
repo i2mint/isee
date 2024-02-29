@@ -1,7 +1,6 @@
 import os
 import re
-from distutils.version import LooseVersion
-
+from packaging.version import parse
 import semver
 from epythet.autogen import make_autodocs
 from epythet.setup_docsrc import make_docsrc
@@ -36,7 +35,7 @@ def gen_semver(
                 for x in tags
                 if re.match(pattern, x)
             ],
-            key=LooseVersion,
+            key=parse,
             reverse=True,
         )
         if len(sorted_versions) > 0:
