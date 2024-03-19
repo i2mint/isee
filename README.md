@@ -111,10 +111,10 @@ WARNING  Skipping PKGNAME-0.1.4.tar.gz because it appears to already exist
 This often means that your git tags are misaligned with the `setup.cfg` version. 
 You can see your git tags here: `https://github.com/ORG/REPO/tags`.
 
-To repair, you should make a tag that is aligned with the version in `setup.cfg`, for example, by doing:
+To repair, do this:
 
-```
-git tag 0.1.4
-git push origin 0.1.4
-git push
-```
+* go to the https://pypi.org/project/ project page and note the VERSION number
+* enter a VERSION number ABOVE that one in the version key of `setup.cfg`
+* `git tag VERSION`
+* `git push origin VERSION`
+
