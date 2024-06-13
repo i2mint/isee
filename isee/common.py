@@ -11,15 +11,24 @@ Functions:
 import subprocess
 import os
 import glob
+from wads.util import git as wads_git
 
 
-def git(*args):
+def git(*args, *, work_tree='.', git_dir=None):
     """
     Execute a git command and return the output.
+
+    >>> git('status')  # doctest: +SKIP
+    On branch master
+    Your branch is up to date with 'origin/master'.
+    <BLANKLINE>
+    nothing to commit, working tree clean
+
     """
+
     try:
-        # Attempt to execute the git command and decode the output
-        return subprocess.check_output(['git'] + list(args)).decode().strip()
+        # return subprocess.check_output(['git'] + list(args)).decode().strip()  # OLD
+        return wads_git(' '.join(args), work_tree=work_tree, git_dir=git_dir)
     except subprocess.CalledProcessError as e:
         # Print the error message and return the output
         print(f'Error executing git command: {e}')

@@ -8,21 +8,27 @@ Has two main functions:
 
 import os
 import re
+from functools import partial
 from packaging.version import parse
 import semver
 from epythet.autogen import make_autodocs
 from epythet.setup_docsrc import make_docsrc
 
-from isee.common import get_env_var, git
+from wads.pack import versions_from_different_sources, validate_versions
+from isee.common import get_env_var, git as _git
 
 DFLT_NEW_VERSION = '0.1.0'  # Default version if no tags are found
 
 
-def get_version(version_patch_prefix: str = ''):
+def get_version(*, work_tree='.', version_patch_prefix: str = ''):
     """
     Get the latest version from git tags and determine the new version based on
     the commit message.
     """
+
+    work_tree = os.path.expanduser(os.path.abspath(work_tree))
+
+    git = partial(_git, work_tree=work_tree)
 
     def bump(latest):
         """
@@ -58,23 +64,13 @@ def get_version(version_patch_prefix: str = ''):
         version_parts[2] = f'{version_patch_prefix}{version_parts[2]}'
         return '.'.join(version_parts)
 
-    # Get all tags from the git repository
-    tags = git('tag').split('\n')
-    # Pattern to match versions with the patch prefix
-    pattern = rf'^(\d+.){{2}}{version_patch_prefix}\d+$'
-    # Filter and sort the versions in descending order
-    sorted_versions = sorted(
-        [
-            x.replace(f'{version_patch_prefix}', '')
-            for x in tags
-            if re.match(pattern, x)
-        ],
-        key=parse,
-        reverse=True,
-    )
+    versions = versions_from_different_sources(work_tree)
+    validate_versions(versions)
+    current_version = versions.get('current_pypi')
+
     if len(sorted_versions) > 0:
         # If there are existing versions, bump the latest version
-        new_version = bump(sorted_versions[0])
+        new_version = bump(current_version)
     else:
         # No tags in the repository, use the default version
         new_version = DFLT_NEW_VERSION
@@ -91,16 +87,21 @@ def gen_semver(
     Generate a new semantic version based on git commit messages and tags.
 
     Args:
-    - dir_path (str): The directory path where the git repository is located. If None, uses the current directory.
+    - dir_path (str): The directory path where the git repository is located.
+        If None, uses the current directory.
     - version_patch_prefix (str): A prefix to be added to the patch version.
 
     Returns:
     - None: Prints the new version.
     """
 
-    if dir_path:
-        os.chdir(dir_path)  # Change to the specified directory
-    version = get_version(version_patch_prefix)  # Generate the new version
+    # if dir_path:
+    #     os.chdir(dir_path)  # Change to the specified directory
+    work_tree = dir_path or '.'
+    # Generate the new version:
+    version = get_version(
+        work_tree=work_tree, version_patch_prefix=version_patch_prefix
+    )
     if verbose:
         print(version)  # Print the new version
 
