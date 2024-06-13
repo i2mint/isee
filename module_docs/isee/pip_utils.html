@@ -8,7 +8,7 @@
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
-      <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=eafc0fe6" />
+      <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=fd3f3429" />
 
   
   <!--[if lt IE 9]>
@@ -18,7 +18,7 @@
         <script src="../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
         <script src="../../_static/documentation_options.js?v=71c180b9"></script>
-        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/doctools.js?v=9a2dae69"></script>
         <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../_static/toggleprompt.js?v=d7ede5d2"></script>
         <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -89,6 +89,13 @@
              
   <section id="module-isee.pip_utils">
 <span id="isee-pip-utils"></span><h1>isee.pip_utils<a class="headerlink" href="#module-isee.pip_utils" title="Link to this heading"></a></h1>
+<p>This module provides utilities for working with pip and setup.cfg files.</p>
+<p>Functions:
+- read_setup_config: Read the setup.cfg file in the project directory.
+- install_packages_from_options: Install packages from the options in setup.cfg.
+- install_requires: Install packages from the install_requires option in setup.cfg.
+- tests_require: Install packages from the tests_require option in setup.cfg.
+- build_dependency_wheels: Build dependency wheels for the project.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="isee.pip_utils.tests_require">
 <span class="sig-prename descclassname"><span class="pre">isee.pip_utils.</span></span><span class="sig-name descname"><span class="pre">tests_require</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">project_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/isee/pip_utils.html#tests_require"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#isee.pip_utils.tests_require" title="Link to this definition"></a></dt>

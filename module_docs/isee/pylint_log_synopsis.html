@@ -8,7 +8,7 @@
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
-      <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=eafc0fe6" />
+      <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=fd3f3429" />
 
   
   <!--[if lt IE 9]>
@@ -18,7 +18,7 @@
         <script src="../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
         <script src="../../_static/documentation_options.js?v=71c180b9"></script>
-        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/doctools.js?v=9a2dae69"></script>
         <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../_static/toggleprompt.js?v=d7ede5d2"></script>
         <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -85,6 +85,16 @@
              
   <section id="module-isee.pylint_log_synopsis">
 <span id="isee-pylint-log-synopsis"></span><h1>isee.pylint_log_synopsis<a class="headerlink" href="#module-isee.pylint_log_synopsis" title="Link to this heading"></a></h1>
+<p>This module provides utilities for working with pylint logs.</p>
+<p>Functions:
+- parsed_lines: Parse the pylint log lines.
+- missing_import_module: Get the missing import module from the log message.
+- process_parsed_line: Process the parsed line to get the missing package or module.
+- analyze_log: Analyze the pylint log to get the missing packages and modules.
+- log_analysis_string: Generate a string report of the missing packages and modules.
+- print_log_analysis: Print the string report of the missing packages and modules.
+- print_report_followed_by_log: Print the string report followed by the pylint log.</p>
+<p>Notes (TODO):</p>
 <p>I’d rather have a “here’s what you got to do” synopsis.</p>
 <p>For example, consider the log below versus the following synopsis of it.</p>
 <p>Synopsis:</p>
