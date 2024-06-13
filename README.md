@@ -113,8 +113,11 @@ You can see your git tags here: `https://github.com/ORG/REPO/tags`.
 
 To repair, do this:
 
-* go to the https://pypi.org/project/ project page and note the VERSION number
-* enter a VERSION number ABOVE that one in the version key of `setup.cfg`
-* `git tag VERSION`
-* `git push origin VERSION`
+* go to the https://pypi.org/project/ project page and note the PYPI_VERSION number
+* got to `setup.cfg` and see what version is there, called it SETUP_VERSION
+* make a NEW_VERSION, which is a version number ABOVE the SETUP_VERSION and PYPI_VERSION.
+* edit the `setup.cfg` so it shows NEW_VERSION
+* `git tag NEW_VERSION`
+* `git push origin NEW_VERSION`
 
+Sometimes I need to update the setup version again, and push again.
