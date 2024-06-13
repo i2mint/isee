@@ -102,12 +102,79 @@
 <span class="n">DFLT_NEW_VERSION</span> <span class="o">=</span> <span class="s1">&#39;0.1.0&#39;</span>  <span class="c1"># Default version if no tags are found</span>
 
 
+<div class="viewcode-block" id="get_version">
+<a class="viewcode-back" href="../../module_docs/isee/generation_utils.html#isee.generation_utils.get_version">[docs]</a>
+<span class="k">def</span> <span class="nf">get_version</span><span class="p">(</span><span class="n">version_patch_prefix</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get the latest version from git tags and determine the new version based on</span>
+<span class="sd">    the commit message.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">bump</span><span class="p">(</span><span class="n">latest</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Bump the version based on the commit message.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">        - latest (str): The latest version.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">        - str: The new bumped version.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Get the latest commit message</span>
+        <span class="n">commit_message</span> <span class="o">=</span> <span class="n">git</span><span class="p">(</span><span class="s1">&#39;show-branch&#39;</span><span class="p">,</span> <span class="s1">&#39;--no-name&#39;</span><span class="p">,</span> <span class="s1">&#39;HEAD&#39;</span><span class="p">)</span>
+        <span class="c1"># Check if the commit message contains bump directives</span>
+        <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\[bump major\]&#39;</span><span class="p">,</span> <span class="n">commit_message</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">semver</span><span class="o">.</span><span class="n">bump_major</span><span class="p">(</span><span class="n">latest</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\[bump minor\]&#39;</span><span class="p">,</span> <span class="n">commit_message</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">semver</span><span class="o">.</span><span class="n">bump_minor</span><span class="p">(</span><span class="n">latest</span><span class="p">)</span>
+        <span class="c1"># Default to bumping the patch version</span>
+        <span class="k">return</span> <span class="n">semver</span><span class="o">.</span><span class="n">bump_patch</span><span class="p">(</span><span class="n">latest</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">format_version</span><span class="p">(</span><span class="n">version</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Format the version by adding the patch prefix.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">        - version (str): The version to format.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">        - str: The formatted version.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">version_parts</span> <span class="o">=</span> <span class="n">version</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)</span>
+        <span class="n">version_parts</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">version_patch_prefix</span><span class="si">}{</span><span class="n">version_parts</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="k">return</span> <span class="s1">&#39;.&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">version_parts</span><span class="p">)</span>
+
+    <span class="c1"># Get all tags from the git repository</span>
+    <span class="n">tags</span> <span class="o">=</span> <span class="n">git</span><span class="p">(</span><span class="s1">&#39;tag&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="c1"># Pattern to match versions with the patch prefix</span>
+    <span class="n">pattern</span> <span class="o">=</span> <span class="sa">rf</span><span class="s1">&#39;^(\d+.)</span><span class="se">{{</span><span class="s1">2</span><span class="se">}}</span><span class="si">{</span><span class="n">version_patch_prefix</span><span class="si">}</span><span class="s1">\d+$&#39;</span>
+    <span class="c1"># Filter and sort the versions in descending order</span>
+    <span class="n">sorted_versions</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span>
+        <span class="p">[</span>
+            <span class="n">x</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">version_patch_prefix</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">tags</span>
+            <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+        <span class="p">],</span>
+        <span class="n">key</span><span class="o">=</span><span class="n">parse</span><span class="p">,</span>
+        <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sorted_versions</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="c1"># If there are existing versions, bump the latest version</span>
+        <span class="n">new_version</span> <span class="o">=</span> <span class="n">bump</span><span class="p">(</span><span class="n">sorted_versions</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># No tags in the repository, use the default version</span>
+        <span class="n">new_version</span> <span class="o">=</span> <span class="n">DFLT_NEW_VERSION</span>
+    <span class="k">return</span> <span class="n">format_version</span><span class="p">(</span><span class="n">new_version</span><span class="p">)</span></div>
+
+
+
 <div class="viewcode-block" id="gen_semver">
 <a class="viewcode-back" href="../../module_docs/isee/generation_utils.html#isee.generation_utils.gen_semver">[docs]</a>
 <span class="k">def</span> <span class="nf">gen_semver</span><span class="p">(</span>
     <span class="o">*</span><span class="p">,</span>
     <span class="n">dir_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">version_patch_prefix</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+    <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Generate a new semantic version based on git commit messages and tags.</span>
@@ -120,72 +187,11 @@
 <span class="sd">    - None: Prints the new version.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">get_version</span><span class="p">():</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Get the latest version from git tags and determine the new version based on </span>
-<span class="sd">        the commit message.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="k">def</span> <span class="nf">bump</span><span class="p">(</span><span class="n">latest</span><span class="p">):</span>
-<span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">            Bump the version based on the commit message.</span>
-
-<span class="sd">            Args:</span>
-<span class="sd">            - latest (str): The latest version.</span>
-
-<span class="sd">            Returns:</span>
-<span class="sd">            - str: The new bumped version.</span>
-<span class="sd">            &quot;&quot;&quot;</span>
-            <span class="c1"># Get the latest commit message</span>
-            <span class="n">commit_message</span> <span class="o">=</span> <span class="n">git</span><span class="p">(</span><span class="s1">&#39;show-branch&#39;</span><span class="p">,</span> <span class="s1">&#39;--no-name&#39;</span><span class="p">,</span> <span class="s1">&#39;HEAD&#39;</span><span class="p">)</span>
-            <span class="c1"># Check if the commit message contains bump directives</span>
-            <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\[bump major\]&#39;</span><span class="p">,</span> <span class="n">commit_message</span><span class="p">):</span>
-                <span class="k">return</span> <span class="n">semver</span><span class="o">.</span><span class="n">bump_major</span><span class="p">(</span><span class="n">latest</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\[bump minor\]&#39;</span><span class="p">,</span> <span class="n">commit_message</span><span class="p">):</span>
-                <span class="k">return</span> <span class="n">semver</span><span class="o">.</span><span class="n">bump_minor</span><span class="p">(</span><span class="n">latest</span><span class="p">)</span>
-            <span class="c1"># Default to bumping the patch version</span>
-            <span class="k">return</span> <span class="n">semver</span><span class="o">.</span><span class="n">bump_patch</span><span class="p">(</span><span class="n">latest</span><span class="p">)</span>
-
-        <span class="k">def</span> <span class="nf">format_version</span><span class="p">(</span><span class="n">version</span><span class="p">):</span>
-<span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">            Format the version by adding the patch prefix.</span>
-
-<span class="sd">            Args:</span>
-<span class="sd">            - version (str): The version to format.</span>
-
-<span class="sd">            Returns:</span>
-<span class="sd">            - str: The formatted version.</span>
-<span class="sd">            &quot;&quot;&quot;</span>
-            <span class="n">version_parts</span> <span class="o">=</span> <span class="n">version</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)</span>
-            <span class="n">version_parts</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">version_patch_prefix</span><span class="si">}{</span><span class="n">version_parts</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="si">}</span><span class="s1">&#39;</span>
-            <span class="k">return</span> <span class="s1">&#39;.&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">version_parts</span><span class="p">)</span>
-
-        <span class="c1"># Get all tags from the git repository</span>
-        <span class="n">tags</span> <span class="o">=</span> <span class="n">git</span><span class="p">(</span><span class="s1">&#39;tag&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
-        <span class="c1"># Pattern to match versions with the patch prefix</span>
-        <span class="n">pattern</span> <span class="o">=</span> <span class="sa">rf</span><span class="s1">&#39;^(\d+.)</span><span class="se">{{</span><span class="s1">2</span><span class="se">}}</span><span class="si">{</span><span class="n">version_patch_prefix</span><span class="si">}</span><span class="s1">\d+$&#39;</span>
-        <span class="c1"># Filter and sort the versions in descending order</span>
-        <span class="n">sorted_versions</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span>
-            <span class="p">[</span>
-                <span class="n">x</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">version_patch_prefix</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
-                <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">tags</span>
-                <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
-            <span class="p">],</span>
-            <span class="n">key</span><span class="o">=</span><span class="n">parse</span><span class="p">,</span>
-            <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="p">)</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sorted_versions</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="c1"># If there are existing versions, bump the latest version</span>
-            <span class="n">new_version</span> <span class="o">=</span> <span class="n">bump</span><span class="p">(</span><span class="n">sorted_versions</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="c1"># No tags in the repository, use the default version</span>
-            <span class="n">new_version</span> <span class="o">=</span> <span class="n">DFLT_NEW_VERSION</span>
-        <span class="k">return</span> <span class="n">format_version</span><span class="p">(</span><span class="n">new_version</span><span class="p">)</span>
-
     <span class="k">if</span> <span class="n">dir_path</span><span class="p">:</span>
         <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="n">dir_path</span><span class="p">)</span>  <span class="c1"># Change to the specified directory</span>
-    <span class="n">version</span> <span class="o">=</span> <span class="n">get_version</span><span class="p">()</span>  <span class="c1"># Generate the new version</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">version</span><span class="p">)</span>  <span class="c1"># Print the new version</span></div>
+    <span class="n">version</span> <span class="o">=</span> <span class="n">get_version</span><span class="p">(</span><span class="n">version_patch_prefix</span><span class="p">)</span>  <span class="c1"># Generate the new version</span>
+    <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">version</span><span class="p">)</span>  <span class="c1"># Print the new version</span></div>
 
 
 

@@ -56,6 +56,7 @@
 <li class="toctree-l1"><a class="reference internal" href="file_modification_utils.html">isee.file_modification_utils</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">isee.generation_utils</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#isee.generation_utils.gen_semver"><code class="docutils literal notranslate"><span class="pre">gen_semver()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#isee.generation_utils.get_version"><code class="docutils literal notranslate"><span class="pre">get_version()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="git_utils.html">isee.git_utils</a></li>
@@ -95,13 +96,20 @@
 - generate_documentation: Generate documentation for the project.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="isee.generation_utils.gen_semver">
-<span class="sig-prename descclassname"><span class="pre">isee.generation_utils.</span></span><span class="sig-name descname"><span class="pre">gen_semver</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dir_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">version_patch_prefix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/isee/generation_utils.html#gen_semver"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#isee.generation_utils.gen_semver" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">isee.generation_utils.</span></span><span class="sig-name descname"><span class="pre">gen_semver</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dir_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">version_patch_prefix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/isee/generation_utils.html#gen_semver"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#isee.generation_utils.gen_semver" title="Link to this definition"></a></dt>
 <dd><p>Generate a new semantic version based on git commit messages and tags.</p>
 <p>Args:
 - dir_path (str): The directory path where the git repository is located. If None, uses the current directory.
 - version_patch_prefix (str): A prefix to be added to the patch version.</p>
 <p>Returns:
 - None: Prints the new version.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="isee.generation_utils.get_version">
+<span class="sig-prename descclassname"><span class="pre">isee.generation_utils.</span></span><span class="sig-name descname"><span class="pre">get_version</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">version_patch_prefix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/isee/generation_utils.html#get_version"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#isee.generation_utils.get_version" title="Link to this definition"></a></dt>
+<dd><p>Get the latest version from git tags and determine the new version based on
+the commit message.</p>
 </dd></dl>
 
 </section>
