@@ -1,3 +1,15 @@
+"""
+This module provides utilities for updating files.
+
+Functions:
+- update_helm_tpl: Update the Helm chart template files.
+- update_manifest: Update the manifest file.
+- update_setup_cfg: Update the setup.cfg file.
+- update_setup_py: Update the setup.py file.
+- _get_setup_filepath: Get the setup file path.
+- _update_file: Update the file content.
+
+"""
 import re
 import os
 

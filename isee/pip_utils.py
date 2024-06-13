@@ -1,3 +1,14 @@
+"""
+This module provides utilities for working with pip and setup.cfg files.
+
+Functions:
+- read_setup_config: Read the setup.cfg file in the project directory.
+- install_packages_from_options: Install packages from the options in setup.cfg.
+- install_requires: Install packages from the install_requires option in setup.cfg.
+- tests_require: Install packages from the tests_require option in setup.cfg.
+- build_dependency_wheels: Build dependency wheels for the project.
+
+"""
 import configparser
 import pip
 

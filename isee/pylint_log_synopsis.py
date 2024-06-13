@@ -1,4 +1,18 @@
 """
+This module provides utilities for working with pylint logs.
+
+Functions:
+- parsed_lines: Parse the pylint log lines.
+- missing_import_module: Get the missing import module from the log message.
+- process_parsed_line: Process the parsed line to get the missing package or module.
+- analyze_log: Analyze the pylint log to get the missing packages and modules.
+- log_analysis_string: Generate a string report of the missing packages and modules.
+- print_log_analysis: Print the string report of the missing packages and modules.
+- print_report_followed_by_log: Print the string report followed by the pylint log.
+
+
+Notes (TODO):
+
 I'd rather have a "here's what you got to do" synopsis.
 
 For example, consider the log below versus the following synopsis of it.

@@ -1,3 +1,10 @@
+"""
+Utilities for working with git repositories.
+
+Functions:
+- tag_repo: Tag the git repository with a new tag and push it to the remote repository.
+
+"""
 import os
 
 from isee.common import git

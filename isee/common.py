@@ -1,3 +1,13 @@
+"""
+This module contains common functions that are used in multiple modules.
+
+Functions:
+- git: Execute a git command and return the output.
+- get_env_var: Get the value of an environment variable.
+- get_file_path: Get the file path of a file in a directory.
+
+"""
+
 import subprocess
 import os
 import glob
