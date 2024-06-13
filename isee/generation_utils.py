@@ -20,7 +20,7 @@ from isee.common import get_env_var, git as _git
 DFLT_NEW_VERSION = '0.1.0'  # Default version if no tags are found
 
 
-def get_version(*, work_tree='.', version_patch_prefix: str = ''):
+def get_new_version(*, work_tree='.', version_patch_prefix: str = ''):
     """
     Get the latest version from git tags and determine the new version based on
     the commit message.
@@ -68,7 +68,7 @@ def get_version(*, work_tree='.', version_patch_prefix: str = ''):
     validate_versions(versions)
     current_version = versions.get('current_pypi')
 
-    if len(sorted_versions) > 0:
+    if current_version:
         # If there are existing versions, bump the latest version
         new_version = bump(current_version)
     else:
@@ -99,11 +99,11 @@ def gen_semver(
     #     os.chdir(dir_path)  # Change to the specified directory
     work_tree = dir_path or '.'
     # Generate the new version:
-    version = get_version(
+    version = get_new_version(
         work_tree=work_tree, version_patch_prefix=version_patch_prefix
     )
     if verbose:
-        print(version)  # Print the new version
+        print(f"New version: {version}")  # Print the new version
 
 
 def generate_documentation(*, project_dir=None):
