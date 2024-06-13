@@ -104,8 +104,9 @@ def gen_semver(
     )
     if version is None:
         raise ValueError('No version found')
-    if verbose:
-        print(f"New version: {version}")  # Print the new version
+    print(version)
+    # if verbose:
+    #     print(f"New version: {version}")  # Print the new version
 
 
 def generate_documentation(*, project_dir=None):
