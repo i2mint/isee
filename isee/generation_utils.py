@@ -107,6 +107,7 @@ def gen_semver(
     print(version)
     # if verbose:
     #     print(f"New version: {version}")  # Print the new version
+    return version
 
 
 def generate_documentation(*, project_dir=None):
