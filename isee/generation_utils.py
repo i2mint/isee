@@ -97,11 +97,13 @@ def gen_semver(
 
     # if dir_path:
     #     os.chdir(dir_path)  # Change to the specified directory
-    work_tree = dir_path or '.'
+    work_tree = dir_path or os.path.abspath('.')
     # Generate the new version:
     version = get_new_version(
         work_tree=work_tree, version_patch_prefix=version_patch_prefix
     )
+    if version is None:
+        raise ValueError('No version found')
     if verbose:
         print(f"New version: {version}")  # Print the new version
 
