@@ -14,7 +14,7 @@ import glob
 from wads.util import git as wads_git
 
 
-def git(*args, *, work_tree='.', git_dir=None):
+def git(*args, work_tree='.', git_dir=None):
     """
     Execute a git command and return the output.
 
