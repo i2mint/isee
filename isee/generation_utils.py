@@ -81,7 +81,7 @@ def gen_semver(
     *,
     dir_path: str = None,
     version_patch_prefix: str = '',
-    verbose=True,
+    # verbose=True,
 ):
     """
     Generate a new semantic version based on git commit messages and tags.
@@ -107,7 +107,7 @@ def gen_semver(
     print(version)
     # if verbose:
     #     print(f"New version: {version}")  # Print the new version
-    return version
+    # return version
 
 
 def generate_documentation(*, project_dir=None):
