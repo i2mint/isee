@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>isee.generation_utils &mdash; isee 0.2.14 documentation</title>
+  <title>isee.generation_utils &mdash; isee 0.2.20 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -16,7 +16,7 @@
   
         <script src="../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../_static/documentation_options.js?v=71c180b9"></script>
+        <script src="../../_static/documentation_options.js?v=20e0ead2"></script>
         <script src="../../_static/doctools.js?v=9a2dae69"></script>
         <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../_static/toggleprompt.js?v=d7ede5d2"></script>
@@ -92,23 +92,35 @@
 
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">re</span>
-<span class="kn">from</span> <span class="nn">packaging.version</span> <span class="kn">import</span> <span class="n">parse</span>
+<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">partial</span>
+<span class="kn">from</span> <span class="nn">warnings</span> <span class="kn">import</span> <span class="n">warn</span>
+
 <span class="kn">import</span> <span class="nn">semver</span>
 <span class="kn">from</span> <span class="nn">epythet.autogen</span> <span class="kn">import</span> <span class="n">make_autodocs</span>
 <span class="kn">from</span> <span class="nn">epythet.setup_docsrc</span> <span class="kn">import</span> <span class="n">make_docsrc</span>
 
-<span class="kn">from</span> <span class="nn">isee.common</span> <span class="kn">import</span> <span class="n">get_env_var</span><span class="p">,</span> <span class="n">git</span>
+<span class="kn">from</span> <span class="nn">wads.pack</span> <span class="kn">import</span> <span class="n">versions_from_different_sources</span><span class="p">,</span> <span class="n">validate_versions</span>
+<span class="kn">from</span> <span class="nn">isee.common</span> <span class="kn">import</span> <span class="n">get_env_var</span><span class="p">,</span> <span class="n">git</span> <span class="k">as</span> <span class="n">_git</span>
 
 <span class="n">DFLT_NEW_VERSION</span> <span class="o">=</span> <span class="s1">&#39;0.1.0&#39;</span>  <span class="c1"># Default version if no tags are found</span>
 
 
-<div class="viewcode-block" id="get_version">
-<a class="viewcode-back" href="../../module_docs/isee/generation_utils.html#isee.generation_utils.get_version">[docs]</a>
-<span class="k">def</span> <span class="nf">get_version</span><span class="p">(</span><span class="n">version_patch_prefix</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="get_new_version">
+<a class="viewcode-back" href="../../module_docs/isee/generation_utils.html#isee.generation_utils.get_new_version">[docs]</a>
+<span class="k">def</span> <span class="nf">get_new_version</span><span class="p">(</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">work_tree</span><span class="o">=</span><span class="s1">&#39;.&#39;</span><span class="p">,</span>
+    <span class="n">version_patch_prefix</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+    <span class="n">action_when_versions_not_valid</span><span class="o">=</span><span class="n">warn</span><span class="p">,</span>
+<span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Get the latest version from git tags and determine the new version based on</span>
 <span class="sd">    the commit message.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">work_tree</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">work_tree</span><span class="p">))</span>
+
+    <span class="n">git</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">_git</span><span class="p">,</span> <span class="n">work_tree</span><span class="o">=</span><span class="n">work_tree</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">bump</span><span class="p">(</span><span class="n">latest</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -144,25 +156,18 @@
         <span class="n">version_parts</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">version_patch_prefix</span><span class="si">}{</span><span class="n">version_parts</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="si">}</span><span class="s1">&#39;</span>
         <span class="k">return</span> <span class="s1">&#39;.&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">version_parts</span><span class="p">)</span>
 
-    <span class="c1"># Get all tags from the git repository</span>
-    <span class="n">tags</span> <span class="o">=</span> <span class="n">git</span><span class="p">(</span><span class="s1">&#39;tag&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
-    <span class="c1"># Pattern to match versions with the patch prefix</span>
-    <span class="n">pattern</span> <span class="o">=</span> <span class="sa">rf</span><span class="s1">&#39;^(\d+.)</span><span class="se">{{</span><span class="s1">2</span><span class="se">}}</span><span class="si">{</span><span class="n">version_patch_prefix</span><span class="si">}</span><span class="s1">\d+$&#39;</span>
-    <span class="c1"># Filter and sort the versions in descending order</span>
-    <span class="n">sorted_versions</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span>
-        <span class="p">[</span>
-            <span class="n">x</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">version_patch_prefix</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
-            <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">tags</span>
-            <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
-        <span class="p">],</span>
-        <span class="n">key</span><span class="o">=</span><span class="n">parse</span><span class="p">,</span>
-        <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-    <span class="p">)</span>
-    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sorted_versions</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+    <span class="n">versions</span> <span class="o">=</span> <span class="n">versions_from_different_sources</span><span class="p">(</span><span class="n">work_tree</span><span class="p">)</span>
+
+    <span class="n">validate_versions</span><span class="p">(</span><span class="n">versions</span><span class="p">,</span> <span class="n">action_when_not_valid</span><span class="o">=</span><span class="n">action_when_versions_not_valid</span><span class="p">)</span>
+
+    <span class="c1"># Take the highest version from the different sources to be the latest version</span>
+    <span class="n">latest_version</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">versions</span><span class="o">.</span><span class="n">values</span><span class="p">()),</span> <span class="n">key</span><span class="o">=</span><span class="n">semver</span><span class="o">.</span><span class="n">VersionInfo</span><span class="o">.</span><span class="n">parse</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">latest_version</span><span class="p">:</span>
         <span class="c1"># If there are existing versions, bump the latest version</span>
-        <span class="n">new_version</span> <span class="o">=</span> <span class="n">bump</span><span class="p">(</span><span class="n">sorted_versions</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">new_version</span> <span class="o">=</span> <span class="n">bump</span><span class="p">(</span><span class="n">latest_version</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="c1"># No tags in the repository, use the default version</span>
+        <span class="c1"># No versions found so, use the default version</span>
         <span class="n">new_version</span> <span class="o">=</span> <span class="n">DFLT_NEW_VERSION</span>
     <span class="k">return</span> <span class="n">format_version</span><span class="p">(</span><span class="n">new_version</span><span class="p">)</span></div>
 
@@ -174,25 +179,34 @@
     <span class="o">*</span><span class="p">,</span>
     <span class="n">dir_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">version_patch_prefix</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
-    <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="c1"># verbose=True,</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Generate a new semantic version based on git commit messages and tags.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">    - dir_path (str): The directory path where the git repository is located. If None, uses the current directory.</span>
+<span class="sd">    - dir_path (str): The directory path where the git repository is located.</span>
+<span class="sd">        If None, uses the current directory.</span>
 <span class="sd">    - version_patch_prefix (str): A prefix to be added to the patch version.</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">    - None: Prints the new version.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">if</span> <span class="n">dir_path</span><span class="p">:</span>
-        <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="n">dir_path</span><span class="p">)</span>  <span class="c1"># Change to the specified directory</span>
-    <span class="n">version</span> <span class="o">=</span> <span class="n">get_version</span><span class="p">(</span><span class="n">version_patch_prefix</span><span class="p">)</span>  <span class="c1"># Generate the new version</span>
-    <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">version</span><span class="p">)</span>  <span class="c1"># Print the new version</span></div>
+    <span class="c1"># if dir_path:</span>
+    <span class="c1">#     os.chdir(dir_path)  # Change to the specified directory</span>
+    <span class="n">work_tree</span> <span class="o">=</span> <span class="n">dir_path</span> <span class="ow">or</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)</span>
+    <span class="c1"># Generate the new version:</span>
+    <span class="n">version</span> <span class="o">=</span> <span class="n">get_new_version</span><span class="p">(</span>
+        <span class="n">work_tree</span><span class="o">=</span><span class="n">work_tree</span><span class="p">,</span> <span class="n">version_patch_prefix</span><span class="o">=</span><span class="n">version_patch_prefix</span>
+    <span class="p">)</span>
+    <span class="k">if</span> <span class="n">version</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;No version found&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">version</span><span class="p">)</span></div>
 
+    <span class="c1"># if verbose:</span>
+    <span class="c1">#     print(f&quot;New version: {version}&quot;)  # Print the new version</span>
+    <span class="c1"># return version</span>
 
 
 <span class="k">def</span> <span class="nf">generate_documentation</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">project_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>

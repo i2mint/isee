@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>isee.common &mdash; isee 0.2.14 documentation</title>
+  <title>isee.common &mdash; isee 0.2.20 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -17,7 +17,7 @@
   
         <script src="../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../_static/documentation_options.js?v=71c180b9"></script>
+        <script src="../../_static/documentation_options.js?v=20e0ead2"></script>
         <script src="../../_static/doctools.js?v=9a2dae69"></script>
         <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../_static/toggleprompt.js?v=d7ede5d2"></script>
@@ -134,8 +134,15 @@ If the variable is not defined or is empty, raise a RuntimeError.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="isee.common.git">
-<span class="sig-prename descclassname"><span class="pre">isee.common.</span></span><span class="sig-name descname"><span class="pre">git</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/isee/common.html#git"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#isee.common.git" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">isee.common.</span></span><span class="sig-name descname"><span class="pre">git</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">work_tree</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'.'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">git_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/isee/common.html#git"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#isee.common.git" title="Link to this definition"></a></dt>
 <dd><p>Execute a git command and return the output.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">git</span><span class="p">(</span><span class="s1">&#39;status&#39;</span><span class="p">)</span>  
+<span class="go">On branch master</span>
+<span class="go">Your branch is up to date with &#39;origin/master&#39;.</span>
+
+<span class="go">nothing to commit, working tree clean</span>
+</pre></div>
+</div>
 </dd></dl>
 
 </section>
