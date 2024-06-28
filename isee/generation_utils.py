@@ -20,7 +20,12 @@ from isee.common import get_env_var, git as _git
 DFLT_NEW_VERSION = '0.1.0'  # Default version if no tags are found
 
 
-def get_new_version(*, work_tree='.', version_patch_prefix: str = ''):
+def get_new_version(
+    *,
+    work_tree='.',
+    version_patch_prefix: str = '',
+    action_when_versions_not_valid=warn,
+):
     """
     Get the latest version from git tags and determine the new version based on
     the commit message.
@@ -65,14 +70,17 @@ def get_new_version(*, work_tree='.', version_patch_prefix: str = ''):
         return '.'.join(version_parts)
 
     versions = versions_from_different_sources(work_tree)
-    validate_versions(versions)
-    current_version = versions.get('current_pypi')
 
-    if current_version:
+    validate_versions(versions, action_when_not_valid=action_when_versions_not_valid)
+
+    # Take the highest version from the different sources to be the latest version
+    latest_version = max(filter(None, versions.values()), key=semver.VersionInfo.parse)
+
+    if latest_version:
         # If there are existing versions, bump the latest version
-        new_version = bump(current_version)
+        new_version = bump(latest_version)
     else:
-        # No tags in the repository, use the default version
+        # No versions found so, use the default version
         new_version = DFLT_NEW_VERSION
     return format_version(new_version)
 
