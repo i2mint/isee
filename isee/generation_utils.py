@@ -9,7 +9,8 @@ Has two main functions:
 import os
 import re
 from functools import partial
-from packaging.version import parse
+from warnings import warn
+
 import semver
 from epythet.autogen import make_autodocs
 from epythet.setup_docsrc import make_docsrc
