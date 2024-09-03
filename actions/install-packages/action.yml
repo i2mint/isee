@@ -11,14 +11,10 @@ inputs:
     description: 'NPM packages to install'
     required: false
   dependency-files:
-    description: 'Paths to dependency files. Can be a requirements.txt or a setup.cfg 
-      file'
+    description: 'Paths to dependency files. Can be a requirements.txt or a setup.cfg file'
     required: false
   test-requirements-file:
-    description: "Paths to requirements files. Provide a comma separated list of 
-      paths from the current directory. '.txt' files will be pip installed. '.cfg'
-      files will be parsed and the install_requires and tests_require sections will be 
-      installed."
+    description: "Paths to requirements files. Provide a comma separated list of paths from the current directory. '.txt' files will be pip installed. '.cfg' files will be parsed and the install_requires and tests_require sections will be installed."
     required: false
   ssh-private-key:
     description: 'SSH private key to install private packages from source, if any.'
@@ -37,6 +33,7 @@ runs:
       if: ${{ inputs.pypi-packages }}
       shell: bash
       run: |
+        set -e
         if [[ "${{ inputs.pypi-packages }}" == "isee" && "${{ github.repository }}" == "i2mint/isee" ]]; then
           echo "Installing isee from source"
           python setup.py sdist
@@ -54,18 +51,22 @@ runs:
       if: ${{ inputs.apt-packages }}
       shell: bash
       run: |
+        set -e
         sudo apt-get update
         sudo apt-get install -y ${{ inputs.apt-packages }}
 
     - name: Install NPM Packages
       if: ${{ inputs.npm-packages }}
       shell: bash
-      run: npm install -g ${{ inputs.npm-packages }}
+      run: |
+        set -e
+        npm install -g ${{ inputs.npm-packages }}
 
     - name: Install Dependencies
       if: ${{ inputs.dependency-files }}
       shell: bash
       run: |
+        set -e
         python -m pip install --upgrade pip wheel
         IFS=',' read -ra paths <<< "${{ inputs.dependency-files }}"
         for path in "${paths[@]}"
