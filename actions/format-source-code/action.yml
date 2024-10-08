@@ -13,7 +13,7 @@ runs:
     - name: Install Dependencies
       uses: i2mint/isee/actions/install-packages@master
       with:
-        pypi-packages: 'axblack'
+        pypi-packages: 'black'
 
     - name: Format source code
       shell: bash
