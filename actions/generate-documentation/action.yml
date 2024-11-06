@@ -1,17 +1,12 @@
-name: GitHub Pages
+name: "Generate Documentation"
 description: "Generate documentation using Epythet"
-on:
-  workflow_run:
-    workflows: ["Continuous Integration"]
-    types:
-      - completed
-jobs:
-  deploy:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: i2mint/epythet/actions/publish-github-pages@master
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          docs-branch: "gh-pages"
-          docs-dir: "./docsrc/_build/html/"
-          python-version: "3.10"
+runs:
+  using: 'composite'
+  steps:
+    - name: Install Dependencies
+      uses: i2mint/isee/actions/install-packages@master
+      with:
+        pypi-packages: 'isee'
+    - name: Generate Documentation
+      shell: bash
+      run: isee generate-documentation
