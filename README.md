@@ -16,6 +16,7 @@ To install:	```pip install isee```
     * [For a GitHub repository](#for-a-github-repository)
     * [For a GitLab repository](#for-a-gitlab-repository)
 9. [Useful resources](#useful-resources)
+10. [Troubleshooting](#troubleshooting)
 
 
 # Goal
