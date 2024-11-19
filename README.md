@@ -99,6 +99,33 @@ pack check-in 'Your commit message.'
 
 # Troubleshooting
 
+## Check-out and Tag Problems
+
+At the point of writing this, some jobs don't fail when there are (non-essential) errors.
+One hidden problem that you might get in when "Tag Repository With New Version Number" does a `Run isee tag-repo $VERSION`. You'll get:
+
+```
+remote: Permission to thorwhalen/sung.git denied to github-actions[bot].
+fatal: unable to access 'https://github.com/thorwhalen/sung/': The requested URL returned error: 403
+Error executing git command: Command 'git --git-dir="/home/runner/work/sung/sung/.git" --work-tree="/home/runner/work/sung/sung" push origin 0.0.16' returned non-zero exit status 128.
+Standard output: 
+Exit code: 128
+```
+
+Top cause and solution:
+* Check Repository Permissions: Ensure that the `GITHUB_TOKEN` has the necessary permissions (i.e. read **and write**) to push to the repository.
+You can configure this in the repository settings under Actions -> General -> Workflow permissions (`https://github.com/{username_or_org}/{repo}/settings/actions`).
+
+![image](https://github.com/user-attachments/assets/0a35c514-216c-4616-92fa-b8978762594c)
+
+Other possible problesm:
+* Verify SSH keys: Did you put a ssh public key, and a corresponding SSH_PRIVATE_KEY in your environment), and are they correct?
+Global ssh public keys can be managed [here in user or org level settings](https://github.com/settings/keys). 
+Set repository secrets (envoronment variable) here: `https://github.com/{username_or_org}/{repo}/settings/secrets/actions`.
+* Review the Token Usage
+* Check Branch Protection Rules
+
+
 ## Vesion tag misalignment
 
 Sometimes the twine PYPI publishing may fail with such a message:
