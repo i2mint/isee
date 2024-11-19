@@ -99,7 +99,7 @@ pack check-in 'Your commit message.'
 
 # Troubleshooting
 
-## Check-out and Tag Problems
+## Github token problems (e.g. tagging)
 
 At the point of writing this, some jobs don't fail when there are (non-essential) errors.
 One hidden problem that you might get in when "Tag Repository With New Version Number" does a `Run isee tag-repo $VERSION`. You'll get:
