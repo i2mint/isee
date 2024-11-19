@@ -17,6 +17,8 @@ To install:	```pip install isee```
     * [For a GitLab repository](#for-a-gitlab-repository)
 9. [Useful resources](#useful-resources)
 10. [Troubleshooting](#troubleshooting)
+   * [Github token problems (e.g. tagging)](#github-token-problems-eg-tagging)
+   * [Vesion tag misalignment](#version-tag-misalignment)
 
 
 # Goal
