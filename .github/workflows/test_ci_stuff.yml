@@ -13,14 +13,17 @@ jobs:
       - name: Get the default branch
         id: default-branch
         uses: thorwhalen/get-the-default-branch-action@main
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Check if default branch is master
         if: ${{ steps.default-branch.outputs.default_branch == 'master' }}
         run: echo "Success! The default branch is in fact 'master'!"
 
       - name: Print the default branch
-        run: 'echo "The default branch is: ${{ steps.default-branch.outputs.default_branch }}"'
-        
+        run: |
+          echo "The default branch is: ${{ steps.default-branch.outputs.default_branch }}"
+          
   print_env_variables:
     runs-on: ubuntu-latest
     name: Validation
