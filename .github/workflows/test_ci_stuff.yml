@@ -11,7 +11,7 @@ jobs:
       - uses: actions/checkout@v2
 
       - id: default-branch
-        uses: thorwhalen/get-the-default-branch-action@v1
+        uses: thorwhalen/get-the-default-branch-action@main
 
       - if: ${{ steps.default-branch.outputs.default_branch == 'master' }}
         run: echo "Success! The default branch is in fact 'master'!"
