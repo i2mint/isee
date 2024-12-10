@@ -1,0 +1,22 @@
+name: "CI Diagnosis"
+description: "Diagnose the CI process, setup etc."
+runs:
+  using: 'composite'
+  steps:
+
+    # See https://graphite.dev/guides/github-actions-variables
+    # GITHUB_REPOSITORY: The owner and repository name. For example, octocat/Hello-World.
+    # GITHUB_REF: The branch or tag ref that triggered the workflow.
+    # GITHUB_WORKSPACE: The GitHub workspace directory path.
+    # GITHUB_WORKFLOW: The name of the workflow.
+    # GITHUB_ACTOR: The name of the person or app that initiated the workflow.
+    # GITHUB_SHA: The commit SHA that triggered the workflow.
+
+    - name: Print environment variables
+      run: |
+        echo "GITHUB_REPOSITORY: $GITHUB_REPOSITORY"
+        echo "GITHUB_REF: $GITHUB_REF"
+        echo "GITHUB_WORKSPACE: $GITHUB_WORKSPACE"
+        echo "GITHUB_WORKFLOW: $GITHUB_WORKFLOW"
+        echo "GITHUB_ACTOR: $GITHUB_ACTOR"
+        echo "GITHUB_SHA: $GITHUB_SHA"
