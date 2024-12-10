@@ -11,20 +11,13 @@ jobs:
       - uses: actions/checkout@v2
 
       - id: default-branch
-        uses: scottmmjackson/get-the-default-branch-action@v1
+        uses: thorwhalen/get-the-default-branch-action@v1
 
       - if: ${{ steps.default-branch.outputs.default_branch == 'master' }}
         run: echo "Success! The default branch is in fact 'master'!"
         
   print_env_variables:
-
-    name: Validation
-    if: "!contains(github.event.head_commit.message, '[skip ci]')"
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        python-version: ["3.10"]
-
+    name: Validation
     steps:
-
       - uses: i2mint/isee/actions/ci-diagnosis@master
