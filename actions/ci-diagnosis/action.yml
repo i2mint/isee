@@ -4,15 +4,15 @@ inputs: {} # Define inputs if needed
 outputs: {} # Define outputs if needed
 runs:
   using: "composite"
-  steps:
 
-      # See https://graphite.dev/guides/github-actions-variables
-      # GITHUB_REPOSITORY: The owner and repository name. For example, octocat/Hello-World.
-      # GITHUB_REF: The branch or tag ref that triggered the workflow.
-      # GITHUB_WORKSPACE: The GitHub workspace directory path.
-      # GITHUB_WORKFLOW: The name of the workflow.
-      # GITHUB_ACTOR: The name of the person or app that initiated the workflow.
-      # GITHUB_SHA: The commit SHA that triggered the workflow.
+  # See https://graphite.dev/guides/github-actions-variables
+  # GITHUB_REPOSITORY: The owner and repository name. For example, octocat/Hello-World.
+  # GITHUB_REF: The branch or tag ref that triggered the workflow.
+  # GITHUB_WORKSPACE: The GitHub workspace directory path.
+  # GITHUB_WORKFLOW: The name of the workflow.
+  # GITHUB_ACTOR: The name of the person or app that initiated the workflow.
+  # GITHUB_SHA: The commit SHA that triggered the workflow.
+  steps:
     - name: Print environment variables
       run: |
         echo "GITHUB_REPOSITORY: $GITHUB_REPOSITORY"
@@ -21,3 +21,5 @@ runs:
         echo "GITHUB_WORKFLOW: $GITHUB_WORKFLOW"
         echo "GITHUB_ACTOR: $GITHUB_ACTOR"
         echo "GITHUB_SHA: $GITHUB_SHA"
+      shell: bash
+  
