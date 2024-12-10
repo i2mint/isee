@@ -1,7 +1,7 @@
 name: Test Action Workflow
 
 on:
-  workflow_dispatch: # Allows you to manually trigger the workflow
+  workflow_dispatch:
 
 jobs:
   test_default_branch:
@@ -10,11 +10,16 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - id: default-branch
+      - name: Get the default branch
+        id: default-branch
         uses: thorwhalen/get-the-default-branch-action@main
 
-      - if: ${{ steps.default-branch.outputs.default_branch == 'master' }}
+      - name: Check if default branch is master
+        if: ${{ steps.default-branch.outputs.default_branch == 'master' }}
         run: echo "Success! The default branch is in fact 'master'!"
+
+      - name: Print the default branch
+        run: 'echo "The default branch is: ${{ steps.default-branch.outputs.default_branch }}"'
         
   print_env_variables:
     runs-on: ubuntu-latest
