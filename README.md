@@ -17,6 +17,7 @@ To install:	```pip install isee```
     * [For a GitLab repository](#for-a-gitlab-repository)
 9. [Useful resources](#useful-resources)
 10. [Troubleshooting](#troubleshooting)
+    * [Common non fatal error during publishing](#common-non-fatal-error-during-publishing)
     * [Github token problems (e.g. tagging)](#github-token-problems-eg-tagging)
     * [Vesion tag misalignment](#vesion-tag-misalignment)
 
@@ -102,7 +103,7 @@ pack check-in 'Your commit message.'
 
 # Troubleshooting
 
-## 
+## Common (non fatal) error during publishing
 
 It has been reported that users get this error:
 
