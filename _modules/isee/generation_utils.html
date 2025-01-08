@@ -6,7 +6,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>isee.generation_utils &mdash; isee 0.2.20 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
       <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=fd3f3429" />
@@ -88,24 +88,24 @@
 
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">re</span>
-<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">partial</span>
-<span class="kn">from</span> <span class="nn">warnings</span> <span class="kn">import</span> <span class="n">warn</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">partial</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">warnings</span><span class="w"> </span><span class="kn">import</span> <span class="n">warn</span>
 
-<span class="kn">import</span> <span class="nn">semver</span>
-<span class="kn">from</span> <span class="nn">epythet.autogen</span> <span class="kn">import</span> <span class="n">make_autodocs</span>
-<span class="kn">from</span> <span class="nn">epythet.setup_docsrc</span> <span class="kn">import</span> <span class="n">make_docsrc</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">semver</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">epythet.autogen</span><span class="w"> </span><span class="kn">import</span> <span class="n">make_autodocs</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">epythet.setup_docsrc</span><span class="w"> </span><span class="kn">import</span> <span class="n">make_docsrc</span>
 
-<span class="kn">from</span> <span class="nn">wads.pack</span> <span class="kn">import</span> <span class="n">versions_from_different_sources</span><span class="p">,</span> <span class="n">validate_versions</span>
-<span class="kn">from</span> <span class="nn">isee.common</span> <span class="kn">import</span> <span class="n">get_env_var</span><span class="p">,</span> <span class="n">git</span> <span class="k">as</span> <span class="n">_git</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">wads.pack</span><span class="w"> </span><span class="kn">import</span> <span class="n">versions_from_different_sources</span><span class="p">,</span> <span class="n">validate_versions</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">isee.common</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_env_var</span><span class="p">,</span> <span class="n">git</span> <span class="k">as</span> <span class="n">_git</span>
 
 <span class="n">DFLT_NEW_VERSION</span> <span class="o">=</span> <span class="s1">&#39;0.1.0&#39;</span>  <span class="c1"># Default version if no tags are found</span>
 
 
 <div class="viewcode-block" id="get_new_version">
 <a class="viewcode-back" href="../../module_docs/isee/generation_utils.html#isee.generation_utils.get_new_version">[docs]</a>
-<span class="k">def</span> <span class="nf">get_new_version</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_new_version</span><span class="p">(</span>
     <span class="o">*</span><span class="p">,</span>
     <span class="n">work_tree</span><span class="o">=</span><span class="s1">&#39;.&#39;</span><span class="p">,</span>
     <span class="n">version_patch_prefix</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
@@ -120,7 +120,7 @@
 
     <span class="n">git</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">_git</span><span class="p">,</span> <span class="n">work_tree</span><span class="o">=</span><span class="n">work_tree</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">bump</span><span class="p">(</span><span class="n">latest</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">bump</span><span class="p">(</span><span class="n">latest</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Bump the version based on the commit message.</span>
 
@@ -140,7 +140,7 @@
         <span class="c1"># Default to bumping the patch version</span>
         <span class="k">return</span> <span class="n">semver</span><span class="o">.</span><span class="n">bump_patch</span><span class="p">(</span><span class="n">latest</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">format_version</span><span class="p">(</span><span class="n">version</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">format_version</span><span class="p">(</span><span class="n">version</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Format the version by adding the patch prefix.</span>
 
@@ -173,7 +173,7 @@
 
 <div class="viewcode-block" id="gen_semver">
 <a class="viewcode-back" href="../../module_docs/isee/generation_utils.html#isee.generation_utils.gen_semver">[docs]</a>
-<span class="k">def</span> <span class="nf">gen_semver</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">gen_semver</span><span class="p">(</span>
     <span class="o">*</span><span class="p">,</span>
     <span class="n">dir_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">version_patch_prefix</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
@@ -207,7 +207,7 @@
     <span class="c1"># return version</span>
 
 
-<span class="k">def</span> <span class="nf">generate_documentation</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">project_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">generate_documentation</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">project_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">project_dir</span><span class="p">:</span>
         <span class="n">project_dir</span> <span class="o">=</span> <span class="n">get_env_var</span><span class="p">(</span><span class="s1">&#39;GITHUB_WORKSPACE&#39;</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">project_dir</span> <span class="o">+</span> <span class="s1">&#39;/docsrc&#39;</span><span class="p">):</span>

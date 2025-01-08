@@ -6,7 +6,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>isee.pip_utils &mdash; isee 0.2.20 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
       <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=fd3f3429" />
@@ -91,13 +91,13 @@
 <span class="sd">- build_dependency_wheels: Build dependency wheels for the project.</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">import</span> <span class="nn">configparser</span>
-<span class="kn">import</span> <span class="nn">pip</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">configparser</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pip</span>
 
-<span class="kn">from</span> <span class="nn">isee.common</span> <span class="kn">import</span> <span class="n">get_env_var</span><span class="p">,</span> <span class="n">get_file_path</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">isee.common</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_env_var</span><span class="p">,</span> <span class="n">get_file_path</span>
 
 
-<span class="k">def</span> <span class="nf">read_setup_config</span><span class="p">(</span><span class="n">project_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">read_setup_config</span><span class="p">(</span><span class="n">project_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">project_dir</span><span class="p">:</span>
         <span class="n">project_dir</span> <span class="o">=</span> <span class="n">get_env_var</span><span class="p">(</span><span class="s1">&#39;GITHUB_WORKSPACE&#39;</span><span class="p">)</span>
     <span class="n">path</span> <span class="o">=</span> <span class="n">get_file_path</span><span class="p">(</span><span class="s1">&#39;setup.cfg&#39;</span><span class="p">,</span> <span class="n">project_dir</span><span class="p">)</span>
@@ -106,7 +106,7 @@
     <span class="k">return</span> <span class="n">config</span>
 
 
-<span class="k">def</span> <span class="nf">install_packages_from_options</span><span class="p">(</span><span class="n">config_options</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">install_packages_from_options</span><span class="p">(</span><span class="n">config_options</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
     <span class="k">if</span> <span class="p">(</span><span class="n">_p</span> <span class="o">:=</span> <span class="n">config_options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">))</span> <span class="p">:</span>
         <span class="n">pkgs</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">_p</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span> <span class="k">if</span> <span class="n">x</span><span class="p">]</span>
         <span class="n">pip</span><span class="o">.</span><span class="n">main</span><span class="p">([</span><span class="s1">&#39;install&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">pkgs</span><span class="p">)</span>
@@ -114,21 +114,21 @@
         <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;No </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s1"> packages to install&#39;</span><span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">install_requires</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">project_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">install_requires</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">project_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="n">config</span> <span class="o">=</span> <span class="n">read_setup_config</span><span class="p">(</span><span class="n">project_dir</span><span class="p">)</span>
     <span class="n">install_packages_from_options</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;options&#39;</span><span class="p">],</span> <span class="s1">&#39;install_requires&#39;</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="tests_require">
 <a class="viewcode-back" href="../../module_docs/isee/pip_utils.html#isee.pip_utils.tests_require">[docs]</a>
-<span class="k">def</span> <span class="nf">tests_require</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">project_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">tests_require</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">project_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Install from tests_require in setup.cfg options&quot;&quot;&quot;</span>
     <span class="n">config</span> <span class="o">=</span> <span class="n">read_setup_config</span><span class="p">(</span><span class="n">project_dir</span><span class="p">)</span>
     <span class="n">install_packages_from_options</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;options&#39;</span><span class="p">],</span> <span class="s1">&#39;tests_require&#39;</span><span class="p">)</span></div>
 
 
 
-<span class="k">def</span> <span class="nf">build_dependency_wheels</span><span class="p">(</span><span class="n">repository_dir</span><span class="p">,</span> <span class="n">wheelhouse</span><span class="p">,</span> <span class="n">requirements_filepath</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">build_dependency_wheels</span><span class="p">(</span><span class="n">repository_dir</span><span class="p">,</span> <span class="n">wheelhouse</span><span class="p">,</span> <span class="n">requirements_filepath</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="n">args</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;wheel&#39;</span><span class="p">,</span> <span class="s1">&#39;--wheel-dir&#39;</span><span class="p">,</span> <span class="n">wheelhouse</span><span class="p">,</span> <span class="s1">&#39;--find-links&#39;</span><span class="p">,</span> <span class="n">wheelhouse</span><span class="p">]</span>
     <span class="k">if</span> <span class="n">requirements_filepath</span><span class="p">:</span>
         <span class="n">args</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="s1">&#39;--requirement&#39;</span><span class="p">,</span> <span class="n">requirements_filepath</span><span class="p">])</span>
