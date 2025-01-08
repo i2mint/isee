@@ -102,6 +102,21 @@ pack check-in 'Your commit message.'
 
 # Troubleshooting
 
+## 
+
+It has been reported that users get this error:
+
+```
+/home/runner/work/_temp/1a136567-cb0c-4c9f-a44f-4cbe6633d4eb.sh: line 2: --non-interactive: command not found
+Error: Process completed with exit code 127.
+```
+
+when publishing. The package publishes fine, but this error causes the CI "publish" part to show up as red, which is annoying. 
+
+Solution: This will happen when any of the variables (most of the time, the PYPI_PASSWORD contain newlines in it, which breaks the `twine upload ...` command into several pieces. 
+This can happen, for example, when copy/pasting from doing a `echo $PYPI_TOKEN | pbcopy` since the echo adds a newline. 
+Try copying the pypi token again and ensure there's no newline in it. 
+
 ## Github token problems (e.g. tagging)
 
 At the point of writing this, some jobs don't fail when there are (non-essential) errors.
