@@ -200,7 +200,12 @@
     <span class="p">)</span>
     <span class="k">if</span> <span class="n">version</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;No version found&#39;</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">version</span><span class="p">)</span></div>
+    <span class="nb">print</span><span class="p">(</span><span class="n">version</span><span class="p">)</span>  <span class="c1"># WARNING!! Don&#39;t edit!!! This is effectively the return value</span></div>
+
+    <span class="c1"># --&gt; This is a hack because returning the version is not working in github actions</span>
+    <span class="c1">#     CI, so printing the version is a workaround for now.</span>
+    <span class="c1">#     if you condition this print, or enhance it (e.g. f&quot;{version=}&quot;) you will break</span>
+    <span class="c1">#     the CI. So, please don&#39;t edit this line.</span>
 
     <span class="c1"># if verbose:</span>
     <span class="c1">#     print(f&quot;New version: {version}&quot;)  # Print the new version</span>
