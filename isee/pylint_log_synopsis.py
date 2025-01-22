@@ -76,28 +76,28 @@ Perhaps pylint already has such a synopsis report maker?
 
 import re
 
-colon_pattern = ':'.join(f'(?P<{k}>[^:]*)' for k in 'path line char code msg'.split())
+colon_pattern = ":".join(f"(?P<{k}>[^:]*)" for k in "path line char code msg".split())
 line_parse_p = re.compile(colon_pattern)
 import_parse_p = re.compile("Unable to import '(?P<module>[\w\.]+)'")
 
 
 def parsed_lines(log_string):
-    for line in log_string.split('\n'):
+    for line in log_string.split("\n"):
         m = line_parse_p.match(line)
         if m is not None:
             yield {k: v.strip() for k, v in m.groupdict().items()}
 
 
 def missing_import_module(msg):
-    return import_parse_p.match(msg).groupdict()['module']
+    return import_parse_p.match(msg).groupdict()["module"]
 
 
 def process_parsed_line(parsed):
-    if parsed['code'] == 'E0401':
-        package_name = missing_import_module(parsed['msg']).split('.')[0]
-        yield 'missing_package', package_name
-    elif parsed['code'] == 'C0114':
-        yield 'missing_docstring', parsed['path']
+    if parsed["code"] == "E0401":
+        package_name = missing_import_module(parsed["msg"]).split(".")[0]
+        yield "missing_package", package_name
+    elif parsed["code"] == "C0114":
+        yield "missing_docstring", parsed["path"]
 
 
 def analyze_log(log_string):
@@ -114,13 +114,13 @@ def analyze_log(log_string):
 def _log_analysis_string_lines(log_string):
     report = analyze_log(log_string)
     for kind, info_set in report.items():
-        yield f'---------- {kind} ----------\n'
-        yield '\t' + '\n\t'.join(info_set)
-        yield '\n'
+        yield f"---------- {kind} ----------\n"
+        yield "\t" + "\n\t".join(info_set)
+        yield "\n"
 
 
 def log_analysis_string(log_string):
-    return ''.join(_log_analysis_string_lines(log_string))
+    return "".join(_log_analysis_string_lines(log_string))
 
 
 def print_log_analysis(log_string):
@@ -135,9 +135,9 @@ def print_report_followed_by_log(log_string=None):
 
     try:
         print(
-            '\n------------------- SYNOPSIS --------------------\n\n'
+            "\n------------------- SYNOPSIS --------------------\n\n"
             + log_analysis_string(log_string)
-            + '\n\n---------------------- PYLINT LOGS -----------------------\n\n'
+            + "\n\n---------------------- PYLINT LOGS -----------------------\n\n"
             + log_string
         )
     except Exception:
@@ -145,7 +145,7 @@ def print_report_followed_by_log(log_string=None):
         print(log_string)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     import sys
 
     log_string = sys.stdin.read()
