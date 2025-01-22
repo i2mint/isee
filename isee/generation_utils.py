@@ -113,15 +113,15 @@ def gen_semver(
     )
     if version is None:
         raise ValueError('No version found')
-    print(version)  # WARNING!! Don't edit!!! This is effectively the return value
+    # print(version)  # WARNING!! Don't edit!!! This is effectively the return value
     # --> This is a hack because returning the version is not working in github actions
     #     CI, so printing the version is a workaround for now.
     #     if you condition this print, or enhance it (e.g. f"{version=}") you will break
     #     the CI. So, please don't edit this line.
 
-    # if verbose:
-    #     print(f"New version: {version}")  # Print the new version
-    # return version
+    if verbose:
+        print(f"New version: {version}")  # Print the new version
+    return version
 
 
 def generate_documentation(*, project_dir=None):
