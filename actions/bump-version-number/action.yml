@@ -11,6 +11,7 @@ runs:
     - name: Update version number
       shell: bash
       run: |
-        export VERSION=$(isee gen-semver)
+        set -e
+        VERSION=$(echo $(isee gen-semver))
         echo "VERSION=$VERSION" >> $GITHUB_ENV
         isee update-setup-cfg
