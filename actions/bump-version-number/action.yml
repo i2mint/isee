@@ -12,6 +12,7 @@ runs:
       shell: bash
       run: |
         set -e
-        VERSION=$(echo $(isee gen-semver))
+        export VERSION=$(isee gen-semver)
+        # export VERSION=$(echo $(isee gen-semver))
         echo "VERSION=$VERSION" >> $GITHUB_ENV
         isee update-setup-cfg

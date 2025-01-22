@@ -7,7 +7,7 @@ inputs:
   args:
     description: "Arguments to pass to 'pack check-in"
     required: false
-    default: "--pre-git-hook \" add -f docs/ \" --auto-choose-default-action --bypass-docstring-validation --bypass-tests --bypass-code-formatting --verbose"
+    default: "--pre-git-hook --auto-choose-default-action --bypass-docstring-validation --bypass-tests --bypass-code-formatting --verbose"
   ssh-private-key:
     description: 'SSH private key to push to remote.'
     required: true
@@ -31,6 +31,7 @@ runs:
     - name: Configure Git
       shell: bash
       run: |
+        set -e
         git config --global user.email "${{ inputs.git-email }}"
         git config --global user.name "${{ inputs.git-username }}"
 
@@ -42,4 +43,5 @@ runs:
     - name: Check in
       shell: bash
       run: |
+        set -e
         pack check-in "${{ inputs.commit-message }}" ${{ inputs.args }} 
