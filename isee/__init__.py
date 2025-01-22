@@ -16,8 +16,8 @@ from isee.pylint_log_synopsis import print_report_followed_by_log
 
 
 argh_kwargs = {
-    'namespace': 'isee',
-    'functions': [
+    "namespace": "isee",
+    "functions": [
         update_helm_tpl,
         update_manifest,
         update_setup_cfg,
@@ -28,9 +28,9 @@ argh_kwargs = {
         install_requires,
         tests_require,
     ],
-    'namespace_kwargs': {
-        'title': 'CI support utils',
-        'description': 'Provide a bunch of useful CI utils.',
+    "namespace_kwargs": {
+        "title": "CI support utils",
+        "description": "Provide a bunch of useful CI utils.",
     },
 }
 
@@ -38,8 +38,8 @@ argh_kwargs = {
 def main():
     import argh  # pip install argh
 
-    argh.dispatch_commands(argh_kwargs.get('functions', None))
+    argh.dispatch_commands(argh_kwargs.get("functions", None))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

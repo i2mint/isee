@@ -18,13 +18,13 @@ from epythet.setup_docsrc import make_docsrc
 from wads.pack import versions_from_different_sources, validate_versions
 from isee.common import get_env_var, git as _git
 
-DFLT_NEW_VERSION = '0.1.0'  # Default version if no tags are found
+DFLT_NEW_VERSION = "0.1.0"  # Default version if no tags are found
 
 
 def get_new_version(
     *,
-    work_tree='.',
-    version_patch_prefix: str = '',
+    work_tree=".",
+    version_patch_prefix: str = "",
     action_when_versions_not_valid=warn,
 ):
     """
@@ -47,11 +47,11 @@ def get_new_version(
         - str: The new bumped version.
         """
         # Get the latest commit message
-        commit_message = git('show-branch', '--no-name', 'HEAD')
+        commit_message = git("show-branch", "--no-name", "HEAD")
         # Check if the commit message contains bump directives
-        if re.search(r'\[bump major\]', commit_message):
+        if re.search(r"\[bump major\]", commit_message):
             return semver.bump_major(latest)
-        if re.search(r'\[bump minor\]', commit_message):
+        if re.search(r"\[bump minor\]", commit_message):
             return semver.bump_minor(latest)
         # Default to bumping the patch version
         return semver.bump_patch(latest)
@@ -66,9 +66,9 @@ def get_new_version(
         Returns:
         - str: The formatted version.
         """
-        version_parts = version.split('.')
-        version_parts[2] = f'{version_patch_prefix}{version_parts[2]}'
-        return '.'.join(version_parts)
+        version_parts = version.split(".")
+        version_parts[2] = f"{version_patch_prefix}{version_parts[2]}"
+        return ".".join(version_parts)
 
     versions = versions_from_different_sources(work_tree)
 
@@ -89,7 +89,7 @@ def get_new_version(
 def gen_semver(
     *,
     dir_path: str = None,
-    version_patch_prefix: str = '',
+    version_patch_prefix: str = "",
     verbose=True,
 ):
     """
@@ -106,7 +106,7 @@ def gen_semver(
 
     # if dir_path:
     #     os.chdir(dir_path)  # Change to the specified directory
-    work_tree = dir_path or os.path.abspath('.')
+    work_tree = dir_path or os.path.abspath(".")
     # Generate the new version:
     version = get_new_version(
         work_tree=work_tree, version_patch_prefix=version_patch_prefix
@@ -126,7 +126,7 @@ def gen_semver(
 
 def generate_documentation(*, project_dir=None):
     if not project_dir:
-        project_dir = get_env_var('GITHUB_WORKSPACE')
-    if not os.path.exists(project_dir + '/docsrc'):
+        project_dir = get_env_var("GITHUB_WORKSPACE")
+    if not os.path.exists(project_dir + "/docsrc"):
         make_docsrc(project_dir)
     make_autodocs(project_dir)
