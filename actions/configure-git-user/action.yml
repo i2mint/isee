@@ -15,5 +15,6 @@ runs:
     - name: Check in
       shell: bash
       run: |
+        set -e
         git config --global user.email "${{ inputs.email }}}}"
         git config --global user.name "${{ inputs.username }}}}"

@@ -164,5 +164,6 @@ runs:
 
     - name: Push Changes
       run: |
+        set -e
         pack check-in "**CI** Formatted code [skip ci]" --auto-choose-default-action --bypass-docstring-validation --bypass-tests --bypass-code-formatting --verbose
       shell: bash

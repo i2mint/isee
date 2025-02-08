@@ -29,4 +29,5 @@ runs:
     - name: Publish to Pypi
       shell: bash
       run: |
+        set -e
         twine upload ${{ inputs.package-path }} -u ${{ inputs.pypi-username }} -p ${{ inputs.pypi-password }} ${{ inputs.twine-args }}

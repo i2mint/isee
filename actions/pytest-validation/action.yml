@@ -28,6 +28,7 @@ runs:
     - name: Validate Source Code
       shell: bash
       run: |
+        set -e
         options="${{ inputs.pytest-args }}"
         if [ -n "${{ inputs.paths-to-ignore }}" ]; then
           IFS=',' read -ra paths <<< "${{ inputs.paths-to-ignore }}"

@@ -42,6 +42,7 @@ runs:
 
     - name: Configure Git
       run: |
+        set -e
         git config --global user.email "${{ inputs.GIT_USER_EMAIL }}"
         git config --global user.name "${{ inputs.GIT_USER_NAME }}"
       shell: bash
@@ -63,6 +64,7 @@ runs:
 
     - name: Update version number
       run: |
+        set -e
         export VERSION=$(isee gen-semver)
         echo "VERSION=$VERSION" >> $GITHUB_ENV
         isee update-setup-cfg
@@ -74,13 +76,18 @@ runs:
 
     - name: Publish
       run: |
+        set -e
         twine upload dist/${{ inputs.PROJECT_NAME }}-$VERSION.tar.gz -u ${{ inputs.PYPI_USERNAME }} -p ${{ inputs.PYPI_PASSWORD }} --non-interactive  --skip-existing --disable-progress-bar
       shell: bash
 
     - name: Push Changes
-      run: pack check-in "**CI** Formatted code + Updated version number and documentation. [skip ci]" --auto-choose-default-action --bypass-docstring-validation --bypass-tests --bypass-code-formatting --verbose
+      run: |
+        set -e
+        pack check-in "**CI** Formatted code + Updated version number and documentation. [skip ci]" --auto-choose-default-action --bypass-docstring-validation --bypass-tests --bypass-code-formatting --verbose
       shell: bash
 
     - name: Tag Repository
-      run: isee tag-repo $VERSION
+      run: |
+        set -e
+        isee tag-repo $VERSION
       shell: bash

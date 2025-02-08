@@ -24,6 +24,7 @@ runs:
     - name: "Run setup.py"
       shell: bash
       run: |
+        set -e
         distributions=""
         IFS=',' read -ra paths <<< "${{ inputs.distributions }}"
           for path in "${paths[@]}"

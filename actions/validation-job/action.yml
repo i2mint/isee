@@ -78,6 +78,7 @@ runs:
         use-setup-cfg: ${{ inputs.use-setup-cfg }}
     - name: Validate docstrings
       run: |
+        set -e
         if ["${{ inputs.pylint-enable }}" != "false"];then
           pylint ./${{ inputs.project-name }} --disable=all --enable=${{ inputs.pylint-enable }}
         else
@@ -86,6 +87,7 @@ runs:
       shell: bash
     - name: Test
       run: |
+        set -e
         if ["${{ inputs.pytest-enable }}" == "true"];then
           pytest --doctest-modules -v ./${{ inputs.project-name }}
         else

@@ -30,6 +30,7 @@ runs:
     - name: Validate Source Code
       shell: bash
       run: |
+        set -e
         if [ -n "${{ inputs.ignore }}" ]; then
           ignore="--ignore ${{ inputs.ignore }}"
         fi

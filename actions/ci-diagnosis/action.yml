@@ -15,6 +15,7 @@ runs:
   steps:
     - name: Print environment variables
       run: |
+        set -e
         echo "GITHUB_REPOSITORY: $GITHUB_REPOSITORY"
         echo "GITHUB_REF: $GITHUB_REF"
         echo "GITHUB_WORKSPACE: $GITHUB_WORKSPACE"
