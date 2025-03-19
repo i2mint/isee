@@ -113,14 +113,8 @@ def gen_semver(
     )
     if version is None:
         raise ValueError('No version found')
-    # print(version)  # WARNING!! Don't edit!!! This is effectively the return value
-    # --> This is a hack because returning the version is not working in github actions
-    #     CI, so printing the version is a workaround for now.
-    #     if you condition this print, or enhance it (e.g. f"{version=}") you will break
-    #     the CI. So, please don't edit this line.
-
-    if verbose:
-        print(f"{version}")  # Print the new version (DO NOT EDIT: This is used to capture output!! TODO: Hacky way of returning! Change!!
+    # WARNING!!! DO NOT PRINT ANYTHING ANYWHERE IN THIS FUNCTION, or it will be considered as output!
+    # TODO: Figure out why the CI setup captures all prints and return values instead of just return values!
     return version
 
 
