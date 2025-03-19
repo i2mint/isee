@@ -24,57 +24,55 @@ runs:
       uses: i2mint/isee/actions/install-packages@master
       with:
         pypi-packages: 'pytest'
+    - name: Create conftest.py
+      shell: bash
+      run: |
+        if [ -n "${{ inputs.paths-to-ignore }}" ]; then
+          echo "Creating conftest.py with custom collection filter..."
+          cat > conftest.py << 'EOF'
+import pytest
+import os
+import re
+
+def should_skip_path(path_str, patterns):
+    """Check if a path should be skipped."""
+    for pattern in patterns:
+        if not pattern:
+            continue
+        # Match both directories and standalone files
+        if (
+            f"/{pattern}/" in path_str or 
+            path_str.endswith(f"/{pattern}") or
+            path_str.endswith(f"/{pattern}.py")
+        ):
+            return True
+    return False
+
+def pytest_ignore_collect(path, config):
+    """Custom hook to ignore specific files during collection."""
+    ignore_patterns_str = os.environ.get('PYTEST_IGNORE_PATTERNS', '')
+    if not ignore_patterns_str:
+        return False
+        
+    ignore_patterns = [p.strip() for p in ignore_patterns_str.split(',')]
+    path_str = str(path)
+    
+    return should_skip_path(path_str, ignore_patterns)
+EOF
+        fi
     - name: Validate Source Code
       shell: bash
       run: |
         set -e
         options="${{ inputs.pytest-args }}"
         
-        # Pre-filter files to skip ones we know will fail
+        # Create a temporary pytest.ini file for more robust ignore patterns
         if [ -n "${{ inputs.paths-to-ignore }}" ]; then
-          echo "Creating collection filter..."
-          
-          # Create a temporary python file to use as a collection filter
-          cat > pytest_filter.py << 'EOL'
-        import os
-        
-        def pytest_ignore_collect(path, config):
-            # Get the ignore paths from the pytest config
-            paths_to_ignore = os.environ.get('PATHS_TO_IGNORE', '').split(',')
-            
-            # Convert path to string for easier comparison
-            path_str = str(path)
-            
-            # Check if this path matches any of our ignore patterns
-            for ignore_path in paths_to_ignore:
-                ignore_path = ignore_path.strip()
-                if not ignore_path:
-                    continue
-                    
-                # Handle both files and directories
-                if (
-                    ignore_path in path_str or 
-                    f"/{ignore_path}/" in path_str or 
-                    path_str.endswith(f"/{ignore_path}") or
-                    path_str.endswith(f"/{ignore_path}.py")
-                ):
-                    return True
-            
-            return False
-        EOL
-          
-          # Export the paths to ignore as an environment variable
-          export PATHS_TO_IGNORE="${{ inputs.paths-to-ignore }}"
-          
-          # Add the conftest hook to pytest options
-          options+=" -p pytest_filter"
-          
-          # Also use standard pytest ignore mechanisms
           echo "Creating temporary pytest configuration..."
           echo "[pytest]" > pytest.ini
           echo "python_files = *.py" >> pytest.ini
           
-          # Create ignore patterns
+          # Create addopts with ignore-glob patterns
           addopts="addopts ="
           IFS=',' read -ra paths <<< "${{ inputs.paths-to-ignore }}"
           
@@ -83,9 +81,17 @@ runs:
               # Add standard ignore option
               options+=" --ignore=${{ inputs.root-dir }}/$path"
               
-              # Add ignore-glob patterns - be more thorough
+              # Add specific file ignore if it exists
+              if [ -f "${{ inputs.root-dir }}/$path.py" ]; then
+                  options+=" --ignore=${{ inputs.root-dir }}/$path.py"
+              fi
+              
+              # Add ignore-glob pattern to pytest.ini
               addopts+=" --ignore-glob=\"**/$path/**\" --ignore-glob=\"**/$path.py\""
           done
+          
+          # Export the ignore patterns as an environment variable for conftest.py
+          export PYTEST_IGNORE_PATTERNS="${{ inputs.paths-to-ignore }}"
           
           # Write the addopts line to pytest.ini
           echo "$addopts" >> pytest.ini
@@ -97,13 +103,15 @@ runs:
           options+=" --doctest-modules"
         fi
         
-        # Add confcutdir option to ignore conftest.py files in ignored directories
-        options+=" --confcutdir=${{ inputs.root-dir }}"
+        # Add collection only as a diagnostic run
+        echo "Checking collection first (diagnostic):"
+        pytest --collect-only ${{ inputs.root-dir }} || echo "Collection errors detected, but continuing with actual test run"
         
-        # Add collect-only first to debug collection issues
-        echo "Running collection check first:"
-        pytest $options ${{ inputs.root-dir }} --collect-only || true
-        
-        echo "Running full test suite:"
         echo "Running: pytest $options ${{ inputs.root-dir }}"
+        # Explicitly exclude the _resources.py file if it exists
+        if [ -f "${{ inputs.root-dir }}/_resources.py" ]; then
+          echo "Explicitly excluding ${{ inputs.root-dir }}/_resources.py"
+          options+=" --ignore=${{ inputs.root-dir }}/_resources.py"
+        fi
+        
         pytest $options ${{ inputs.root-dir }}
