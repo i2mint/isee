@@ -30,44 +30,37 @@ runs:
         set -e
         options="${{ inputs.pytest-args }}"
         
-        # Create norecursedirs argument to completely skip directories
-        norecursedirs=""
+        # Create a temporary pytest.ini file for more robust ignore patterns
         if [ -n "${{ inputs.paths-to-ignore }}" ]; then
+          echo "Creating temporary pytest configuration..."
+          echo "[pytest]" > pytest.ini
+          echo "python_files = *.py" >> pytest.ini
+          
+          # Create addopts with ignore-glob patterns
+          addopts="addopts ="
           IFS=',' read -ra paths <<< "${{ inputs.paths-to-ignore }}"
+          
           for path in "${paths[@]}"
           do
-              # Add both --ignore and to norecursedirs
+              # Add standard ignore option
               options+=" --ignore=${{ inputs.root-dir }}/$path"
               
-              # Build up norecursedirs list (space-separated)
-              if [ -z "$norecursedirs" ]; then
-                norecursedirs="$path"
-              else
-                norecursedirs="$norecursedirs $path"
-              fi
+              # Add ignore-glob pattern to pytest.ini
+              addopts+=" --ignore-glob=\"**/$path/**\""
           done
           
-          # If we have directories to skip, add the norecursedirs option
-          if [ -n "$norecursedirs" ]; then
-            options+=" --norecursedirs=$norecursedirs"
-          fi
+          # Write the addopts line to pytest.ini
+          echo "$addopts" >> pytest.ini
+          cat pytest.ini
         fi
         
+        # Add doctest option if not skipped
         if [ "${{ inputs.skip-doctests }}" != "true" ]; then
           options+=" --doctest-modules"
         fi
         
         # Add confcutdir option to ignore conftest.py files in ignored directories
         options+=" --confcutdir=${{ inputs.root-dir }}"
-        
-        # Create a pytest.ini file to add more exclude patterns
-        if [ -n "${{ inputs.paths-to-ignore }}" ]; then
-          echo "Creating temporary pytest configuration..."
-          echo "[pytest]" > pytest.ini
-          echo "python_files = *.py" >> pytest.ini
-          echo "addopts = --ignore-glob=\"**/_resources/**\"" >> pytest.ini
-          cat pytest.ini
-        fi
         
         echo "Running: pytest $options ${{ inputs.root-dir }}"
         pytest $options ${{ inputs.root-dir }}
