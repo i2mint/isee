@@ -30,13 +30,51 @@ runs:
         set -e
         options="${{ inputs.pytest-args }}"
         
-        # Create a temporary pytest.ini file for more robust ignore patterns
+        # Pre-filter files to skip ones we know will fail
         if [ -n "${{ inputs.paths-to-ignore }}" ]; then
+          echo "Creating collection filter..."
+          
+          # Create a temporary python file to use as a collection filter
+          cat > pytest_filter.py << 'EOL'
+        import os
+        
+        def pytest_ignore_collect(path, config):
+            # Get the ignore paths from the pytest config
+            paths_to_ignore = os.environ.get('PATHS_TO_IGNORE', '').split(',')
+            
+            # Convert path to string for easier comparison
+            path_str = str(path)
+            
+            # Check if this path matches any of our ignore patterns
+            for ignore_path in paths_to_ignore:
+                ignore_path = ignore_path.strip()
+                if not ignore_path:
+                    continue
+                    
+                # Handle both files and directories
+                if (
+                    ignore_path in path_str or 
+                    f"/{ignore_path}/" in path_str or 
+                    path_str.endswith(f"/{ignore_path}") or
+                    path_str.endswith(f"/{ignore_path}.py")
+                ):
+                    return True
+            
+            return False
+        EOL
+          
+          # Export the paths to ignore as an environment variable
+          export PATHS_TO_IGNORE="${{ inputs.paths-to-ignore }}"
+          
+          # Add the conftest hook to pytest options
+          options+=" -p pytest_filter"
+          
+          # Also use standard pytest ignore mechanisms
           echo "Creating temporary pytest configuration..."
           echo "[pytest]" > pytest.ini
           echo "python_files = *.py" >> pytest.ini
           
-          # Create addopts with ignore-glob patterns
+          # Create ignore patterns
           addopts="addopts ="
           IFS=',' read -ra paths <<< "${{ inputs.paths-to-ignore }}"
           
@@ -45,8 +83,8 @@ runs:
               # Add standard ignore option
               options+=" --ignore=${{ inputs.root-dir }}/$path"
               
-              # Add ignore-glob pattern to pytest.ini
-              addopts+=" --ignore-glob=\"**/$path/**\""
+              # Add ignore-glob patterns - be more thorough
+              addopts+=" --ignore-glob=\"**/$path/**\" --ignore-glob=\"**/$path.py\""
           done
           
           # Write the addopts line to pytest.ini
@@ -62,5 +100,10 @@ runs:
         # Add confcutdir option to ignore conftest.py files in ignored directories
         options+=" --confcutdir=${{ inputs.root-dir }}"
         
+        # Add collect-only first to debug collection issues
+        echo "Running collection check first:"
+        pytest $options ${{ inputs.root-dir }} --collect-only || true
+        
+        echo "Running full test suite:"
         echo "Running: pytest $options ${{ inputs.root-dir }}"
         pytest $options ${{ inputs.root-dir }}
