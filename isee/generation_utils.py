@@ -146,7 +146,9 @@ def gen_semver(
     if version is None:
         raise ValueError('No version found')
     else:
-        print(f"{version}")
+        # WTF!!! If I return version, CI doesn't see it. If I print the version, it doesn't see it. If I print AND return, it sees both. 
+        # It seems like the function needs to print something for both print and return to be captured?!?!
+        print(" ")  # ... so I'm printing a space, and on the CI size I will remove all white spaces. King of hacks! Barf!!
         return version
         # print(version)  # WARNING!! Don't edit!!! This is effectively the return value
        # --> This is a hack because returning the version is not working in github actions
