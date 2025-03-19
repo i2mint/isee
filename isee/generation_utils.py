@@ -122,7 +122,6 @@ def gen_semver(
     *,
     dir_path: str = None,
     version_patch_prefix: str = "",
-    verbose=True,
 ):
     """
     Generate a new semantic version based on git commit messages and tags.
@@ -147,7 +146,8 @@ def gen_semver(
     if version is None:
         raise ValueError('No version found')
     else:
-        print(version)  # WARNING!! Don't edit!!! This is effectively the return value
+        return version
+        # print(version)  # WARNING!! Don't edit!!! This is effectively the return value
        # --> This is a hack because returning the version is not working in github actions
        #     CI, so printing the version is a workaround for now.
        #     if you condition this print, or enhance it (e.g. f"{version=}") you will break
