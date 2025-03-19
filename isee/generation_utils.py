@@ -90,7 +90,7 @@ def gen_semver(
     *,
     dir_path: str = None,
     version_patch_prefix: str = "",
-    verbose=True,
+    output_mode: str = "auto"
 ):
     """
     Generate a new semantic version based on git commit messages and tags.
@@ -99,45 +99,27 @@ def gen_semver(
     - dir_path (str): The directory path where the git repository is located.
         If None, uses the current directory.
     - version_patch_prefix (str): A prefix to be added to the patch version.
+    - output_mode (str): How to output the version:
+        - "auto": Detect if running in GitHub Actions and adjust accordingly
+        - "print": Only print to stdout (for shell capture)
+        - "return": Only return (for Python API use)
+        - "both": Both print and return
 
     Returns:
-    - None: Prints the new version.
+    - str: The new version string if output_mode is "return" or "both".
+    - None: If output_mode is "print".
     """
+    import os
 
-    # if dir_path:
-    #     os.chdir(dir_path)  # Change to the specified directory
+    # Determine if running in GitHub Actions
+    in_github_actions = os.environ.get('GITHUB_ACTIONS') == 'true'
+    
+    if output_mode == "auto":
+        # Auto-detect the best output mode
+        output_mode = "print" if in_github_actions else "return"
+
     work_tree = dir_path or os.path.abspath(".")
-    # Generate the new version:
-    version = get_new_version(
-        work_tree=work_tree, version_patch_prefix=version_patch_prefix
-    )
-    if version is None:
-        raise ValueError('No version found')
-    # WARNING!!! DO NOT PRINT ANYTHING ANYWHERE IN THIS FUNCTION, or it will be considered as output!
-    # TODO: Figure out why the CI setup captures all prints and return values instead of just return values!
-    return version
-
-
-def gen_semver(
-    *,
-    dir_path: str = None,
-    version_patch_prefix: str = "",
-):
-    """
-    Generate a new semantic version based on git commit messages and tags.
-
-    Args:
-    - dir_path (str): The directory path where the git repository is located.
-        If None, uses the current directory.
-    - version_patch_prefix (str): A prefix to be added to the patch version.
-
-    Returns:
-    - None: Prints the new version.
-    """
-
-    # if dir_path:
-    #     os.chdir(dir_path)  # Change to the specified directory
-    work_tree = dir_path or os.path.abspath(".")
+    
     # Generate the new version:
     version = get_new_version(
         work_tree=work_tree, version_patch_prefix=version_patch_prefix
@@ -145,21 +127,17 @@ def gen_semver(
    
     if version is None:
         raise ValueError('No version found')
-    else:
-        # WTF!!! If I return version, CI doesn't see it. If I print the version, it doesn't see it. If I print AND return, it sees both. 
-        # It seems like the function needs to print something for both print and return to be captured?!?!
-        print(" ")  # ... so I'm printing a space, and on the CI size I will remove all white spaces. King of hacks! Barf!!
-        return version
-        # print(version)  # WARNING!! Don't edit!!! This is effectively the return value
-       # --> This is a hack because returning the version is not working in github actions
-       #     CI, so printing the version is a workaround for now.
-       #     if you condition this print, or enhance it (e.g. f"{version=}") you will break
-       #     the CI. So, please don't edit this line.
-    # Note: No return value!
-    # TODO: Would be great to just return a version, but CI doesn't seem to capture that!!
-    # WARNING!!! DO NOT PRINT ANYTHING ANYWHERE IN THIS FUNCTION, or it will be considered as output!
-    # TODO: Figure out why the CI setup captures all prints and return values instead of just return values!
     
+    # Handle output based on the mode
+    if output_mode in ("print", "both"):
+        # Print clean version string with no extra characters
+        print(version.strip())
+    
+    if output_mode in ("return", "both"):
+        return version
+    
+    return None
+
 
 def generate_documentation(*, project_dir=None):
     if not project_dir:
