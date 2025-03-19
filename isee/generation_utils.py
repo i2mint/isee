@@ -118,6 +118,45 @@ def gen_semver(
     return version
 
 
+def gen_semver(
+    *,
+    dir_path: str = None,
+    version_patch_prefix: str = "",
+    verbose=True,
+):
+    """
+    Generate a new semantic version based on git commit messages and tags.
+
+    Args:
+    - dir_path (str): The directory path where the git repository is located.
+        If None, uses the current directory.
+    - version_patch_prefix (str): A prefix to be added to the patch version.
+
+    Returns:
+    - None: Prints the new version.
+    """
+
+    # if dir_path:
+    #     os.chdir(dir_path)  # Change to the specified directory
+    work_tree = dir_path or os.path.abspath(".")
+    # Generate the new version:
+    version = get_new_version(
+        work_tree=work_tree, version_patch_prefix=version_patch_prefix
+    )
+    if version is None:
+        raise ValueError('No version found')
+    elif verbose:
+        print(version)  # WARNING!! Don't edit!!! This is effectively the return value
+       # --> This is a hack because returning the version is not working in github actions
+       #     CI, so printing the version is a workaround for now.
+       #     if you condition this print, or enhance it (e.g. f"{version=}") you will break
+       #     the CI. So, please don't edit this line.
+    # Note: No return value!
+    # TODO: Would be great to just return a version, but CI doesn't seem to capture that!!
+    # WARNING!!! DO NOT PRINT ANYTHING ANYWHERE IN THIS FUNCTION, or it will be considered as output!
+    # TODO: Figure out why the CI setup captures all prints and return values instead of just return values!
+    
+
 def generate_documentation(*, project_dir=None):
     if not project_dir:
         project_dir = get_env_var("GITHUB_WORKSPACE")
