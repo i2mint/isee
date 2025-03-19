@@ -11,12 +11,9 @@ runs:
       shell: bash
       run: |
         set -e
-        # Generate the new version
-        VERSION=$(isee gen-semver)
-
-        # Trim any whitespace or invisible characters
-        VERSION=$(echo "$VERSION" | tr -d '[:space:]')
-                
+        # Generate the new version with explicit print mode
+        VERSION=$(isee gen-semver --output-mode=print)
+        
         # Validate the version string
         if [[ ! "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
           echo "Invalid version: $VERSION"
