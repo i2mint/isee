@@ -13,7 +13,10 @@ runs:
         set -e
         # Generate the new version
         VERSION=$(isee gen-semver)
-        
+
+        # Trim any whitespace or invisible characters
+        VERSION=$(echo "$VERSION" | tr -d '[:space:]')
+                
         # Validate the version string
         if [[ ! "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
           echo "Invalid version: $VERSION"
