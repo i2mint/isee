@@ -6,17 +6,17 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>isee.file_modification_utils &mdash; isee 0.2.20 documentation</title>
+  <title>isee.file_modification_utils &mdash; isee 0.2.45 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
-      <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=fd3f3429" />
+      <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
 
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=20e0ead2"></script>
-      <script src="../../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../../_static/documentation_options.js?v=f93893b5"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../_static/toggleprompt.js?v=d7ede5d2"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -51,7 +51,10 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../isee.html">isee</a></li>
 <li class="toctree-l1"><a class="reference internal" href="common.html">isee.common</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">isee.file_modification_utils</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">isee.file_modification_utils</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#isee.file_modification_utils.update_setup_cfg"><code class="docutils literal notranslate"><span class="pre">update_setup_cfg()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="generation_utils.html">isee.generation_utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="git_utils.html">isee.git_utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pip_utils.html">isee.pip_utils</a></li>
@@ -92,6 +95,20 @@
 - update_setup_py: Update the setup.py file.
 - _get_setup_filepath: Get the setup file path.
 - _update_file: Update the file content.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="isee.file_modification_utils.update_setup_cfg">
+<span class="sig-prename descclassname"><span class="pre">isee.file_modification_utils.</span></span><span class="sig-name descname"><span class="pre">update_setup_cfg</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'setup.cfg'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">version</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/isee/file_modification_utils.html#update_setup_cfg"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#isee.file_modification_utils.update_setup_cfg" title="Link to this definition"></a></dt>
+<dd><p>Update the version in setup.cfg file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>file_path</strong> – Path to the setup.cfg file</p></li>
+<li><p><strong>version</strong> – The version to set. If None, tries to get it from the VERSION environment variable.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 
 
