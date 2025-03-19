@@ -143,9 +143,10 @@ def gen_semver(
     version = get_new_version(
         work_tree=work_tree, version_patch_prefix=version_patch_prefix
     )
+   
     if version is None:
         raise ValueError('No version found')
-    elif verbose:
+    else:
         print(version)  # WARNING!! Don't edit!!! This is effectively the return value
        # --> This is a hack because returning the version is not working in github actions
        #     CI, so printing the version is a workaround for now.
