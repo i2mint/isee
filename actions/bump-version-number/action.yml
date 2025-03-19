@@ -7,8 +7,9 @@ runs:
       uses: i2mint/isee/actions/install-packages@master
       with:
         pypi-packages: 'isee'
-    - name: Update version number
+    - name: Generate Version Number
       shell: bash
+      id: gen_version
       run: |
         set -e
         # Generate the new version with explicit print mode
@@ -22,6 +23,18 @@ runs:
         
         # Export the version to the GitHub environment
         echo "VERSION=$VERSION" >> $GITHUB_ENV
+        echo "::set-output name=version::$VERSION"
+        
+        # Also make it available in the current shell
+        export VERSION="$VERSION"
+        echo "Generated version: $VERSION"
+    
+    - name: Update setup.cfg
+      shell: bash
+      run: |
+        # Get the version from the previous step
+        VERSION="${{ steps.gen_version.outputs.version }}"
+        echo "Updating setup.cfg with version: $VERSION"
         
         # Update the setup.cfg with the new version
-        isee update-setup-cfg
+        isee update-setup-cfg --version="$VERSION"
