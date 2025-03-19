@@ -25,45 +25,21 @@ runs:
       with:
         pypi-packages: 'pytest'
 
-    - name: Create conftest.py for ignored paths
-      shell: bash
-      run: |
-        if [ -n "${{ inputs.paths-to-ignore }}" ]; then
-          echo "Creating conftest.py to ignore paths: ${{ inputs.paths-to-ignore }}"
-          
-          # Create a conftest.py file to ignore specified paths
-          cat > ${{ inputs.root-dir }}/conftest.py << 'EOF'
-import os
-import sys
-
-# Get the ignored paths from environment variable
-ignored_paths_str = os.environ.get('PYTEST_IGNORED_PATHS', '')
-collect_ignore = []
-
-if ignored_paths_str:
-    ignored_paths = ignored_paths_str.split(',')
-    for path in ignored_paths:
-        # Add the path as a module
-        if not path.endswith('.py'):
-            module_path = f"{path}.py"
-            if os.path.exists(module_path):
-                collect_ignore.append(module_path)
-        else:
-            collect_ignore.append(path)
-            
-        # Add the path as a directory
-        if os.path.isdir(path):
-            collect_ignore.append(path)
-EOF
-        fi
-
     - name: Validate Source Code
       shell: bash
-      env:
-        PYTEST_IGNORED_PATHS: "${{ inputs.paths-to-ignore }}"
       run: |
         set -e
         options="${{ inputs.pytest-args }}"
+        if [ -n "${{ inputs.paths-to-ignore }}" ]; then
+          IFS=',' read -ra paths <<< "${{ inputs.paths-to-ignore }}"
+          for path in "${paths[@]}"
+          do
+              # First try the path as a module
+              options+=" --ignore-glob=${{ inputs.root-dir }}/$path.py"
+              # Then try it as a directory
+              options+=" --ignore-glob=${{ inputs.root-dir }}/$path/*"
+          done
+        fi
         if [ "${{ inputs.skip-doctests }}" != "true" ]; then
           options+=" --doctest-modules"
         fi
