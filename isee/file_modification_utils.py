@@ -48,6 +48,7 @@ def update_manifest(manifest_path: str):
 #     version = version or get_env_var("VERSION")
 #     _update_file(path, r"version\s=\s.+", f"version = {version}")
 
+
 def update_setup_cfg(
     *,
     file_path: str = "setup.cfg",
@@ -55,7 +56,7 @@ def update_setup_cfg(
 ):
     """
     Update the version in setup.cfg file.
-    
+
     Args:
         file_path: Path to the setup.cfg file
         version: The version to set. If None, tries to get it from the VERSION environment variable.
@@ -63,33 +64,33 @@ def update_setup_cfg(
     from configparser import ConfigParser
     import os
     from pathlib import Path
-    
+
     def get_env_var(key):
         """Get an environment variable and ensure it's not empty."""
         value = os.environ.get(key, "").strip()
         if not value:
             raise RuntimeError(f"{key} is not defined or is empty!")
         return value
-    
+
     # Get version from arg or environment
     version = version or get_env_var("VERSION")
-    
+
     print(f"Updating setup.cfg with version: {version}")
-    
+
     # Load the config file
     config = ConfigParser()
     config.read(file_path)
-    
+
     # Update the version
     if "metadata" not in config:
         config["metadata"] = {}
-    
+
     config["metadata"]["version"] = version
-    
+
     # Save the updated config
     with open(file_path, "w") as f:
         config.write(f)
-    
+
     print(f"Updated {file_path} with version {version}")
 
 

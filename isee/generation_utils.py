@@ -87,10 +87,7 @@ def get_new_version(
 
 
 def gen_semver(
-    *,
-    dir_path: str = None,
-    version_patch_prefix: str = "",
-    output_mode: str = "auto"
+    *, dir_path: str = None, version_patch_prefix: str = "", output_mode: str = "auto"
 ):
     """
     Generate a new semantic version based on git commit messages and tags.
@@ -112,30 +109,30 @@ def gen_semver(
     import os
 
     # Determine if running in GitHub Actions
-    in_github_actions = os.environ.get('GITHUB_ACTIONS') == 'true'
-    
+    in_github_actions = os.environ.get("GITHUB_ACTIONS") == "true"
+
     if output_mode == "auto":
         # Auto-detect the best output mode
         output_mode = "print" if in_github_actions else "return"
 
     work_tree = dir_path or os.path.abspath(".")
-    
+
     # Generate the new version:
     version = get_new_version(
         work_tree=work_tree, version_patch_prefix=version_patch_prefix
     )
-   
+
     if version is None:
-        raise ValueError('No version found')
-    
+        raise ValueError("No version found")
+
     # Handle output based on the mode
     if output_mode in ("print", "both"):
         # Print clean version string with no extra characters
         print(version.strip())
-    
+
     if output_mode in ("return", "both"):
         return version
-    
+
     return None
 
 
