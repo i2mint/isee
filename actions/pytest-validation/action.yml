@@ -24,94 +24,50 @@ runs:
       uses: i2mint/isee/actions/install-packages@master
       with:
         pypi-packages: 'pytest'
-    - name: Create conftest.py
-      shell: bash
-      run: |
-        if [ -n "${{ inputs.paths-to-ignore }}" ]; then
-          echo "Creating conftest.py with custom collection filter..."
-          cat > conftest.py << 'EOF'
-import pytest
-import os
-import re
-
-def should_skip_path(path_str, patterns):
-    """Check if a path should be skipped."""
-    for pattern in patterns:
-        if not pattern:
-            continue
-        # Match both directories and standalone files
-        if (
-            f"/{pattern}/" in path_str or 
-            path_str.endswith(f"/{pattern}") or
-            path_str.endswith(f"/{pattern}.py")
-        ):
-            return True
-    return False
-
-def pytest_ignore_collect(path, config):
-    """Custom hook to ignore specific files during collection."""
-    ignore_patterns_str = os.environ.get('PYTEST_IGNORE_PATTERNS', '')
-    if not ignore_patterns_str:
-        return False
-        
-    ignore_patterns = [p.strip() for p in ignore_patterns_str.split(',')]
-    path_str = str(path)
-    
-    return should_skip_path(path_str, ignore_patterns)
-EOF
-        fi
     - name: Validate Source Code
       shell: bash
       run: |
         set -e
         options="${{ inputs.pytest-args }}"
         
-        # Create a temporary pytest.ini file for more robust ignore patterns
+        # Create norecursedirs argument to completely skip directories
+        norecursedirs=""
         if [ -n "${{ inputs.paths-to-ignore }}" ]; then
-          echo "Creating temporary pytest configuration..."
-          echo "[pytest]" > pytest.ini
-          echo "python_files = *.py" >> pytest.ini
-          
-          # Create addopts with ignore-glob patterns
-          addopts="addopts ="
           IFS=',' read -ra paths <<< "${{ inputs.paths-to-ignore }}"
-          
           for path in "${paths[@]}"
           do
-              # Add standard ignore option
+              # Add both --ignore and to norecursedirs
               options+=" --ignore=${{ inputs.root-dir }}/$path"
               
-              # Add specific file ignore if it exists
-              if [ -f "${{ inputs.root-dir }}/$path.py" ]; then
-                  options+=" --ignore=${{ inputs.root-dir }}/$path.py"
+              # Build up norecursedirs list (space-separated)
+              if [ -z "$norecursedirs" ]; then
+                norecursedirs="$path"
+              else
+                norecursedirs="$norecursedirs $path"
               fi
-              
-              # Add ignore-glob pattern to pytest.ini
-              addopts+=" --ignore-glob=\"**/$path/**\" --ignore-glob=\"**/$path.py\""
           done
           
-          # Export the ignore patterns as an environment variable for conftest.py
-          export PYTEST_IGNORE_PATTERNS="${{ inputs.paths-to-ignore }}"
-          
-          # Write the addopts line to pytest.ini
-          echo "$addopts" >> pytest.ini
-          cat pytest.ini
+          # If we have directories to skip, add the norecursedirs option
+          if [ -n "$norecursedirs" ]; then
+            options+=" --norecursedirs=$norecursedirs"
+          fi
         fi
         
-        # Add doctest option if not skipped
         if [ "${{ inputs.skip-doctests }}" != "true" ]; then
           options+=" --doctest-modules"
         fi
         
-        # Add collection only as a diagnostic run
-        echo "Checking collection first (diagnostic):"
-        pytest --collect-only ${{ inputs.root-dir }} || echo "Collection errors detected, but continuing with actual test run"
+        # Add confcutdir option to ignore conftest.py files in ignored directories
+        options+=" --confcutdir=${{ inputs.root-dir }}"
         
-        echo "Running: pytest $options ${{ inputs.root-dir }}"
-        # Explicitly exclude the _resources.py file if it exists
-        if [ -f "${{ inputs.root-dir }}/_resources.py" ]; then
-          echo "Explicitly excluding ${{ inputs.root-dir }}/_resources.py"
-          options+=" --ignore=${{ inputs.root-dir }}/_resources.py"
+        # Create a pytest.ini file to add more exclude patterns
+        if [ -n "${{ inputs.paths-to-ignore }}" ]; then
+          echo "Creating temporary pytest configuration..."
+          echo "[pytest]" > pytest.ini
+          echo "python_files = *.py" >> pytest.ini
+          echo "addopts = --ignore-glob=\"**/_resources/**\"" >> pytest.ini
+          cat pytest.ini
         fi
         
+        echo "Running: pytest $options ${{ inputs.root-dir }}"
         pytest $options ${{ inputs.root-dir }}
