@@ -120,7 +120,7 @@ def gen_semver(
     #     the CI. So, please don't edit this line.
 
     if verbose:
-        print(f"New version: {version}")  # Print the new version
+        print(f"{version}")  # Print the new version (DO NOT EDIT: This is used to capture output!! TODO: Hacky way of returning! Change!!
     return version
 
 
