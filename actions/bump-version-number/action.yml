@@ -1,6 +1,5 @@
-name: "Bump verison number"
-description: "Bump the version number in setup.cfg and save it to the environment 
-  variable VERSION"
+name: "Bump version number"
+description: "Bump the version number in setup.cfg and save it to the environment variable VERSION"
 runs:
   using: 'composite'
   steps:
@@ -12,7 +11,17 @@ runs:
       shell: bash
       run: |
         set -e
-        # export VERSION=$(isee gen-semver)
-        export VERSION=$(echo $(isee gen-semver))
+        # Generate the new version
+        VERSION=$(isee gen-semver)
+        
+        # Validate the version string
+        if [[ ! "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+          echo "Invalid version: $VERSION"
+          exit 1
+        fi
+        
+        # Export the version to the GitHub environment
         echo "VERSION=$VERSION" >> $GITHUB_ENV
+        
+        # Update the setup.cfg with the new version
         isee update-setup-cfg
