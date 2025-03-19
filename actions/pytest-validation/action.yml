@@ -34,10 +34,27 @@ runs:
           IFS=',' read -ra paths <<< "${{ inputs.paths-to-ignore }}"
           for path in "${paths[@]}"
           do
-              options+=" --ignore=${{ inputs.root-dir }}/$path"
+              # Check if the path is a file or directory
+              if [[ "$path" == *".py" || -f "${{ inputs.root-dir }}/$path" ]]; then
+                  # For files
+                  options+=" --ignore-glob=${{ inputs.root-dir }}/$path"
+              elif [[ "$path" == *"_"* && ! "$path" == *"/" ]]; then
+                  # For modules with underscore prefix (like _resources)
+                  options+=" --ignore-glob=${{ inputs.root-dir }}/$path.py"
+                  options+=" --ignore-glob=${{ inputs.root-dir }}/$path/"
+              else
+                  # For directories
+                  options+=" --ignore-glob=${{ inputs.root-dir }}/$path/*"
+                  options+=" --ignore-glob=${{ inputs.root-dir }}/$path"
+              fi
           done
         fi
         if [ "${{ inputs.skip-doctests }}" != "true" ]; then
           options+=" --doctest-modules"
         fi
+        
+        # Add norecursedirs for extra safety
+        options+=" --norecursedirs='${{ inputs.paths-to-ignore }}'"
+        
+        # Run pytest with all options
         pytest $options ${{ inputs.root-dir }}
