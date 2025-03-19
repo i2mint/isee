@@ -146,6 +146,7 @@ def gen_semver(
     if version is None:
         raise ValueError('No version found')
     else:
+        print(f"{version}")
         return version
         # print(version)  # WARNING!! Don't edit!!! This is effectively the return value
        # --> This is a hack because returning the version is not working in github actions
