@@ -1,5 +1,4 @@
 name: Install Packages
-
 inputs:
   pypi-packages:
     description: 'Python packages to install'
@@ -19,7 +18,6 @@ inputs:
   ssh-private-key:
     description: 'SSH private key to install private packages from source, if any.'
     required: false
-
 runs:
   using: 'composite'
   steps:
@@ -28,72 +26,85 @@ runs:
       uses: webfactory/ssh-agent@v0.7.0
       with:
           ssh-private-key: ${{ inputs.ssh-private-key }}
-
+    
     - name: Install Pypi Packages
       if: ${{ inputs.pypi-packages }}
       shell: bash
       run: |
         set -e
+        python -m pip install --upgrade pip wheel | tee -a pip_install.log
         if [[ "${{ inputs.pypi-packages }}" == "isee" && "${{ github.repository }}" == "i2mint/isee" ]]; then
-          echo "Installing isee from source"
-          python setup.py sdist
-          python -m pip $(ls -t dist/isee-*.tar.gz 2>/dev/null | head -n 1)
+          echo "Installing isee from source" | tee -a pip_install.log
+          python setup.py sdist | tee -a pip_install.log
+          python -m pip install $(ls -t dist/isee-*.tar.gz 2>/dev/null | head -n 1) | tee -a pip_install.log
         elif [[ "${{ inputs.pypi-packages }}" == "wads" && "${{ github.repository }}" == "i2mint/wads" ]]; then
-          echo "Installing wads from source"
-          python setup.py sdist
-          python -m pip install $(ls -t dist/wads-*.tar.gz 2>/dev/null | head -n 1)
+          echo "Installing wads from source" | tee -a pip_install.log
+          python setup.py sdist | tee -a pip_install.log
+          python -m pip install $(ls -t dist/wads-*.tar.gz 2>/dev/null | head -n 1) | tee -a pip_install.log
         else
-          python -m pip install --upgrade pip wheel
-          python -m pip install ${{ inputs.pypi-packages }}
+          python -m pip install ${{ inputs.pypi-packages }} | tee -a pip_install.log
         fi
-
+        
     - name: Install APT Packages
       if: ${{ inputs.apt-packages }}
       shell: bash
       run: |
         set -e
-        sudo apt-get update
-        sudo apt-get install -y ${{ inputs.apt-packages }}
-
+        sudo apt-get update | tee -a apt_install.log
+        sudo apt-get install -y ${{ inputs.apt-packages }} | tee -a apt_install.log
+    
     - name: Install NPM Packages
       if: ${{ inputs.npm-packages }}
       shell: bash
       run: |
         set -e
-        npm install -g ${{ inputs.npm-packages }}
-
+        npm install -g ${{ inputs.npm-packages }} | tee -a npm_install.log
+    
     - name: Install Dependencies
       if: ${{ inputs.dependency-files }}
       shell: bash
       run: |
         set -e
-        python -m pip install --upgrade pip wheel
+        python -m pip install --upgrade pip wheel | tee -a pip_install.log
         IFS=',' read -ra paths <<< "${{ inputs.dependency-files }}"
         for path in "${paths[@]}"
         do
           isee_installed=false
           if [[ $path == *.txt ]]; then
-            python -m pip install -r $path
+            echo "Installing requirements from $path" | tee -a pip_install.log
+            python -m pip install -r $path | tee -a pip_install.log
           elif [[ $path == *.cfg ]]; then
             if [ "$isee_installed" == "false" ]; then
               if [ "${{ github.repository }}" == "i2mint/isee" ]; then
-                echo "Installing isee from source"
-                python setup.py sdist
-                python -m pip install $(ls -t dist/isee-*.tar.gz 2>/dev/null | head -n 1)
+                echo "Installing isee from source" | tee -a pip_install.log
+                python setup.py sdist | tee -a pip_install.log
+                python -m pip install $(ls -t dist/isee-*.tar.gz 2>/dev/null | head -n 1) | tee -a pip_install.log
               else
-                echo "Installing isee from pip"
-                pip -q install isee
+                echo "Installing isee from pip" | tee -a pip_install.log
+                pip -q install isee | tee -a pip_install.log
               fi
               isee_installed=true
             fi
-            isee install-requires
-            isee tests-require
+            echo "Running isee install-requires" | tee -a pip_install.log
+            isee install-requires | tee -a pip_install.log
+            echo "Running isee tests-require" | tee -a pip_install.log
+            isee tests-require | tee -a pip_install.log
           fi
         done
-
-    - name: Upload pip install log
+    
+    - name: Create install logs directory
       if: always()
-      uses: actions/upload-artifact@v2
+      shell: bash
+      run: |
+        mkdir -p installation_logs
+        [ -f pip_install.log ] && mv pip_install.log installation_logs/ || echo "No pip install log found"
+        [ -f apt_install.log ] && mv apt_install.log installation_logs/ || echo "No apt install log found"
+        [ -f npm_install.log ] && mv npm_install.log installation_logs/ || echo "No npm install log found"
+    
+    - name: Upload installation logs
+      if: always()
+      uses: actions/upload-artifact@v3
       with:
-        name: pip-install-log
-        path: pip_install.log
+        name: installation-logs
+        path: installation_logs/
+        retention-days: 7
