@@ -37,14 +37,14 @@ runs:
         if [[ "${{ inputs.pypi-packages }}" == "isee" && "${{ github.repository }}" == "i2mint/isee" ]]; then
           echo "Installing isee from source"
           python setup.py sdist
-          pip install $(ls -t dist/isee-*.tar.gz 2>/dev/null | head -n 1)
+          python -m pip $(ls -t dist/isee-*.tar.gz 2>/dev/null | head -n 1)
         elif [[ "${{ inputs.pypi-packages }}" == "wads" && "${{ github.repository }}" == "i2mint/wads" ]]; then
           echo "Installing wads from source"
           python setup.py sdist
-          pip install $(ls -t dist/wads-*.tar.gz 2>/dev/null | head -n 1)
+          python -m pip install $(ls -t dist/wads-*.tar.gz 2>/dev/null | head -n 1)
         else
           python -m pip install --upgrade pip wheel
-          pip install ${{ inputs.pypi-packages }}
+          python -m pip install ${{ inputs.pypi-packages }}
         fi
 
     - name: Install APT Packages
@@ -73,13 +73,13 @@ runs:
         do
           isee_installed=false
           if [[ $path == *.txt ]]; then
-            pip install -r $path
+            python -m pip install -r $path
           elif [[ $path == *.cfg ]]; then
             if [ "$isee_installed" == "false" ]; then
               if [ "${{ github.repository }}" == "i2mint/isee" ]; then
                 echo "Installing isee from source"
                 python setup.py sdist
-                pip install $(ls -t dist/isee-*.tar.gz 2>/dev/null | head -n 1)
+                python -m pip install $(ls -t dist/isee-*.tar.gz 2>/dev/null | head -n 1)
               else
                 echo "Installing isee from pip"
                 pip -q install isee
@@ -90,3 +90,10 @@ runs:
             isee tests-require
           fi
         done
+
+    - name: Upload pip install log
+      if: always()
+      uses: actions/upload-artifact@v2
+      with:
+        name: pip-install-log
+        path: pip_install.log
