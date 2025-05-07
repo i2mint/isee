@@ -37,7 +37,7 @@ runs:
               # First try the path as a module
               options+=" --ignore-glob=${{ inputs.root-dir }}/$path.py"
               # Then try it as a directory
-              options+=" --ignore-glob=${{ inputs.root-dir }}/$path/**"
+              options+=" --ignore-glob='**/$path/**'"
           done
         fi
         if [ "${{ inputs.skip-doctests }}" != "true" ]; then
