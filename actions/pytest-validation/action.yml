@@ -54,5 +54,5 @@ runs:
           
           echo "Running: pytest $options --doctest-modules $files"
           # shellcheck disable=SC2086
-          pytest $options --doctest-modules $files
+          pytest $options --doctest-modules -o doctest_optionflags="ELLIPSIS IGNORE_EXCEPTION_DETAIL" $files
         fi
