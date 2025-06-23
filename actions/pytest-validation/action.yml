@@ -25,26 +25,19 @@ runs:
       with:
         pypi-packages: 'pytest'
 
-    - name: Validate Source Code
+    - name: Validate Source Code  # Fixed indentation
       shell: bash
       run: |
         set -e
 
-        # Add the doctest_optionflags for ELLIPSIS to the options
-        # We need to ensure this is included unless doctests are skipped.
-        doctest_options=""
-        if [ "${{ inputs.skip-doctests }}" != "true" ]; then
-          doctest_options="--doctest-modules -o doctest_optionflags=ELLIPSIS"
-        fi
-
-        options="${{ inputs.pytest-args }} $doctest_options"
+        options="${{ inputs.pytest-args }}"
 
         # Collect ignore patterns
         ignore_expr=""
         if [ -n "${{ inputs.paths-to-ignore }}" ]; then
           IFS=',' read -ra paths <<< "${{ inputs.paths-to-ignore }}"
           for path in "${paths[@]}"; do
-            path=$(echo "$path" | xargs) # Trim whitespace
+            path=$(echo "$path" | xargs)  # Trim whitespace
             ignore_expr+=" ! -path '${{ inputs.root-dir }}/$path/*'"
           done
         fi
@@ -54,12 +47,12 @@ runs:
           echo "Running: pytest $options ${{ inputs.root-dir }}"
           pytest $options "${{ inputs.root-dir }}"
         else
+          # Safely evaluate find command with dynamic ignore_expr
           echo "Finding .py files excluding: ${{ inputs.paths-to-ignore }}"
           # shellcheck disable=SC2086
           files=$(eval "find '${{ inputs.root-dir }}' -type f -name '*.py' $ignore_expr")
           
-          # The doctest_options now contain --doctest-modules and -o doctest_optionflags=ELLIPSIS
-          echo "Running: pytest $options $files"
+          echo "Running: pytest $options --doctest-modules $files"
           # shellcheck disable=SC2086
-          pytest $options $files
+          pytest $options --doctest-modules $files
         fi
