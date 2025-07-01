@@ -10,6 +10,9 @@ inputs:
       paths from the current directory. Any file under these paths will be ignored. 
       Example: 'examples,core/scrap,setup.py'"
     required: false
+  extra-pypi-packages:
+    description: "Extra PyPI packages to install alongside pytest"
+    required: false
   skip-doctests:
     description: "Skip doctests"
     required: false
@@ -23,7 +26,7 @@ runs:
     - name: Install Dependencies
       uses: i2mint/isee/actions/install-packages@master
       with:
-        pypi-packages: 'pytest'
+        pypi-packages: 'pytest ${{ inputs.extra-pypi-packages }}'
 
     - name: Validate Source Code  # Fixed indentation
       shell: bash
