@@ -72,7 +72,12 @@ def get_new_version(
 
     versions = versions_from_different_sources(work_tree)
 
-    validate_versions(versions, action_when_not_valid=action_when_versions_not_valid)
+    # remove all None versions
+    versions = {k: v for k, v in versions.items() if v is not None}
+    if list(versions.keys()) != ['setup_cfg']:
+        validate_versions(
+            versions, action_when_not_valid=action_when_versions_not_valid
+        )
 
     # Take the highest version from the different sources to be the latest version
     latest_version = max(filter(None, versions.values()), key=semver.VersionInfo.parse)
