@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>isee.pip_utils &mdash; isee 0.2.59 documentation</title>
+  <title>isee.pip_utils &mdash; isee 0.2.60 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -14,7 +14,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=42156a59"></script>
+      <script src="../../_static/documentation_options.js?v=68aead83"></script>
       <script src="../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../_static/toggleprompt.js?v=d7ede5d2"></script>
@@ -135,6 +135,48 @@
         <span class="n">args</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="s2">&quot;--requirement&quot;</span><span class="p">,</span> <span class="n">requirements_filepath</span><span class="p">])</span>
     <span class="n">args</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="s2">&quot;--editable&quot;</span><span class="p">,</span> <span class="n">repository_dir</span><span class="p">])</span>
     <span class="n">pip</span><span class="o">.</span><span class="n">main</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="extras_require">
+<a class="viewcode-back" href="../../module_docs/isee/pip_utils.html#isee.pip_utils.extras_require">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">extras_require</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;testing&quot;</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">project_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return a list of packages for the given extras_require key (e.g. &#39;testing&#39;).</span>
+
+<span class="sd">    If setup.cfg or the section/key is missing return an empty list instead of</span>
+<span class="sd">    raising so callers can safely act on the result.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">config</span> <span class="o">=</span> <span class="n">read_setup_config</span><span class="p">(</span><span class="n">project_dir</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">RuntimeError</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">[]</span>
+
+    <span class="n">section</span> <span class="o">=</span> <span class="s2">&quot;options.extras_require&quot;</span>
+    <span class="k">if</span> <span class="n">section</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">config</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">[]</span>
+
+    <span class="n">raw</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="n">section</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">raw</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">[]</span>
+
+    <span class="n">pkgs</span> <span class="o">=</span> <span class="p">[</span><span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">raw</span><span class="o">.</span><span class="n">splitlines</span><span class="p">()</span> <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()]</span>
+    <span class="k">return</span> <span class="n">pkgs</span></div>
+
+
+
+<div class="viewcode-block" id="install_extras">
+<a class="viewcode-back" href="../../module_docs/isee/pip_utils.html#isee.pip_utils.install_extras">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">install_extras</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;testing&quot;</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">project_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Install packages listed under extras_require[name] in setup.cfg.</span>
+
+<span class="sd">    This is a convenience wrapper used by CI when present. If no packages are</span>
+<span class="sd">    found the function prints a message and does nothing.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">pkgs</span> <span class="o">=</span> <span class="n">extras_require</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">project_dir</span><span class="o">=</span><span class="n">project_dir</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">pkgs</span><span class="p">:</span>
+        <span class="n">pip</span><span class="o">.</span><span class="n">main</span><span class="p">([</span><span class="s2">&quot;install&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">pkgs</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No extras_require[</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">] packages to install&quot;</span><span class="p">)</span></div>
+
 </pre></div>
 
            </div>
