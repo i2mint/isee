@@ -50,3 +50,39 @@ def build_dependency_wheels(repository_dir, wheelhouse, requirements_filepath=No
         args.extend(["--requirement", requirements_filepath])
     args.extend(["--editable", repository_dir])
     pip.main(args)
+
+
+def extras_require(name="testing", *, project_dir=None):
+    """Return a list of packages for the given extras_require key (e.g. 'testing').
+
+    If setup.cfg or the section/key is missing return an empty list instead of
+    raising so callers can safely act on the result.
+    """
+    try:
+        config = read_setup_config(project_dir)
+    except RuntimeError:
+        return []
+
+    section = "options.extras_require"
+    if section not in config:
+        return []
+
+    raw = config[section].get(name)
+    if not raw:
+        return []
+
+    pkgs = [line.strip() for line in raw.splitlines() if line.strip()]
+    return pkgs
+
+
+def install_extras(name="testing", *, project_dir=None):
+    """Install packages listed under extras_require[name] in setup.cfg.
+
+    This is a convenience wrapper used by CI when present. If no packages are
+    found the function prints a message and does nothing.
+    """
+    pkgs = extras_require(name, project_dir=project_dir)
+    if pkgs:
+        pip.main(["install"] + pkgs)
+    else:
+        print(f"No extras_require[{name}] packages to install")

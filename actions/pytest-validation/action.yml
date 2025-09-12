@@ -28,6 +28,19 @@ runs:
       with:
         pypi-packages: 'pytest ${{ inputs.extra-pypi-packages }}'
 
+    - name: Install Testing Extras from setup.cfg
+      shell: bash
+      run: |
+        python -c "
+        import sys, os
+        sys.path.insert(0, '.')
+        try:
+            from isee.pip_utils import install_extras
+            install_extras('testing')
+        except Exception as e:
+            print(f'Could not install testing extras: {e}')
+        "
+
     - name: Validate Source Code  # Fixed indentation
       shell: bash
       run: |
