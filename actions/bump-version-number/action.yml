@@ -23,7 +23,7 @@ runs:
         
         # Export the version to the GitHub environment
         echo "VERSION=$VERSION" >> $GITHUB_ENV
-        echo "::set-output name=version::$VERSION"
+        echo "version=$VERSION" >> $GITHUB_OUTPUT
         
         # Also make it available in the current shell
         export VERSION="$VERSION"
