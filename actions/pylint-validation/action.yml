@@ -31,7 +31,7 @@ runs:
           ignore="--ignore ${{ inputs.ignore }}"
         fi
         if [ -n "${{ inputs.ignore-patterns }}" ]; then
-          ignore_patterns="--ignore-patterns='${{ inputs.ignore-patterns }}'"
+          ignore_patterns="--ignore-patterns=${{ inputs.ignore-patterns }}"
         fi
         if [ -n "${{ inputs.enable }}" ]; then
           enable="--disable=all --enable=${{ inputs.enable }}"
