@@ -1,20 +1,16 @@
-name: "Pylint Validation"
-description: "Validate source code running pylint"
 inputs:
   root-dir:
     description: "Root directory to validate. Defaults to the current directory."
     required: false
     default: "."
   enable:
-    description: "Pylint features to enable. Provide a comma separated list of strings. 
-      Example: 'C0114,C0115,C0116'. If not provided, all features are enabled.
-      Documentation on 'enable' codes: 
-      http://pylint.pycqa.org/en/latest/technical_reference/features.html#basic-checker-messages"
+    description: "Pylint features to enable. Provide a comma separated list of strings. ..."
     required: false
   ignore:
-    description: "Folders and or files to ignore. Provide a comma separated list of 
-      strings. Any file that contains any of these strings in its path will be ignored. 
-      Example: 'tests,docs,setup.py'"
+    description: "Folders and or files to ignore. Provide a comma separated list of strings. ..."
+    required: false
+  ignore-patterns:
+    description: "Regex patterns for files/folders to ignore"
     required: false
   extra-args:
     description: "Additional arguments to pass to pylint"
@@ -34,7 +30,10 @@ runs:
         if [ -n "${{ inputs.ignore }}" ]; then
           ignore="--ignore ${{ inputs.ignore }}"
         fi
+        if [ -n "${{ inputs.ignore-patterns }}" ]; then
+          ignore_patterns="--ignore-patterns='${{ inputs.ignore-patterns }}'"
+        fi
         if [ -n "${{ inputs.enable }}" ]; then
           enable="--disable=all --enable=${{ inputs.enable }}"
         fi
-        pylint ${{ inputs.root-dir }} $ignore $enable ${{ inputs.extra-args }} | mk_pylint_report
+        pylint ${{ inputs.root-dir }} $ignore $ignore_patterns $enable ${{ inputs.extra-args }} | mk_pylint_report
