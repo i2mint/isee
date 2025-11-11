@@ -27,13 +27,28 @@ runs:
       shell: bash
       run: |
         set -e
+
+        # Build ignore-paths from ignore input (convert comma-separated to regex)
         if [ -n "${{ inputs.ignore }}" ]; then
-          ignore="--ignore ${{ inputs.ignore }}"
+          IFS=',' read -ra paths <<< "${{ inputs.ignore }}"
+          ignore_paths_list=""
+          for path in "${paths[@]}"; do
+            path=$(echo "$path" | xargs)  # Trim whitespace
+            if [ -n "$ignore_paths_list" ]; then
+              ignore_paths_list+=","
+            fi
+            ignore_paths_list+=".*${path}.*"
+          done
+          ignore="--ignore-paths=$ignore_paths_list"
         fi
+
+        # Use ignore-patterns if provided
         if [ -n "${{ inputs.ignore-patterns }}" ]; then
           ignore_patterns="--ignore-patterns=${{ inputs.ignore-patterns }}"
         fi
+
         if [ -n "${{ inputs.enable }}" ]; then
           enable="--disable=all --enable=${{ inputs.enable }}"
         fi
+
         pylint ${{ inputs.root-dir }} $ignore $ignore_patterns $enable ${{ inputs.extra-args }} | mk_pylint_report
