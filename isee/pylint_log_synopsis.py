@@ -78,7 +78,7 @@ import re
 
 colon_pattern = ":".join(f"(?P<{k}>[^:]*)" for k in "path line char code msg".split())
 line_parse_p = re.compile(colon_pattern)
-import_parse_p = re.compile("Unable to import '(?P<module>[\w\.]+)'")
+import_parse_p = re.compile(r"Unable to import '(?P<module>[\w\.]+)'")
 
 
 def parsed_lines(log_string):
