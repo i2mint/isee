@@ -62,16 +62,29 @@ runs:
           done
         fi
 
+        # Build pytest --ignore flags from paths-to-ignore
+        pytest_ignore_flags=""
+        if [ -n "${{ inputs.paths-to-ignore }}" ]; then
+          IFS=',' read -ra ignore_paths <<< "${{ inputs.paths-to-ignore }}"
+          for ignore_path in "${ignore_paths[@]}"; do
+            ignore_path=$(echo "$ignore_path" | xargs)  # Trim whitespace
+            if [ -n "$ignore_path" ]; then
+              pytest_ignore_flags+=" --ignore=${{ inputs.root-dir }}/$ignore_path"
+            fi
+          done
+        fi
+
         # Prepare test targets
         if [ "${{ inputs.skip-doctests }}" = "true" ]; then
-          echo "Running: pytest $options ${{ inputs.root-dir }}"
-          pytest $options "${{ inputs.root-dir }}"
+          echo "Running: pytest $options $pytest_ignore_flags ${{ inputs.root-dir }}"
+          # shellcheck disable=SC2086
+          pytest $options $pytest_ignore_flags "${{ inputs.root-dir }}"
         else
           # Safely evaluate find command with dynamic ignore_expr
           echo "Finding .py files excluding: ${{ inputs.paths-to-ignore }}"
           # shellcheck disable=SC2086
           files=$(eval "find '${{ inputs.root-dir }}' -type f -name '*.py' $ignore_expr")
-          
+
           echo "Running: pytest $options --doctest-modules $files"
           # shellcheck disable=SC2086
           pytest $options --doctest-modules -o doctest_optionflags="ELLIPSIS IGNORE_EXCEPTION_DETAIL" $files
