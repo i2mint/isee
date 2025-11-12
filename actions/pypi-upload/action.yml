@@ -1,0 +1,63 @@
+name: "PyPI Upload"
+description: "Upload distributions to PyPI using twine"
+
+inputs:
+  pypi-username:
+    description: "PyPI username (use __token__ for token-based auth)"
+    required: true
+  pypi-password:
+    description: "PyPI password or token"
+    required: true
+  repository-url:
+    description: "PyPI repository URL (defaults to pypi.org, use https://test.pypi.org/legacy/ for test)"
+    required: false
+    default: "https://upload.pypi.org/legacy/"
+  packages-path:
+    description: "Path to packages to upload (glob pattern)"
+    required: false
+    default: "dist/*"
+  skip-existing:
+    description: "Skip files that already exist on PyPI"
+    required: false
+    default: "false"
+  verbose:
+    description: "Verbose output"
+    required: false
+    default: "true"
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Install Twine
+      shell: bash
+      run: |
+        set -e
+        echo "Installing twine"
+        python -m pip install --upgrade twine
+
+    - name: Upload to PyPI
+      shell: bash
+      run: |
+        set -e
+
+        twine_args="--non-interactive"
+
+        if [ "${{ inputs.verbose }}" = "true" ]; then
+          twine_args="$twine_args --verbose"
+        fi
+
+        if [ "${{ inputs.skip-existing }}" = "true" ]; then
+          twine_args="$twine_args --skip-existing"
+        fi
+
+        echo "Uploading packages from: ${{ inputs.packages-path }}"
+        echo "Repository URL: ${{ inputs.repository-url }}"
+
+        twine upload \
+          $twine_args \
+          --repository-url "${{ inputs.repository-url }}" \
+          --username "${{ inputs.pypi-username }}" \
+          --password "${{ inputs.pypi-password }}" \
+          ${{ inputs.packages-path }}
+
+        echo "Upload complete!"

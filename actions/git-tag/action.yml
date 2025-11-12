@@ -1,0 +1,57 @@
+name: "Git Tag"
+description: "Tag repository and push tag to remote - modern, dependency-free"
+
+inputs:
+  tag:
+    description: "Tag name (e.g., version number)"
+    required: true
+  message:
+    description: "Tag message (creates annotated tag if provided)"
+    required: false
+  push:
+    description: "Push tag to remote after creating"
+    required: false
+    default: "true"
+  force:
+    description: "Force create tag (overwrites existing tag)"
+    required: false
+    default: "false"
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Create Tag
+      shell: bash
+      run: |
+        set -e
+
+        tag_args=""
+
+        if [ "${{ inputs.force }}" = "true" ]; then
+          tag_args="$tag_args -f"
+        fi
+
+        if [ -n "${{ inputs.message }}" ]; then
+          echo "Creating annotated tag: ${{ inputs.tag }}"
+          git tag $tag_args -a "${{ inputs.tag }}" -m "${{ inputs.message }}"
+        else
+          echo "Creating lightweight tag: ${{ inputs.tag }}"
+          git tag $tag_args "${{ inputs.tag }}"
+        fi
+
+        echo "Tag created: ${{ inputs.tag }}"
+
+    - name: Push Tag
+      if: ${{ inputs.push == 'true' }}
+      shell: bash
+      run: |
+        set -e
+
+        push_args=""
+
+        if [ "${{ inputs.force }}" = "true" ]; then
+          push_args="$push_args --force"
+        fi
+
+        echo "Pushing tag to remote: ${{ inputs.tag }}"
+        git push $push_args origin "${{ inputs.tag }}"

@@ -1,0 +1,101 @@
+name: "Run Tests"
+description: "Run pytest tests including doctests - modern and streamlined"
+
+inputs:
+  root-dir:
+    description: "Root directory containing tests (defaults to current directory)"
+    required: false
+    default: "."
+  exclude:
+    description: "Comma-separated paths to exclude (e.g., 'examples,scrap')"
+    required: false
+  extra-packages:
+    description: "Additional PyPI packages to install alongside pytest"
+    required: false
+  skip-doctests:
+    description: "Skip doctests (only run regular tests)"
+    required: false
+    default: "false"
+  coverage:
+    description: "Enable coverage reporting"
+    required: false
+    default: "false"
+  pytest-args:
+    description: "Additional arguments to pass to pytest"
+    required: false
+    default: "-v"
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Install Pytest
+      shell: bash
+      run: |
+        set -e
+        packages="pytest"
+
+        if [ "${{ inputs.coverage }}" = "true" ]; then
+          packages="$packages pytest-cov"
+        fi
+
+        if [ -n "${{ inputs.extra-packages }}" ]; then
+          packages="$packages ${{ inputs.extra-packages }}"
+        fi
+
+        echo "Installing: $packages"
+        python -m pip install $packages
+
+    - name: Install Testing Extras
+      shell: bash
+      run: |
+        # Try to install testing extras from pyproject.toml or setup.cfg
+        if [ -f "pyproject.toml" ]; then
+          echo "Installing testing extras from pyproject.toml"
+          python -m pip install -e ".[testing]" 2>/dev/null || \
+          python -m pip install -e ".[test]" 2>/dev/null || \
+          echo "No testing extras found in pyproject.toml"
+        elif [ -f "setup.cfg" ]; then
+          echo "Attempting to install testing extras from setup.cfg"
+          python -c "
+          import sys
+          try:
+              from isee.pip_utils import install_extras
+              install_extras('testing')
+          except Exception as e:
+              print(f'Could not install testing extras: {e}')
+          " || true
+        fi
+
+    - name: Run Tests
+      shell: bash
+      run: |
+        set -e
+
+        pytest_args="${{ inputs.pytest-args }}"
+
+        # Build ignore flags
+        if [ -n "${{ inputs.exclude }}" ]; then
+          IFS=',' read -ra exclude_paths <<< "${{ inputs.exclude }}"
+          for path in "${exclude_paths[@]}"; do
+            path=$(echo "$path" | xargs)  # Trim whitespace
+            if [ -n "$path" ]; then
+              pytest_args="$pytest_args --ignore=${{ inputs.root-dir }}/$path"
+            fi
+          done
+        fi
+
+        # Add coverage if requested
+        if [ "${{ inputs.coverage }}" = "true" ]; then
+          pytest_args="$pytest_args --cov=${{ inputs.root-dir }} --cov-report=term-missing"
+        fi
+
+        # Run with or without doctests
+        if [ "${{ inputs.skip-doctests }}" = "true" ]; then
+          echo "Running: pytest $pytest_args ${{ inputs.root-dir }}"
+          pytest $pytest_args "${{ inputs.root-dir }}"
+        else
+          echo "Running: pytest $pytest_args --doctest-modules ${{ inputs.root-dir }}"
+          pytest $pytest_args --doctest-modules \
+            -o doctest_optionflags="ELLIPSIS IGNORE_EXCEPTION_DETAIL" \
+            "${{ inputs.root-dir }}"
+        fi
