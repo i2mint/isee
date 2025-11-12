@@ -1,0 +1,69 @@
+name: "Ruff Lint"
+description: "Lint and validate Python code using ruff - replaces pylint, flake8, and isort"
+
+inputs:
+  root-dir:
+    description: "Root directory to validate (defaults to current directory)"
+    required: false
+    default: "."
+  select:
+    description: "Comma-separated list of rule codes to enable (e.g., 'E,F,I')"
+    required: false
+  ignore:
+    description: "Comma-separated list of rule codes to ignore"
+    required: false
+  exclude:
+    description: "Comma-separated paths to exclude (e.g., 'tests,examples,scrap')"
+    required: false
+  fix:
+    description: "Automatically fix violations when possible"
+    required: false
+    default: "false"
+  output-format:
+    description: "Output format (text, json, github)"
+    required: false
+    default: "github"
+  extra-args:
+    description: "Additional arguments to pass to ruff check"
+    required: false
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Install Ruff
+      shell: bash
+      run: |
+        set -e
+        echo "Installing ruff"
+        python -m pip install --upgrade ruff
+
+    - name: Lint Source Code
+      shell: bash
+      run: |
+        set -e
+
+        args="--output-format=${{ inputs.output-format }}"
+
+        if [ "${{ inputs.fix }}" = "true" ]; then
+          args="$args --fix"
+        fi
+
+        if [ -n "${{ inputs.select }}" ]; then
+          args="$args --select=${{ inputs.select }}"
+        fi
+
+        if [ -n "${{ inputs.ignore }}" ]; then
+          args="$args --ignore=${{ inputs.ignore }}"
+        fi
+
+        if [ -n "${{ inputs.exclude }}" ]; then
+          exclude_paths="${{ inputs.exclude }}"
+          args="$args --exclude=$exclude_paths"
+        fi
+
+        if [ -n "${{ inputs.extra-args }}" ]; then
+          args="$args ${{ inputs.extra-args }}"
+        fi
+
+        echo "Running: ruff check $args ${{ inputs.root-dir }}"
+        ruff check $args ${{ inputs.root-dir }}

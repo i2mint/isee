@@ -1,0 +1,89 @@
+name: "Git Commit"
+description: "Commit and push changes to repository - modern, dependency-free"
+
+inputs:
+  commit-message:
+    description: "Commit message"
+    required: true
+  add-pattern:
+    description: "Pattern for files to add (defaults to all changes)"
+    required: false
+    default: "."
+  push:
+    description: "Push changes to remote after committing"
+    required: false
+    default: "true"
+  branch:
+    description: "Branch to push to (defaults to current branch)"
+    required: false
+  ssh-private-key:
+    description: "SSH private key for pushing to remote"
+    required: false
+  git-email:
+    description: "Git user email"
+    required: false
+    default: "github-actions[bot]@users.noreply.github.com"
+  git-username:
+    description: "Git user name"
+    required: false
+    default: "github-actions[bot]"
+  allow-empty:
+    description: "Allow empty commits"
+    required: false
+    default: "false"
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Configure SSH
+      if: ${{ inputs.ssh-private-key }}
+      uses: webfactory/ssh-agent@v0.7.0
+      with:
+        ssh-private-key: ${{ inputs.ssh-private-key }}
+
+    - name: Configure Git
+      shell: bash
+      run: |
+        set -e
+        git config --global user.email "${{ inputs.git-email }}"
+        git config --global user.name "${{ inputs.git-username }}"
+        echo "Configured git as: ${{ inputs.git-username }} <${{ inputs.git-email }}>"
+
+    - name: Commit Changes
+      shell: bash
+      run: |
+        set -e
+
+        # Add files
+        echo "Adding files matching pattern: ${{ inputs.add-pattern }}"
+        git add ${{ inputs.add-pattern }}
+
+        # Check if there are changes to commit
+        if git diff --staged --quiet; then
+          echo "No changes to commit"
+          if [ "${{ inputs.allow-empty }}" = "true" ]; then
+            echo "Creating empty commit (allow-empty=true)"
+            git commit --allow-empty -m "${{ inputs.commit-message }}"
+          else
+            echo "Skipping commit (no changes and allow-empty=false)"
+            exit 0
+          fi
+        else
+          echo "Committing changes"
+          git commit -m "${{ inputs.commit-message }}"
+        fi
+
+    - name: Push Changes
+      if: ${{ inputs.push == 'true' }}
+      shell: bash
+      run: |
+        set -e
+
+        if [ -n "${{ inputs.branch }}" ]; then
+          branch="${{ inputs.branch }}"
+        else
+          branch=$(git rev-parse --abbrev-ref HEAD)
+        fi
+
+        echo "Pushing to branch: $branch"
+        git push origin "$branch"

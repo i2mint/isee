@@ -1,0 +1,109 @@
+name: Install Dependencies
+description: 'Modern dependency installation supporting pyproject.toml and requirements.txt'
+
+inputs:
+  pypi-packages:
+    description: 'Python packages to install (space-separated)'
+    required: false
+  apt-packages:
+    description: 'APT packages to install (space-separated)'
+    required: false
+  npm-packages:
+    description: 'NPM packages to install (space-separated)'
+    required: false
+  dependency-files:
+    description: 'Comma-separated paths to dependency files (requirements.txt, setup.cfg, pyproject.toml)'
+    required: false
+  extras:
+    description: 'Install extras from pyproject.toml (e.g., "dev,test")'
+    required: false
+  ssh-private-key:
+    description: 'SSH private key for installing private packages from source'
+    required: false
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Configure SSH
+      if: ${{ inputs.ssh-private-key }}
+      uses: webfactory/ssh-agent@v0.7.0
+      with:
+        ssh-private-key: ${{ inputs.ssh-private-key }}
+
+    - name: Install PyPI Packages
+      if: ${{ inputs.pypi-packages }}
+      shell: bash
+      run: |
+        set -e
+        echo "::group::Pip Installation Log"
+        echo "Upgrading pip"
+        python -m pip install --upgrade pip
+
+        echo "Installing packages: ${{ inputs.pypi-packages }}"
+        python -m pip install ${{ inputs.pypi-packages }}
+
+        echo "Installed package versions:"
+        python -m pip list | grep -E "$(echo ${{ inputs.pypi-packages }} | tr ' ' '|')" || true
+        echo "::endgroup::"
+
+    - name: Install APT Packages
+      if: ${{ inputs.apt-packages }}
+      shell: bash
+      run: |
+        set -e
+        echo "::group::APT Installation Log"
+        echo "Updating APT repositories"
+        sudo apt-get update
+        echo "Installing packages: ${{ inputs.apt-packages }}"
+        sudo apt-get install -y ${{ inputs.apt-packages }}
+        echo "::endgroup::"
+
+    - name: Install NPM Packages
+      if: ${{ inputs.npm-packages }}
+      shell: bash
+      run: |
+        set -e
+        echo "::group::NPM Installation Log"
+        echo "Installing packages: ${{ inputs.npm-packages }}"
+        npm install -g ${{ inputs.npm-packages }}
+        echo "::endgroup::"
+
+    - name: Install from Dependency Files
+      if: ${{ inputs.dependency-files }}
+      shell: bash
+      run: |
+        set -e
+        echo "::group::Dependencies Installation Log"
+        python -m pip install --upgrade pip
+
+        IFS=',' read -ra paths <<< "${{ inputs.dependency-files }}"
+        for path in "${paths[@]}"; do
+          path=$(echo "$path" | xargs)  # Trim whitespace
+
+          if [[ $path == *.txt ]]; then
+            echo "Installing from requirements file: $path"
+            python -m pip install -r "$path"
+
+          elif [[ $path == *.toml ]]; then
+            echo "Installing from pyproject.toml: $path"
+            if [ -n "${{ inputs.extras }}" ]; then
+              python -m pip install -e ".[${{ inputs.extras }}]"
+            else
+              python -m pip install -e .
+            fi
+
+          elif [[ $path == *.cfg ]]; then
+            echo "Installing from setup.cfg: $path"
+            # For backward compatibility, use isee if available
+            if python -c "import isee" 2>/dev/null; then
+              isee install-requires
+              isee tests-require || true
+            else
+              python -m pip install -e .
+            fi
+          fi
+        done
+
+        echo "Installed Python packages:"
+        python -m pip list
+        echo "::endgroup::"

@@ -1,0 +1,47 @@
+name: "Ruff Format"
+description: "Format source code using ruff - the modern, fast Python formatter"
+
+inputs:
+  line-length:
+    description: "Maximum line length"
+    required: false
+    default: "88"
+  target-path:
+    description: "Path to format (defaults to current directory)"
+    required: false
+    default: "."
+  check-only:
+    description: "Check formatting without making changes"
+    required: false
+    default: "false"
+  extra-args:
+    description: "Additional arguments to pass to ruff format"
+    required: false
+
+runs:
+  using: composite
+  steps:
+    - name: Install Ruff
+      shell: bash
+      run: |
+        set -e
+        echo "Installing ruff"
+        python -m pip install --upgrade ruff
+
+    - name: Format Source Code
+      shell: bash
+      run: |
+        set -e
+
+        args="--line-length=${{ inputs.line-length }}"
+
+        if [ "${{ inputs.check-only }}" = "true" ]; then
+          args="$args --check --diff"
+        fi
+
+        if [ -n "${{ inputs.extra-args }}" ]; then
+          args="$args ${{ inputs.extra-args }}"
+        fi
+
+        echo "Running: ruff format $args ${{ inputs.target-path }}"
+        ruff format $args ${{ inputs.target-path }}
