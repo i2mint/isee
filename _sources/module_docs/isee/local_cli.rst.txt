@@ -1,0 +1,4 @@
+isee.local_cli
+==============
+.. automodule:: isee.local_cli
+   :members:
