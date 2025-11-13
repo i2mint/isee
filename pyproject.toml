@@ -1,0 +1,79 @@
+[build-system]
+requires = [
+    "hatchling",
+]
+build-backend = "hatchling.build"
+
+[project]
+name = "isee"
+version = "0.2.72"
+description = "Python continuous integration (CI) support tools."
+readme = "README.md"
+requires-python = ">=3.10"
+keywords = []
+authors = []
+dependencies = [
+    "semver==2.13.0",
+    "wads",
+]
+
+[project.license]
+text = "MIT"
+
+[project.urls]
+Homepage = "https://github.com/i2mint/isee"
+
+[project.optional-dependencies]
+testing = []
+
+[project.scripts]
+isee = "isee:main"
+mk_pylint_report = "isee:print_report_followed_by_log"
+
+[tool.ruff]
+line-length = 88
+target-version = "py310"
+exclude = [
+    "**/*.ipynb",
+    ".git",
+    ".venv",
+    "build",
+    "dist",
+    "tests",
+    "examples",
+    "scrap",
+]
+
+[tool.ruff.lint]
+select = [
+    "D100",
+]
+ignore = [
+    "D203",
+    "E501",
+    "B905",
+]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = [
+    "D",
+]
+"examples/*" = [
+    "D",
+]
+"scrap/*" = [
+    "D",
+]
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+testpaths = [
+    "tests",
+]
+doctest_optionflags = [
+    "NORMALIZE_WHITESPACE",
+    "ELLIPSIS",
+]

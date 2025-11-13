@@ -3,6 +3,7 @@
 from isee.file_modification_utils import (
     update_helm_tpl,
     update_manifest,
+    update_pyproject_toml,
     update_setup_cfg,
     update_setup_py,
 )
@@ -17,7 +18,8 @@ argh_kwargs = {
     "functions": [
         update_helm_tpl,
         update_manifest,
-        update_setup_cfg,
+        update_pyproject_toml,
+        update_setup_cfg,  # NOTE: Deprecating setup.cfg
         update_setup_py,
         gen_semver,
         tag_repo,

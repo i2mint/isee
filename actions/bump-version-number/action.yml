@@ -34,7 +34,19 @@ runs:
       run: |
         # Get the version from the previous step
         VERSION="${{ steps.gen_version.outputs.version }}"
-        echo "Updating setup.cfg with version: $VERSION"
         
-        # Update the setup.cfg with the new version
-        isee update-setup-cfg --version="$VERSION"
+        # NOTE: Deprecating setup.cfg - Update it if it exists for backward compatibility
+        if [ -f "setup.cfg" ]; then
+          echo "Updating setup.cfg with version: $VERSION"
+          isee update-setup-cfg --version="$VERSION"
+        else
+          echo "No setup.cfg found, skipping"
+        fi
+        
+        # Update pyproject.toml if it exists
+        if [ -f "pyproject.toml" ]; then
+          echo "Updating pyproject.toml with version: $VERSION"
+          isee update-pyproject-toml --version="$VERSION"
+        else
+          echo "No pyproject.toml found, skipping"
+        fi

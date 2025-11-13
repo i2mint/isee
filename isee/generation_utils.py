@@ -72,6 +72,7 @@ def get_new_version(
 
     # remove all None versions
     versions = {k: v for k, v in versions.items() if v is not None}
+    # NOTE: Deprecating setup.cfg
     if list(versions.keys()) != ["setup_cfg"]:
         validate_versions(
             versions, action_when_not_valid=action_when_versions_not_valid

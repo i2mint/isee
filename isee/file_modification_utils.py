@@ -15,6 +15,7 @@ import re
 import os
 
 from isee.common import get_env_var, get_file_path
+import os
 
 
 def update_helm_tpl():
@@ -43,12 +44,14 @@ def update_manifest(manifest_path: str):
     _update_file(manifest_path, pattern, rf"\g<1>{chart_version}")
 
 
+# NOTE: Deprecating setup.cfg
 # def update_setup_cfg(*, project_dir=None, version=None):
 #     path = _get_setup_filepath("setup.cfg", project_dir)
 #     version = version or get_env_var("VERSION")
 #     _update_file(path, r"version\s=\s.+", f"version = {version}")
 
 
+# NOTE: Deprecating setup.cfg - use update_pyproject_toml for new projects
 def update_setup_cfg(
     *,
     file_path: str = None,
@@ -56,39 +59,70 @@ def update_setup_cfg(
     pkg_dir: str = ".",
 ):
     """
-    Update the version in setup.cfg or pyproject.toml file.
+    Update the version in setup.cfg file.
 
-    This function now handles both setup.cfg and pyproject.toml files automatically.
-    It prefers pyproject.toml if it exists, otherwise falls back to setup.cfg.
+    NOTE: This function is deprecated. For new projects using pyproject.toml,
+    use update_pyproject_toml instead. This function is kept for backward compatibility.
 
     Args:
         file_path: (Deprecated) Path to the config file. Use pkg_dir instead.
         version: The version to set. If None, tries to get it from the VERSION environment variable.
         pkg_dir: Directory containing the package config files (default: current directory)
     """
-    import os
-    from wads.pack import set_version
-
-    def get_env_var(key):
-        """Get an environment variable and ensure it's not empty."""
-        value = os.environ.get(key, "").strip()
-        if not value:
-            raise RuntimeError(f"{key} is not defined or is empty!")
-        return value
-
-    # Get version from arg or environment
+    # NOTE: Deprecating setup.cfg
     version = version or get_env_var("VERSION")
 
     # If file_path is provided (deprecated usage), extract the directory
     if file_path and file_path != "setup.cfg":
         pkg_dir = os.path.dirname(file_path) or "."
 
-    print(f"Updating version to {version} in {pkg_dir}")
+    setup_cfg_path = os.path.join(pkg_dir, "setup.cfg")
 
-    # Use wads.pack.set_version which handles both pyproject.toml and setup.cfg
-    set_version(pkg_dir, version)
+    if not os.path.exists(setup_cfg_path):
+        print(f"No setup.cfg found in {pkg_dir}, skipping update")
+        return
 
-    print(f"Successfully updated version to {version}")
+    print(f"Updating setup.cfg version to {version} in {pkg_dir}")
+    _update_file(setup_cfg_path, r"version\s=\s.+", f"version = {version}")
+    print(f"Successfully updated setup.cfg version to {version}")
+
+
+def update_pyproject_toml(
+    *,
+    file_path: str = None,
+    version: str = None,
+    pkg_dir: str = ".",
+):
+    """
+    Update the version in pyproject.toml file.
+
+    Args:
+        file_path: (Deprecated) Path to the config file. Use pkg_dir instead.
+        version: The version to set. If None, tries to get it from the VERSION environment variable.
+        pkg_dir: Directory containing the package config files (default: current directory)
+    """
+    version = version or get_env_var("VERSION")
+
+    # If file_path is provided (deprecated usage), extract the directory
+    if file_path and file_path != "pyproject.toml":
+        pkg_dir = os.path.dirname(file_path) or "."
+
+    pyproject_path = os.path.join(pkg_dir, "pyproject.toml")
+
+    if not os.path.exists(pyproject_path):
+        print(f"No pyproject.toml found in {pkg_dir}, skipping update")
+        return
+
+    print(f"Updating pyproject.toml version to {version} in {pkg_dir}")
+
+    # Update version in [project] section
+    _update_file(
+        pyproject_path,
+        r'(\[project\][\s\S]*?version\s*=\s*")[^"]*(")',
+        rf'\g<1>{version}\g<2>',
+    )
+
+    print(f"Successfully updated pyproject.toml version to {version}")
 
 
 def update_setup_py(*, project_dir=None, version=None):
@@ -97,6 +131,7 @@ def update_setup_py(*, project_dir=None, version=None):
     _update_file(path, r"version='.+',", f"version='{version}',")
 
 
+# NOTE: Deprecating setup.cfg
 def _get_setup_filepath(filename, project_dir):
     project_dir = project_dir or get_env_var("GITHUB_WORKSPACE")
     return os.path.join(project_dir, filename)
