@@ -1,3 +1,4 @@
+<a id="introduction"></a>
 # Introduction
 Python continuous integration (CI) support tools.
 
@@ -14,17 +15,18 @@ To install:	```pip install isee```
 7. [Hosting](#hosting)
 8. [How to setup CI](#how-to-setup-ci)
     * [For a GitHub repository](#for-a-github-repository)
-    * [For a GitLab repository](#for-a-gitlab-repository)
 9. [Useful resources](#useful-resources)
 10. [Troubleshooting](#troubleshooting)
     * [Common non fatal error during publishing](#common-non-fatal-error-during-publishing)
-    * [Github token problems (e.g. tagging)](#github-token-problems-eg-tagging)
-    * [Vesion tag misalignment](#vesion-tag-misalignment)
+    * [Github token problems (e.g. tagging)](#github-token-problems)
+    * [Version tag misalignment](#version-tag-misalignment)
 
 
+<a id="goal"></a>
 # Goal
 The goal of CI is to automate code formatting, validation, deployment and publishing of packages. 
 
+<a id="workflow"></a>
 # Workflow
 A CI pipeline is triggered when new code is pushed to a remote repository.
 Every CI pipeline does at least:
@@ -39,45 +41,59 @@ Every CI pipeline does at least:
     * Packaging
     * Deployment / Publishing
 
+<a id="results-and-logs"></a>
 # Results and Logs
 You can see your CI pipeline's result and logs:
 * From your **GitLab project page &rarr; CI/CD &rarr; Pipelines**
 * From your **GitHub project page &rarr; Actions &rarr; Continuous Integration**
 
+<a id="versioning"></a>
 # Versioning
 Versioning is semi-automatically resolved: if you want the major or minor part to be bumped, you only have to add ***[bump major]*** or ***[bump minor]*** to your commit message on *master* (versioning is not applied to other branches).
 
 Example, the current version number is **1.0.5**.
 If you commit with the following message:
+
 ```
 Added some new stuff.
 ```
+
 the new version number will be **1.0.6**.
 But if you commit with the following message:
+
 ```
 Added some great new stuff! [bump minor]
 ```
+
 the new version number will be **1.1.0**.
 Finally, if you commit with the following message:
+
 ```
 Added some extraordinary new stuff!!! [bump major]
 ```
+
 the new version number will be **2.0.0**.
 
+<a id="skip-ci"></a>
 # Skip CI
 You can prevent the CI pipeline from being triggered by adding ***[skip ci]*** to your commit message.
 Example:
+
 ```
 Updated the README file. [skip ci]
 ```
+
 **Be careful!** If you skip the CI process, any new code will not be validated and no new version will be deployed/published. So, think twice before using it.
 
+<a id="hosting"></a>
 # Hosting
 CI pipelines for GitHub public repositories are run on GitHub-hosted runners. See the [GitHub documentation](https://docs.github.com/en/free-pro-team@latest/actions/learn-github-actions/introduction-to-github-actions#runners) for more details
 
+<a id="how-to-setup-ci"></a>
 # How to setup CI
 This "How to" section applies to python package projects only. If you want to setup CI to an application project or another programing language, you will have to modify the CI pipeline definition according to your needs.
 
+<a id="for-a-github-repository"></a>
 ## For a GitHub repository
 1. Add this [ci.yml](resources/ci.yml) file to the `github/workflow/` directory (create the directory if it doesn't exist) into your local repository.
 Note that [wads](https://pypi.org/project/wads/) does it for you by running the following command from the project's root directory (documentation [here](https://i2mint.github.io/wads/module_docs/wads/populate.html)):
@@ -93,16 +109,20 @@ Fear not: `populate` will **not** create or modify the `ci.yml` file (or any oth
 4. If you want the project's documentation to be published, configure the project's Github Pages for the project by selecting the `/docs` folder. Documentation [here](https://guides.github.com/features/pages/).
 5. Push your code and see the execution of the new `Continuous Integration` workflow. Documentation [here](https://docs.github.com/en/free-pro-team@latest/actions/managing-workflow-runs).
 Consider using [wads](https://pypi.org/project/wads/) to automatically validate your code locally, commit and push by running the following command (documentation [here](https://i2mint.github.io/wads/module_docs/wads/pack.html)):
+
 ```
 pack check-in 'Your commit message.'
 ```
 
+<a id="useful-resources"></a>
 # Useful resources
 
 [troubleshooting tests](https://github.com/i2mint/tested/wiki/Troubleshooting-Tests)
 
+<a id="troubleshooting"></a>
 # Troubleshooting
 
+<a id="common-non-fatal-error-during-publishing"></a>
 ## Common (non fatal) error during publishing
 
 It has been reported that users get this error:
@@ -118,6 +138,7 @@ Solution: This will happen when any of the variables (most of the time, the PYPI
 This can happen, for example, when copy/pasting from doing a `echo $PYPI_TOKEN | pbcopy` since the echo adds a newline. 
 Try copying the pypi token again and ensure there's no newline in it. 
 
+<a id="github-token-problems"></a>
 ## Github token problems (e.g. tagging)
 
 At the point of writing this, some jobs don't fail when there are (non-essential) errors.
@@ -145,7 +166,11 @@ Set repository secrets (envoronment variable) here: `https://github.com/{usernam
 * Check Branch Protection Rules
 
 
-## Vesion tag misalignment
+<a id="version-tag-misalignment"></a>
+## Version tag misalignment
+
+(Note: Normally this shouldn't happen anymore, since I included a
+"version alignment" logic in [get_new_version](https://github.com/i2mint/isee/blob/master/isee/generation_utils.py), which is used in the [bump-version-number action](https://github.com/i2mint/isee/blob/master/actions/bump-version-number/action.yml) via `gen_semver`. Still, I'll keep this around for historical reasons.)
 
 Sometimes the twine PYPI publishing may fail with such a message:
 
@@ -154,7 +179,9 @@ WARNING  Skipping PKGNAME-0.1.4-py3-none-any.whl because it appears to already e
 WARNING  Skipping PKGNAME-0.1.4.tar.gz because it appears to already exist
 ```
 
-This often means that your git tags are misaligned with the `setup.cfg` version. 
+This often means that your git tags are misaligned with the `pyproject.toml`
+(or in older versions, `setup.cfg`) version. 
+
 You can see your git tags here: `https://github.com/ORG/REPO/tags`.
 
 To repair, do this:
