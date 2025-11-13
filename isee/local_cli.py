@@ -44,7 +44,7 @@ def _check_command_exists(command: str) -> bool:
     """
     try:
         subprocess.run(
-            ['which', command],
+            ["which", command],
             capture_output=True,
             check=True,
         )
@@ -61,7 +61,7 @@ def _check_docker_running() -> bool:
     """
     try:
         subprocess.run(
-            ['docker', 'info'],
+            ["docker", "info"],
             capture_output=True,
             check=True,
             timeout=5,
@@ -80,19 +80,19 @@ def _get_setup_instructions() -> dict[str, str]:
     platform = sys.platform
 
     instructions = {
-        'act': {
-            'darwin': 'brew install act',
-            'linux': 'curl https://raw.githubusercontent.com/nektos/act/master/install.sh | sudo bash',
+        "act": {
+            "darwin": "brew install act",
+            "linux": "curl https://raw.githubusercontent.com/nektos/act/master/install.sh | sudo bash",
         },
-        'docker': {
-            'darwin': 'brew install --cask docker\n# Then start Docker Desktop from Applications',
-            'linux': 'Visit https://docs.docker.com/engine/install/ for your distro',
+        "docker": {
+            "darwin": "brew install --cask docker\n# Then start Docker Desktop from Applications",
+            "linux": "Visit https://docs.docker.com/engine/install/ for your distro",
         },
     }
 
     return {
         tool: instructions[tool].get(
-            platform, f'Visit https://github.com/nektos/act for {tool} installation'
+            platform, f"Visit https://github.com/nektos/act for {tool} installation"
         )
         for tool in instructions
     }
@@ -111,19 +111,19 @@ def check_dependencies(*, verbose: bool = True) -> tuple[bool, list[str]]:
     missing = []
     instructions = _get_setup_instructions()
 
-    if not _check_command_exists('act'):
-        missing.append('act')
+    if not _check_command_exists("act"):
+        missing.append("act")
         if verbose:
             print("❌ 'act' is not installed.")
             print(f"   Install with: {instructions['act']}\n")
 
-    if not _check_command_exists('docker'):
-        missing.append('docker')
+    if not _check_command_exists("docker"):
+        missing.append("docker")
         if verbose:
             print("❌ 'docker' is not installed.")
             print(f"   Install with: {instructions['docker']}\n")
     elif not _check_docker_running():
-        missing.append('docker-daemon')
+        missing.append("docker-daemon")
         if verbose:
             print("❌ Docker is installed but not running.")
             print("   Start Docker and try again.\n")
@@ -139,7 +139,7 @@ def run_ci(
     job: str | None = None,
     matrix: str | None = None,
     dry_run: bool = False,
-    workflow_file: str = '.github/workflows/ci.yml',
+    workflow_file: str = ".github/workflows/ci.yml",
     verbose: bool = True,
 ) -> int:
     """Run CI workflow locally using act.
@@ -176,23 +176,23 @@ def run_ci(
         return 1
 
     # Build act command
-    cmd = ['act', '-W', workflow_file]
+    cmd = ["act", "-W", workflow_file]
 
     if dry_run:
-        cmd.append('-l')
+        cmd.append("-l")
 
     if job:
-        cmd.extend(['-j', job])
+        cmd.extend(["-j", job])
 
     if matrix:
         if not job:
             if verbose:
                 print("❌ --matrix requires --job to be specified")
             return 1
-        cmd.extend(['--matrix', matrix])
+        cmd.extend(["--matrix", matrix])
 
     # Always bind local directory for easier debugging
-    cmd.append('--bind')
+    cmd.append("--bind")
 
     if verbose:
         print(f"🚀 Running: {' '.join(cmd)}\n")
@@ -223,40 +223,40 @@ def main():
     import argparse
 
     parser = argparse.ArgumentParser(
-        description='Run GitHub Actions CI locally using act'
+        description="Run GitHub Actions CI locally using act"
     )
     parser.add_argument(
-        '-j',
-        '--job',
-        help='Specific job to run (e.g., validation)',
+        "-j",
+        "--job",
+        help="Specific job to run (e.g., validation)",
     )
     parser.add_argument(
-        '-m',
-        '--matrix',
-        help='Matrix combination (e.g., python-version:3.12)',
+        "-m",
+        "--matrix",
+        help="Matrix combination (e.g., python-version:3.12)",
     )
     parser.add_argument(
-        '-n',
-        '--dry-run',
-        action='store_true',
-        help='List what would run without executing',
+        "-n",
+        "--dry-run",
+        action="store_true",
+        help="List what would run without executing",
     )
     parser.add_argument(
-        '-w',
-        '--workflow',
-        default='.github/workflows/ci.yml',
-        help='Path to workflow file (default: .github/workflows/ci.yml)',
+        "-w",
+        "--workflow",
+        default=".github/workflows/ci.yml",
+        help="Path to workflow file (default: .github/workflows/ci.yml)",
     )
     parser.add_argument(
-        '-q',
-        '--quiet',
-        action='store_true',
-        help='Suppress progress messages',
+        "-q",
+        "--quiet",
+        action="store_true",
+        help="Suppress progress messages",
     )
     parser.add_argument(
-        '--check-deps',
-        action='store_true',
-        help='Only check dependencies and exit',
+        "--check-deps",
+        action="store_true",
+        help="Only check dependencies and exit",
     )
 
     args = parser.parse_args()
@@ -274,5 +274,5 @@ def main():
     )
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     sys.exit(main())
