@@ -119,7 +119,7 @@ def update_pyproject_toml(
     _update_file(
         pyproject_path,
         r'(\[project\][\s\S]*?version\s*=\s*")[^"]*(")',
-        rf'\g<1>{version}\g<2>',
+        rf"\g<1>{version}\g<2>",
     )
 
     print(f"Successfully updated pyproject.toml version to {version}")
