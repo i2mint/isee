@@ -12,8 +12,6 @@ from functools import partial
 from warnings import warn
 
 import semver
-from epythet.autogen import make_autodocs
-from epythet.setup_docsrc import make_docsrc
 
 from wads.pack import versions_from_different_sources, validate_versions
 from isee.common import get_env_var, git as _git
@@ -139,11 +137,3 @@ def gen_semver(
         return version
 
     return None
-
-
-def generate_documentation(*, project_dir=None):
-    if not project_dir:
-        project_dir = get_env_var("GITHUB_WORKSPACE")
-    if not os.path.exists(project_dir + "/docsrc"):
-        make_docsrc(project_dir)
-    make_autodocs(project_dir)

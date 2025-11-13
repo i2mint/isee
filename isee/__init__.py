@@ -6,10 +6,7 @@ from isee.file_modification_utils import (
     update_setup_cfg,
     update_setup_py,
 )
-from isee.generation_utils import (
-    gen_semver,
-    generate_documentation,
-)
+from isee.generation_utils import gen_semver
 from isee.git_utils import tag_repo
 from isee.pip_utils import install_requires, tests_require
 from isee.pylint_log_synopsis import print_report_followed_by_log
@@ -23,7 +20,6 @@ argh_kwargs = {
         update_setup_cfg,
         update_setup_py,
         gen_semver,
-        generate_documentation,
         tag_repo,
         install_requires,
         tests_require,
