@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>isee.generation_utils &mdash; isee 0.2.70 documentation</title>
+  <title>isee.generation_utils &mdash; isee 0.2.71 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -14,7 +14,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=0c617dc7"></script>
+      <script src="../../_static/documentation_options.js?v=a819f9de"></script>
       <script src="../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../_static/toggleprompt.js?v=d7ede5d2"></script>
@@ -95,8 +95,6 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">warnings</span><span class="w"> </span><span class="kn">import</span> <span class="n">warn</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">semver</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">epythet.autogen</span><span class="w"> </span><span class="kn">import</span> <span class="n">make_autodocs</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">epythet.setup_docsrc</span><span class="w"> </span><span class="kn">import</span> <span class="n">make_docsrc</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">wads.pack</span><span class="w"> </span><span class="kn">import</span> <span class="n">versions_from_different_sources</span><span class="p">,</span> <span class="n">validate_versions</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">isee.common</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_env_var</span><span class="p">,</span> <span class="n">git</span> <span class="k">as</span> <span class="n">_git</span>
@@ -228,14 +226,6 @@
 
     <span class="k">return</span> <span class="kc">None</span></div>
 
-
-
-<span class="k">def</span><span class="w"> </span><span class="nf">generate_documentation</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">project_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">project_dir</span><span class="p">:</span>
-        <span class="n">project_dir</span> <span class="o">=</span> <span class="n">get_env_var</span><span class="p">(</span><span class="s2">&quot;GITHUB_WORKSPACE&quot;</span><span class="p">)</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">project_dir</span> <span class="o">+</span> <span class="s2">&quot;/docsrc&quot;</span><span class="p">):</span>
-        <span class="n">make_docsrc</span><span class="p">(</span><span class="n">project_dir</span><span class="p">)</span>
-    <span class="n">make_autodocs</span><span class="p">(</span><span class="n">project_dir</span><span class="p">)</span>
 </pre></div>
 
            </div>
