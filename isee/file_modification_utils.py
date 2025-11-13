@@ -51,19 +51,23 @@ def update_manifest(manifest_path: str):
 
 def update_setup_cfg(
     *,
-    file_path: str = "setup.cfg",
+    file_path: str = None,
     version: str = None,
+    pkg_dir: str = ".",
 ):
     """
-    Update the version in setup.cfg file.
+    Update the version in setup.cfg or pyproject.toml file.
+
+    This function now handles both setup.cfg and pyproject.toml files automatically.
+    It prefers pyproject.toml if it exists, otherwise falls back to setup.cfg.
 
     Args:
-        file_path: Path to the setup.cfg file
+        file_path: (Deprecated) Path to the config file. Use pkg_dir instead.
         version: The version to set. If None, tries to get it from the VERSION environment variable.
+        pkg_dir: Directory containing the package config files (default: current directory)
     """
-    from configparser import ConfigParser
     import os
-    from pathlib import Path
+    from wads.pack import set_version
 
     def get_env_var(key):
         """Get an environment variable and ensure it's not empty."""
@@ -75,23 +79,16 @@ def update_setup_cfg(
     # Get version from arg or environment
     version = version or get_env_var("VERSION")
 
-    print(f"Updating setup.cfg with version: {version}")
+    # If file_path is provided (deprecated usage), extract the directory
+    if file_path and file_path != "setup.cfg":
+        pkg_dir = os.path.dirname(file_path) or "."
 
-    # Load the config file
-    config = ConfigParser()
-    config.read(file_path)
+    print(f"Updating version to {version} in {pkg_dir}")
 
-    # Update the version
-    if "metadata" not in config:
-        config["metadata"] = {}
+    # Use wads.pack.set_version which handles both pyproject.toml and setup.cfg
+    set_version(pkg_dir, version)
 
-    config["metadata"]["version"] = version
-
-    # Save the updated config
-    with open(file_path, "w") as f:
-        config.write(f)
-
-    print(f"Updated {file_path} with version {version}")
+    print(f"Successfully updated version to {version}")
 
 
 def update_setup_py(*, project_dir=None, version=None):

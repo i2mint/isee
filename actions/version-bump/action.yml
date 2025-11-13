@@ -20,16 +20,13 @@ runs:
         set -e
         python -m pip install --upgrade pip
 
-        # Install isee for version generation
+        # Install isee for version generation and file updates
         if [ "${{ github.repository }}" = "i2mint/isee" ]; then
           echo "Installing isee from source"
           python -m pip install -e .
         else
           python -m pip install isee
         fi
-
-        # Install toml tools for Python < 3.11 or for writing
-        python -m pip install tomli tomli-w 2>/dev/null || true
 
     - name: Generate Version Number
       shell: bash
@@ -58,48 +55,7 @@ runs:
         set -e
         VERSION="${{ steps.gen_version.outputs.version }}"
 
-        # Determine which config file to update
-        if [ -n "${{ inputs.config-file }}" ]; then
-          config_file="${{ inputs.config-file }}"
-        elif [ -f "pyproject.toml" ]; then
-          config_file="pyproject.toml"
-        elif [ -f "setup.cfg" ]; then
-          config_file="setup.cfg"
-        else
-          echo "No configuration file found (pyproject.toml or setup.cfg)"
-          exit 1
-        fi
+        echo "Updating configuration file with version: $VERSION"
 
-        echo "Updating $config_file with version: $VERSION"
-
-        # Update the appropriate file
-        if [[ "$config_file" == *.toml ]]; then
-          python - <<EOF
-        import sys
-        try:
-            import tomllib
-        except ImportError:
-            import tomli as tomllib
-        import tomli_w
-
-        with open("$config_file", "rb") as f:
-            data = tomllib.load(f)
-
-        # Update version in project metadata
-        if "project" in data:
-            data["project"]["version"] = "$VERSION"
-        elif "tool" in data and "poetry" in data["tool"]:
-            data["tool"]["poetry"]["version"] = "$VERSION"
-        else:
-            print("Could not find version field in pyproject.toml")
-            sys.exit(1)
-
-        with open("$config_file", "wb") as f:
-            tomli_w.dump(data, f)
-
-        print(f"Updated $config_file with version $VERSION")
-        EOF
-
-        elif [[ "$config_file" == *.cfg ]]; then
-          isee update-setup-cfg --version="$VERSION"
-        fi
+        # Use isee update-setup-cfg which handles both pyproject.toml and setup.cfg
+        isee update-setup-cfg --version="$VERSION"
