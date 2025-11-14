@@ -8,22 +8,28 @@ Usage:
 
 ```
 # Check if everything is set up
-python local_ci.py --check-deps
+python -m isee.local_cli --check-deps
 
-# Run entire CI workflow
-python local_ci.py
+# Run entire CI workflow (fast, clean - no local artifacts)
+python -m isee.local_cli
+
+# Run with local artifacts for debugging
+python -m isee.local_cli --bind
 
 # Run just validation job (all matrix combinations)
-python local_ci.py -j validation
+python -m isee.local_cli -j validation
 
 # Run specific matrix combination
-python local_ci.py -j validation -m python-version:3.12
+python -m isee.local_cli -j validation -m python-version:3.12
+
+# For M-series Macs (if needed)
+python -m isee.local_cli --container-arch linux/amd64
 
 # See what would run without executing
-python local_ci.py --dry-run
+python -m isee.local_cli --dry-run
 
 # Quiet mode (less output)
-python local_ci.py -q
+python -m isee.local_cli -q
 ```
 
 """
@@ -134,6 +140,36 @@ def check_dependencies(*, verbose: bool = True) -> tuple[bool, list[str]]:
     return (len(missing) == 0, missing)
 
 
+def _build_act_command(
+    workflow_path: str,
+    *,
+    bind: bool = False,
+    keep_container: bool = False,
+    container_arch: str | None = None,
+) -> list[str]:
+    """Build the act command with appropriate flags.
+
+    >>> cmd = _build_act_command('ci.yml')
+    >>> '--bind' not in cmd and '--container-architecture' not in cmd
+    True
+    >>> cmd = _build_act_command('ci.yml', bind=True, container_arch='linux/amd64')
+    >>> '--bind' in cmd and 'linux/amd64' in cmd
+    True
+    """
+    cmd = ["act", "-W", workflow_path]
+
+    if bind:
+        cmd.append("--bind")
+
+    if container_arch:  # Only add if explicitly specified
+        cmd.extend(["--container-architecture", container_arch])
+
+    if keep_container:
+        cmd.append("--rm=false")
+
+    return cmd
+
+
 def run_ci(
     *,
     job: str | None = None,
@@ -141,6 +177,8 @@ def run_ci(
     dry_run: bool = False,
     workflow_file: str = ".github/workflows/ci.yml",
     verbose: bool = True,
+    bind: bool = False,
+    container_arch: str | None = None,
 ) -> int:
     """Run CI workflow locally using act.
 
@@ -150,6 +188,8 @@ def run_ci(
         dry_run: If True, list what would run without executing.
         workflow_file: Path to workflow file to run.
         verbose: If True, print progress information.
+        bind: Mount working directory (creates local artifacts like dist/).
+        container_arch: Container architecture (e.g., 'linux/amd64' for M-series Macs).
 
     Returns:
         Exit code (0 for success, non-zero for failure).
@@ -176,7 +216,12 @@ def run_ci(
         return 1
 
     # Build act command
-    cmd = ["act", "-W", workflow_file]
+    cmd = _build_act_command(
+        workflow_file,
+        bind=bind,
+        keep_container=False,
+        container_arch=container_arch,
+    )
 
     if dry_run:
         cmd.append("-l")
@@ -191,9 +236,6 @@ def run_ci(
             return 1
         cmd.extend(["--matrix", matrix])
 
-    # Always bind local directory for easier debugging
-    cmd.append("--bind")
-
     if verbose:
         print(f"🚀 Running: {' '.join(cmd)}\n")
 
@@ -202,10 +244,17 @@ def run_ci(
         result = subprocess.run(cmd, check=False)
 
         if result.returncode != 0 and verbose:
-            print("\n❌ CI failed. Docker containers preserved for debugging.")
-            print("   View containers: docker ps -a")
-            print("   View logs: docker logs <container-id>")
-            print("   Remove containers: docker rm <container-id>")
+            print("\n❌ CI failed.")
+            print("\n📋 Debugging tips:")
+            print("   # List containers (including stopped ones)")
+            print("   docker ps -a")
+            print("\n   # Start and enter a stopped container for debugging")
+            print("   docker start <container-id>")
+            print("   docker exec -it <container-id> bash")
+            print("\n   # View logs from a container")
+            print("   docker logs <container-id>")
+            print("\n   # Clean up when done")
+            print("   docker rm <container-id>")
         elif verbose:
             print("\n✅ CI passed!")
 
@@ -214,7 +263,83 @@ def run_ci(
     except KeyboardInterrupt:
         if verbose:
             print("\n⚠️  Interrupted. Containers may still be running.")
-            print("   View: docker ps -a")
+            print("   Check with: docker ps -a")
+        return 130
+
+
+def run_workflow_locally(
+    workflow_path: str = None,
+    *,
+    bind: bool = False,
+    keep_container: bool = False,
+    container_architecture: str | None = None,
+) -> int:
+    """
+    Run a GitHub Actions workflow locally using act.
+
+    Args:
+        workflow_path: Path to workflow file (if None, auto-detects)
+        bind: Mount working directory into container (creates local artifacts)
+        keep_container: Keep container after run for debugging
+        container_architecture: Container architecture (e.g., 'linux/amd64')
+    """
+    # Check dependencies first
+    ready, missing = check_dependencies(verbose=True)
+    if not ready:
+        print(f"\n❌ Cannot run workflow: missing {', '.join(missing)}")
+        print("   Fix the issues above and try again.")
+        return 1
+
+    # Auto-detect workflow file if not provided
+    if workflow_path is None:
+        workflow_files = list(Path(".github/workflows").glob("*.yml"))
+        if not workflow_files:
+            print("❌ No workflow files found in .github/workflows/")
+            return 1
+        if len(workflow_files) > 1:
+            print("⚠️  Multiple workflow files found:")
+            for wf in workflow_files:
+                print(f"   - {wf.name}")
+            print("   Using the first one found.")
+        workflow_path = str(workflow_files[0])
+
+    # Build act command
+    cmd = _build_act_command(
+        workflow_path,
+        bind=bind,
+        keep_container=keep_container,
+        container_arch=container_architecture,
+    )
+
+    # Run act
+    try:
+        result = subprocess.run(cmd, check=False)
+
+        if result.returncode != 0:
+            print("\n❌ Workflow run failed.")
+            print("\n📋 Debugging tips:")
+            print("   # List containers (including stopped ones)")
+            print("   docker ps -a")
+            print("\n   # Start and enter a stopped container for debugging")
+            print("   docker start <container-id>")
+            print("   docker exec -it <container-id> bash")
+            print("\n   # Inside the container, you can:")
+            print("   pwd                    # See working directory")
+            print("   ls -la                 # List files")
+            print("   python --version       # Check Python version")
+            print("   pip list               # See installed packages")
+            print("\n   # View logs from a container")
+            print("   docker logs <container-id>")
+            print("\n   # Clean up when done")
+            print("   docker rm <container-id>")
+        else:
+            print("\n✅ Workflow run succeeded!")
+
+        return result.returncode
+
+    except KeyboardInterrupt:
+        print("\n⚠️  Interrupted. Containers may still be running.")
+        print("   Check with: docker ps -a")
         return 130
 
 
@@ -258,6 +383,15 @@ def main():
         action="store_true",
         help="Only check dependencies and exit",
     )
+    parser.add_argument(
+        "--bind",
+        action="store_true",
+        help="Mount working directory (creates local artifacts like dist/)",
+    )
+    parser.add_argument(
+        "--container-arch",
+        help="Container architecture (e.g., linux/amd64 for M-series Macs)",
+    )
 
     args = parser.parse_args()
 
@@ -271,6 +405,8 @@ def main():
         dry_run=args.dry_run,
         workflow_file=args.workflow,
         verbose=not args.quiet,
+        bind=args.bind,
+        container_arch=args.container_arch,
     )
 
 
