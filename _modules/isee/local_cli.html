@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>isee.local_cli &mdash; isee 0.2.73 documentation</title>
+  <title>isee.local_cli &mdash; isee 0.2.74 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -14,7 +14,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=3b99f7ad"></script>
+      <script src="../../_static/documentation_options.js?v=f0106760"></script>
       <script src="../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../_static/toggleprompt.js?v=d7ede5d2"></script>
@@ -91,22 +91,28 @@
 
 <span class="sd">```</span>
 <span class="sd"># Check if everything is set up</span>
-<span class="sd">python local_ci.py --check-deps</span>
+<span class="sd">python -m isee.local_cli --check-deps</span>
 
-<span class="sd"># Run entire CI workflow</span>
-<span class="sd">python local_ci.py</span>
+<span class="sd"># Run entire CI workflow (fast, clean - no local artifacts)</span>
+<span class="sd">python -m isee.local_cli</span>
+
+<span class="sd"># Run with local artifacts for debugging</span>
+<span class="sd">python -m isee.local_cli --bind</span>
 
 <span class="sd"># Run just validation job (all matrix combinations)</span>
-<span class="sd">python local_ci.py -j validation</span>
+<span class="sd">python -m isee.local_cli -j validation</span>
 
 <span class="sd"># Run specific matrix combination</span>
-<span class="sd">python local_ci.py -j validation -m python-version:3.12</span>
+<span class="sd">python -m isee.local_cli -j validation -m python-version:3.12</span>
+
+<span class="sd"># For M-series Macs (if needed)</span>
+<span class="sd">python -m isee.local_cli --container-arch linux/amd64</span>
 
 <span class="sd"># See what would run without executing</span>
-<span class="sd">python local_ci.py --dry-run</span>
+<span class="sd">python -m isee.local_cli --dry-run</span>
 
 <span class="sd"># Quiet mode (less output)</span>
-<span class="sd">python local_ci.py -q</span>
+<span class="sd">python -m isee.local_cli -q</span>
 <span class="sd">```</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
@@ -220,6 +226,36 @@
 
 
 
+<span class="k">def</span><span class="w"> </span><span class="nf">_build_act_command</span><span class="p">(</span>
+    <span class="n">workflow_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">bind</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">keep_container</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">container_arch</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Build the act command with appropriate flags.</span>
+
+<span class="sd">    &gt;&gt;&gt; cmd = _build_act_command(&#39;ci.yml&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; &#39;--bind&#39; not in cmd and &#39;--container-architecture&#39; not in cmd</span>
+<span class="sd">    True</span>
+<span class="sd">    &gt;&gt;&gt; cmd = _build_act_command(&#39;ci.yml&#39;, bind=True, container_arch=&#39;linux/amd64&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; &#39;--bind&#39; in cmd and &#39;linux/amd64&#39; in cmd</span>
+<span class="sd">    True</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">cmd</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;act&quot;</span><span class="p">,</span> <span class="s2">&quot;-W&quot;</span><span class="p">,</span> <span class="n">workflow_path</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">bind</span><span class="p">:</span>
+        <span class="n">cmd</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;--bind&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">container_arch</span><span class="p">:</span>  <span class="c1"># Only add if explicitly specified</span>
+        <span class="n">cmd</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="s2">&quot;--container-architecture&quot;</span><span class="p">,</span> <span class="n">container_arch</span><span class="p">])</span>
+
+    <span class="k">if</span> <span class="n">keep_container</span><span class="p">:</span>
+        <span class="n">cmd</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;--rm=false&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">cmd</span>
+
+
 <div class="viewcode-block" id="run_ci">
 <a class="viewcode-back" href="../../module_docs/isee/local_cli.html#isee.local_cli.run_ci">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">run_ci</span><span class="p">(</span>
@@ -229,6 +265,8 @@
     <span class="n">dry_run</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="n">workflow_file</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;.github/workflows/ci.yml&quot;</span><span class="p">,</span>
     <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">bind</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">container_arch</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Run CI workflow locally using act.</span>
 
@@ -238,6 +276,8 @@
 <span class="sd">        dry_run: If True, list what would run without executing.</span>
 <span class="sd">        workflow_file: Path to workflow file to run.</span>
 <span class="sd">        verbose: If True, print progress information.</span>
+<span class="sd">        bind: Mount working directory (creates local artifacts like dist/).</span>
+<span class="sd">        container_arch: Container architecture (e.g., &#39;linux/amd64&#39; for M-series Macs).</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        Exit code (0 for success, non-zero for failure).</span>
@@ -264,7 +304,12 @@
         <span class="k">return</span> <span class="mi">1</span>
 
     <span class="c1"># Build act command</span>
-    <span class="n">cmd</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;act&quot;</span><span class="p">,</span> <span class="s2">&quot;-W&quot;</span><span class="p">,</span> <span class="n">workflow_file</span><span class="p">]</span>
+    <span class="n">cmd</span> <span class="o">=</span> <span class="n">_build_act_command</span><span class="p">(</span>
+        <span class="n">workflow_file</span><span class="p">,</span>
+        <span class="n">bind</span><span class="o">=</span><span class="n">bind</span><span class="p">,</span>
+        <span class="n">keep_container</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">container_arch</span><span class="o">=</span><span class="n">container_arch</span><span class="p">,</span>
+    <span class="p">)</span>
 
     <span class="k">if</span> <span class="n">dry_run</span><span class="p">:</span>
         <span class="n">cmd</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;-l&quot;</span><span class="p">)</span>
@@ -279,9 +324,6 @@
             <span class="k">return</span> <span class="mi">1</span>
         <span class="n">cmd</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="s2">&quot;--matrix&quot;</span><span class="p">,</span> <span class="n">matrix</span><span class="p">])</span>
 
-    <span class="c1"># Always bind local directory for easier debugging</span>
-    <span class="n">cmd</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;--bind&quot;</span><span class="p">)</span>
-
     <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
         <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;🚀 Running: </span><span class="si">{</span><span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">cmd</span><span class="p">)</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
 
@@ -290,10 +332,17 @@
         <span class="n">result</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">returncode</span> <span class="o">!=</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">verbose</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">❌ CI failed. Docker containers preserved for debugging.&quot;</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;   View containers: docker ps -a&quot;</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;   View logs: docker logs &lt;container-id&gt;&quot;</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;   Remove containers: docker rm &lt;container-id&gt;&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">❌ CI failed.&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">📋 Debugging tips:&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;   # List containers (including stopped ones)&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;   docker ps -a&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">   # Start and enter a stopped container for debugging&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;   docker start &lt;container-id&gt;&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;   docker exec -it &lt;container-id&gt; bash&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">   # View logs from a container&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;   docker logs &lt;container-id&gt;&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">   # Clean up when done&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;   docker rm &lt;container-id&gt;&quot;</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">verbose</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">✅ CI passed!&quot;</span><span class="p">)</span>
 
@@ -302,7 +351,86 @@
     <span class="k">except</span> <span class="ne">KeyboardInterrupt</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">⚠️  Interrupted. Containers may still be running.&quot;</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;   View: docker ps -a&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;   Check with: docker ps -a&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="mi">130</span></div>
+
+
+
+<div class="viewcode-block" id="run_workflow_locally">
+<a class="viewcode-back" href="../../module_docs/isee/local_cli.html#isee.local_cli.run_workflow_locally">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">run_workflow_locally</span><span class="p">(</span>
+    <span class="n">workflow_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">bind</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">keep_container</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">container_architecture</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Run a GitHub Actions workflow locally using act.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        workflow_path: Path to workflow file (if None, auto-detects)</span>
+<span class="sd">        bind: Mount working directory into container (creates local artifacts)</span>
+<span class="sd">        keep_container: Keep container after run for debugging</span>
+<span class="sd">        container_architecture: Container architecture (e.g., &#39;linux/amd64&#39;)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Check dependencies first</span>
+    <span class="n">ready</span><span class="p">,</span> <span class="n">missing</span> <span class="o">=</span> <span class="n">check_dependencies</span><span class="p">(</span><span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">ready</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">❌ Cannot run workflow: missing </span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">missing</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;   Fix the issues above and try again.&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="mi">1</span>
+
+    <span class="c1"># Auto-detect workflow file if not provided</span>
+    <span class="k">if</span> <span class="n">workflow_path</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">workflow_files</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="s2">&quot;.github/workflows&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s2">&quot;*.yml&quot;</span><span class="p">))</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">workflow_files</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;❌ No workflow files found in .github/workflows/&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">workflow_files</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;⚠️  Multiple workflow files found:&quot;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">wf</span> <span class="ow">in</span> <span class="n">workflow_files</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   - </span><span class="si">{</span><span class="n">wf</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;   Using the first one found.&quot;</span><span class="p">)</span>
+        <span class="n">workflow_path</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">workflow_files</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+    <span class="c1"># Build act command</span>
+    <span class="n">cmd</span> <span class="o">=</span> <span class="n">_build_act_command</span><span class="p">(</span>
+        <span class="n">workflow_path</span><span class="p">,</span>
+        <span class="n">bind</span><span class="o">=</span><span class="n">bind</span><span class="p">,</span>
+        <span class="n">keep_container</span><span class="o">=</span><span class="n">keep_container</span><span class="p">,</span>
+        <span class="n">container_arch</span><span class="o">=</span><span class="n">container_architecture</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Run act</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">returncode</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">❌ Workflow run failed.&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">📋 Debugging tips:&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;   # List containers (including stopped ones)&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;   docker ps -a&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">   # Start and enter a stopped container for debugging&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;   docker start &lt;container-id&gt;&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;   docker exec -it &lt;container-id&gt; bash&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">   # Inside the container, you can:&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;   pwd                    # See working directory&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;   ls -la                 # List files&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;   python --version       # Check Python version&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;   pip list               # See installed packages&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">   # View logs from a container&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;   docker logs &lt;container-id&gt;&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">   # Clean up when done&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;   docker rm &lt;container-id&gt;&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">✅ Workflow run succeeded!&quot;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">result</span><span class="o">.</span><span class="n">returncode</span>
+
+    <span class="k">except</span> <span class="ne">KeyboardInterrupt</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">⚠️  Interrupted. Containers may still be running.&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;   Check with: docker ps -a&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="mi">130</span></div>
 
 
@@ -349,6 +477,15 @@
         <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span>
         <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Only check dependencies and exit&quot;</span><span class="p">,</span>
     <span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;--bind&quot;</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Mount working directory (creates local artifacts like dist/)&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;--container-arch&quot;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Container architecture (e.g., linux/amd64 for M-series Macs)&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
 
     <span class="n">args</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()</span>
 
@@ -362,6 +499,8 @@
         <span class="n">dry_run</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">dry_run</span><span class="p">,</span>
         <span class="n">workflow_file</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">workflow</span><span class="p">,</span>
         <span class="n">verbose</span><span class="o">=</span><span class="ow">not</span> <span class="n">args</span><span class="o">.</span><span class="n">quiet</span><span class="p">,</span>
+        <span class="n">bind</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">bind</span><span class="p">,</span>
+        <span class="n">container_arch</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">container_arch</span><span class="p">,</span>
     <span class="p">)</span></div>
 
 
