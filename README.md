@@ -15,8 +15,9 @@ To install:	```pip install isee```
 7. [Hosting](#hosting)
 8. [How to setup CI](#how-to-setup-ci)
     * [For a GitHub repository](#for-a-github-repository)
-9. [Useful resources](#useful-resources)
-10. [Troubleshooting](#troubleshooting)
+9. [Running CI Locally](#running-ci-locally)
+10. [Useful resources](#useful-resources)
+11. [Troubleshooting](#troubleshooting)
     * [Common non fatal error during publishing](#common-non-fatal-error-during-publishing)
     * [Github token problems (e.g. tagging)](#github-token-problems)
     * [Version tag misalignment](#version-tag-misalignment)
@@ -113,6 +114,56 @@ Consider using [wads](https://pypi.org/project/wads/) to automatically validate 
 ```
 pack check-in 'Your commit message.'
 ```
+
+<a id="running-ci-locally"></a>
+# Running CI Locally
+
+You can run your GitHub Actions CI workflow locally before pushing, using [`act`](https://github.com/nektos/act). This helps catch issues early and saves CI minutes.
+
+## Quick Start
+
+```bash
+# Check if dependencies are installed
+python -m isee.local_cli --check-deps
+
+# Run your entire CI workflow locally
+python -m isee.local_cli
+
+# Run a specific job (e.g., validation)
+python -m isee.local_cli -j validation
+
+# Dry run to see what would execute
+python -m isee.local_cli --dry-run
+```
+
+## Prerequisites
+
+Install `act` and ensure Docker is running:
+
+**macOS:**
+```bash
+brew install act
+```
+
+**Linux:**
+```bash
+curl https://raw.githubusercontent.com/nektos/act/master/install.sh | sudo bash
+```
+
+## Common Options
+
+```bash
+# Run with specific Python version
+python -m isee.local_cli -j validation -m python-version:3.10
+
+# Use custom workflow file
+python -m isee.local_cli -w .github/workflows/test.yml
+
+# Quiet mode (less output)
+python -m isee.local_cli -q
+```
+
+For detailed documentation, see [LOCAL_CLI_USAGE.md](https://github.com/i2mint/isee/blob/master/LOCAL_CLI_USAGE.md).
 
 <a id="useful-resources"></a>
 # Useful resources
