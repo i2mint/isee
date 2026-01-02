@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "isee"
-version = "0.2.76"
+version = "0.2.77"
 description = "Python continuous integration (CI) support tools."
 readme = "README.md"
 requires-python = ">=3.10"
