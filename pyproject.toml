@@ -10,7 +10,7 @@ readme = "README.md"
 requires-python = ">=3.10"
 keywords = []
 authors = []
-dependencies = ["semver==2.13.0", "wads"]
+dependencies = ["semver==2.13.0", "wads", "tomli; python_version < '3.11'"]
 
 [project.license]
 text = "MIT"
