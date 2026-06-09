@@ -21,14 +21,29 @@ runs:
         dependency-files: setup.cfg
         ssh-private-key: ${{ inputs.ssh-private-key }}
 
-    - name: "Run setup.py"
+    - name: "Build distributions"
       shell: bash
       run: |
         set -e
-        distributions=""
-        IFS=',' read -ra paths <<< "${{ inputs.distributions }}"
-          for path in "${paths[@]}"
-          do
-              distributions+=" $path"
-          done
-        python setup.py $distributions
+        python -m pip install --upgrade build
+        # Map legacy setup.py distribution names to PEP 517 `build` flags.
+        want_sdist=false
+        want_wheel=false
+        IFS=',' read -ra dists <<< "${{ inputs.distributions }}"
+        for d in "${dists[@]}"; do
+          d="$(echo "$d" | xargs)"  # trim surrounding whitespace
+          case "$d" in
+            sdist) want_sdist=true ;;
+            bdist_wheel) want_wheel=true ;;
+            *) echo "Warning: distribution '$d' is not supported by 'python -m build'; building sdist + wheel instead" ;;
+          esac
+        done
+        build_args=""
+        if [ "$want_sdist" = "true" ] && [ "$want_wheel" = "false" ]; then
+          build_args="--sdist"
+        elif [ "$want_wheel" = "true" ] && [ "$want_sdist" = "false" ]; then
+          build_args="--wheel"
+        fi
+        # No flags => build builds both sdist and wheel (the default distributions).
+        echo "Running: python -m build $build_args"
+        python -m build $build_args

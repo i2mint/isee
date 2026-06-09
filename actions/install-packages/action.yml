@@ -38,12 +38,10 @@ runs:
         
         if [[ "${{ inputs.pypi-packages }}" == "isee" && "${{ github.repository }}" == "i2mint/isee" ]]; then
           echo "Installing isee from source"
-          python setup.py sdist
-          python -m pip install $(ls -t dist/isee-*.tar.gz 2>/dev/null | head -n 1)
+          python -m pip install .
         elif [[ "${{ inputs.pypi-packages }}" == "wads" && "${{ github.repository }}" == "i2mint/wads" ]]; then
           echo "Installing wads from source"
-          python setup.py sdist
-          python -m pip install $(ls -t dist/wads-*.tar.gz 2>/dev/null | head -n 1)
+          python -m pip install .
         else
           echo "Installing packages: ${{ inputs.pypi-packages }}"
           python -m pip install ${{ inputs.pypi-packages }}
@@ -99,8 +97,7 @@ runs:
             if [ "$isee_installed" == "false" ]; then
               if [ "${{ github.repository }}" == "i2mint/isee" ]; then
                 echo "Installing isee from source"
-                python setup.py sdist
-                python -m pip install $(ls -t dist/isee-*.tar.gz 2>/dev/null | head -n 1)
+                python -m pip install .
               else
                 echo "Installing isee from pip"
                 pip -q install isee
