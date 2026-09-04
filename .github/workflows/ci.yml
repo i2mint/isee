@@ -37,6 +37,16 @@ jobs:
         with:
           root-dir: ${{ env.PROJECT_NAME }}
 
+      # `pytest-validation` above runs doctests over the `isee/` package only, so
+      # nothing under `tests/` runs in CI. The CLI-surface golden must, though:
+      # eight action definitions in this repo invoke `isee <cmd>` by name, and a
+      # renamed flag there is a fleet-wide CI outage. Named explicitly rather
+      # than widening `root-dir`, which would also pull in the unrelated
+      # `tests/test_local_cli*.py` failures that predate this step.
+      - name: CLI Surface (characterization golden)
+        shell: bash
+        run: pytest -v tests/test_cli_surface.py
+
   publish:
     name: Publish Package
     if: "!contains(github.event.head_commit.message, '[skip ci]') && github.ref == 'refs/heads/master'"

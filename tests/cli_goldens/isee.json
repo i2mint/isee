@@ -1,0 +1,171 @@
+{
+  "cases": [
+    {
+      "argv": [
+        "--help"
+      ],
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "usage: isee [-h]\n            {update-helm-tpl,update-manifest,update-pyproject-toml,update-setup-cfg,update-setup-py,gen-semver,tag-repo,install-requires,tests-require}\n            ...\n\npositional arguments:\n  {update-helm-tpl,update-manifest,update-pyproject-toml,update-setup-cfg,update-setup-py,gen-semver,tag-repo,install-requires,tests-require}\n    update-helm-tpl\n    update-manifest\n    update-pyproject-toml\n                        Update the version in pyproject.toml file. Args: file_path: (Deprecated)\n                        Path to the config file. Use pkg_dir instead. version: The version to set.\n                        If None, tries to get it from the VERSION environment variable. pkg_dir:\n                        Directory containing the package config files (default: current directory)\n    update-setup-cfg    Update the version in setup.cfg file. NOTE: This function is deprecated.\n                        For new projects using pyproject.toml, use update_pyproject_toml instead.\n                        This function is kept for backward compatibility. Args: file_path:\n                        (Deprecated) Path to the config file. Use pkg_dir instead. version: The\n                        version to set. If None, tries to get it from the VERSION environment\n                        variable. pkg_dir: Directory containing the package config files (default:\n                        current directory)\n    update-setup-py\n    gen-semver          Generate a new semantic version based on git commit messages and tags.\n                        Args: - dir_path (str): The directory path where the git repository is\n                        located. If None, uses the current directory. - version_patch_prefix\n                        (str): A prefix to be added to the patch version. - output_mode (str): How\n                        to output the version: - \"auto\": Detect if running in GitHub Actions and\n                        adjust accordingly - \"print\": Only print to stdout (for shell capture) -\n                        \"return\": Only return (for Python API use) - \"both\": Both print and return\n                        Returns: - str: The new version string if output_mode is \"return\" or\n                        \"both\". - None: If output_mode is \"print\".\n    tag-repo\n    install-requires    Install the project's runtime dependencies. Reads them from\n                        ``pyproject.toml`` ``[project].dependencies`` when present, otherwise\n                        ``setup.cfg`` ``[options] install_requires``.\n    tests-require       Install the project's test dependencies. Reads them from\n                        ``pyproject.toml`` ``[project.optional-dependencies]`` (the first present\n                        of ``test_extras``) when present, otherwise ``setup.cfg`` ``[options]\n                        tests_require``.\n\noptions:\n  -h, --help            show this help message and exit\n",
+      "tier": 3,
+      "usage": "usage: isee [-h] {update-helm-tpl,update-manifest,update-pyproject-toml,update-setup-cfg,update-setup-py,gen-semver,tag-repo,install-requires,tests-require} ..."
+    },
+    {
+      "argv": [],
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "usage: isee [-h]\n            {update-helm-tpl,update-manifest,update-pyproject-toml,update-setup-cfg,update-setup-py,gen-semver,tag-repo,install-requires,tests-require}\n            ...\n",
+      "tier": 1,
+      "usage": "usage: isee [-h] {update-helm-tpl,update-manifest,update-pyproject-toml,update-setup-cfg,update-setup-py,gen-semver,tag-repo,install-requires,tests-require} ..."
+    },
+    {
+      "argv": [
+        "update-helm-tpl",
+        "--help"
+      ],
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "usage: isee update-helm-tpl [-h]\n\noptions:\n  -h, --help  show this help message and exit\n",
+      "tier": 3,
+      "usage": "usage: isee update-helm-tpl [-h]"
+    },
+    {
+      "argv": [
+        "update-manifest",
+        "--help"
+      ],
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "usage: isee update-manifest [-h] manifest-path\n\npositional arguments:\n  manifest-path  -\n\noptions:\n  -h, --help     show this help message and exit\n",
+      "tier": 3,
+      "usage": "usage: isee update-manifest [-h] manifest-path"
+    },
+    {
+      "argv": [
+        "update-pyproject-toml",
+        "--help"
+      ],
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "usage: isee update-pyproject-toml [-h] [-f FILE_PATH] [-v VERSION] [-p PKG_DIR]\n\nUpdate the version in pyproject.toml file.\n\nArgs:\n    file_path: (Deprecated) Path to the config file. Use pkg_dir instead.\n    version: The version to set. If None, tries to get it from the VERSION environment variable.\n    pkg_dir: Directory containing the package config files (default: current directory)\n\noptions:\n  -h, --help            show this help message and exit\n  -f FILE_PATH, --file-path FILE_PATH\n                        -\n  -v VERSION, --version VERSION\n                        -\n  -p PKG_DIR, --pkg-dir PKG_DIR\n                        '.'\n",
+      "tier": 3,
+      "usage": "usage: isee update-pyproject-toml [-h] [-f FILE_PATH] [-v VERSION] [-p PKG_DIR]"
+    },
+    {
+      "argv": [
+        "update-setup-cfg",
+        "--help"
+      ],
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "usage: isee update-setup-cfg [-h] [-f FILE_PATH] [-v VERSION] [-p PKG_DIR]\n\nUpdate the version in setup.cfg file.\n\nNOTE: This function is deprecated. For new projects using pyproject.toml,\nuse update_pyproject_toml instead. This function is kept for backward compatibility.\n\nArgs:\n    file_path: (Deprecated) Path to the config file. Use pkg_dir instead.\n    version: The version to set. If None, tries to get it from the VERSION environment variable.\n    pkg_dir: Directory containing the package config files (default: current directory)\n\noptions:\n  -h, --help            show this help message and exit\n  -f FILE_PATH, --file-path FILE_PATH\n                        -\n  -v VERSION, --version VERSION\n                        -\n  -p PKG_DIR, --pkg-dir PKG_DIR\n                        '.'\n",
+      "tier": 3,
+      "usage": "usage: isee update-setup-cfg [-h] [-f FILE_PATH] [-v VERSION] [-p PKG_DIR]"
+    },
+    {
+      "argv": [
+        "update-setup-py",
+        "--help"
+      ],
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "usage: isee update-setup-py [-h] [-p PROJECT_DIR] [-v VERSION]\n\noptions:\n  -h, --help            show this help message and exit\n  -p PROJECT_DIR, --project-dir PROJECT_DIR\n                        -\n  -v VERSION, --version VERSION\n                        -\n",
+      "tier": 3,
+      "usage": "usage: isee update-setup-py [-h] [-p PROJECT_DIR] [-v VERSION]"
+    },
+    {
+      "argv": [
+        "gen-semver",
+        "--help"
+      ],
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "usage: isee gen-semver [-h] [-d DIR_PATH] [-v VERSION_PATCH_PREFIX] [-o OUTPUT_MODE]\n\nGenerate a new semantic version based on git commit messages and tags.\n\nArgs:\n- dir_path (str): The directory path where the git repository is located.\n    If None, uses the current directory.\n- version_patch_prefix (str): A prefix to be added to the patch version.\n- output_mode (str): How to output the version:\n    - \"auto\": Detect if running in GitHub Actions and adjust accordingly\n    - \"print\": Only print to stdout (for shell capture)\n    - \"return\": Only return (for Python API use)\n    - \"both\": Both print and return\n\nReturns:\n- str: The new version string if output_mode is \"return\" or \"both\".\n- None: If output_mode is \"print\".\n\noptions:\n  -h, --help            show this help message and exit\n  -d DIR_PATH, --dir-path DIR_PATH\n                        -\n  -v VERSION_PATCH_PREFIX, --version-patch-prefix VERSION_PATCH_PREFIX\n                        ''\n  -o OUTPUT_MODE, --output-mode OUTPUT_MODE\n                        'auto'\n",
+      "tier": 3,
+      "usage": "usage: isee gen-semver [-h] [-d DIR_PATH] [-v VERSION_PATCH_PREFIX] [-o OUTPUT_MODE]"
+    },
+    {
+      "argv": [
+        "tag-repo",
+        "--help"
+      ],
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "usage: isee tag-repo [-h] [-g GIT_DIR] tag\n\npositional arguments:\n  tag                   -\n\noptions:\n  -h, --help            show this help message and exit\n  -g GIT_DIR, --git-dir GIT_DIR\n                        '.'\n",
+      "tier": 3,
+      "usage": "usage: isee tag-repo [-h] [-g GIT_DIR] tag"
+    },
+    {
+      "argv": [
+        "install-requires",
+        "--help"
+      ],
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "usage: isee install-requires [-h] [-p PROJECT_DIR]\n\nInstall the project's runtime dependencies.\n\nReads them from ``pyproject.toml`` ``[project].dependencies`` when present,\notherwise ``setup.cfg`` ``[options] install_requires``.\n\noptions:\n  -h, --help            show this help message and exit\n  -p PROJECT_DIR, --project-dir PROJECT_DIR\n                        -\n",
+      "tier": 3,
+      "usage": "usage: isee install-requires [-h] [-p PROJECT_DIR]"
+    },
+    {
+      "argv": [
+        "tests-require",
+        "--help"
+      ],
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "usage: isee tests-require [-h] [-p PROJECT_DIR] [-t [TEST_EXTRAS ...]]\n\nInstall the project's test dependencies.\n\nReads them from ``pyproject.toml`` ``[project.optional-dependencies]`` (the\nfirst present of ``test_extras``) when present, otherwise ``setup.cfg``\n``[options] tests_require``.\n\noptions:\n  -h, --help            show this help message and exit\n  -p PROJECT_DIR, --project-dir PROJECT_DIR\n                        -\n  -t [TEST_EXTRAS ...], --test-extras [TEST_EXTRAS ...]\n                        ('testing', 'test', 'tests', 'dev')\n",
+      "tier": 3,
+      "usage": "usage: isee tests-require [-h] [-p PROJECT_DIR] [-t [TEST_EXTRAS ...]]"
+    },
+    {
+      "argv": [
+        "no-such-command"
+      ],
+      "returncode": 2,
+      "stderr": "usage: isee [-h]\n            {update-helm-tpl,update-manifest,update-pyproject-toml,update-setup-cfg,update-setup-py,gen-semver,tag-repo,install-requires,tests-require}\n            ...\nisee: error: argument {update-helm-tpl,update-manifest,update-pyproject-toml,update-setup-cfg,update-setup-py,gen-semver,tag-repo,install-requires,tests-require}: invalid choice: 'no-such-command' (choose from update-helm-tpl, update-manifest, update-pyproject-toml, update-setup-cfg, update-setup-py, gen-semver, tag-repo, install-requires, tests-require)\n",
+      "stdout": "",
+      "tier": 1,
+      "usage": "usage: isee [-h] {update-helm-tpl,update-manifest,update-pyproject-toml,update-setup-cfg,update-setup-py,gen-semver,tag-repo,install-requires,tests-require} ... isee: error: argument {update-helm-tpl,update-manifest,update-pyproject-toml,update-setup-cfg,update-setup-py,gen-semver,tag-repo,install-requires,tests-require}: invalid choice: 'no-such-command' (choose from update-helm-tpl, update-manifest, update-pyproject-toml, update-setup-cfg, update-setup-py, gen-semver, tag-repo, install-requires, tests-require)"
+    },
+    {
+      "argv": [
+        "gen-semver",
+        "--no-such-flag"
+      ],
+      "returncode": 2,
+      "stderr": "usage: isee [-h]\n            {update-helm-tpl,update-manifest,update-pyproject-toml,update-setup-cfg,update-setup-py,gen-semver,tag-repo,install-requires,tests-require}\n            ...\nisee: error: unrecognized arguments: --no-such-flag\n",
+      "stdout": "",
+      "tier": 1,
+      "usage": "usage: isee [-h] {update-helm-tpl,update-manifest,update-pyproject-toml,update-setup-cfg,update-setup-py,gen-semver,tag-repo,install-requires,tests-require} ... isee: error: unrecognized arguments: --no-such-flag"
+    },
+    {
+      "argv": [
+        "-h"
+      ],
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "usage: isee [-h]\n            {update-helm-tpl,update-manifest,update-pyproject-toml,update-setup-cfg,update-setup-py,gen-semver,tag-repo,install-requires,tests-require}\n            ...\n\npositional arguments:\n  {update-helm-tpl,update-manifest,update-pyproject-toml,update-setup-cfg,update-setup-py,gen-semver,tag-repo,install-requires,tests-require}\n    update-helm-tpl\n    update-manifest\n    update-pyproject-toml\n                        Update the version in pyproject.toml file. Args: file_path: (Deprecated)\n                        Path to the config file. Use pkg_dir instead. version: The version to set.\n                        If None, tries to get it from the VERSION environment variable. pkg_dir:\n                        Directory containing the package config files (default: current directory)\n    update-setup-cfg    Update the version in setup.cfg file. NOTE: This function is deprecated.\n                        For new projects using pyproject.toml, use update_pyproject_toml instead.\n                        This function is kept for backward compatibility. Args: file_path:\n                        (Deprecated) Path to the config file. Use pkg_dir instead. version: The\n                        version to set. If None, tries to get it from the VERSION environment\n                        variable. pkg_dir: Directory containing the package config files (default:\n                        current directory)\n    update-setup-py\n    gen-semver          Generate a new semantic version based on git commit messages and tags.\n                        Args: - dir_path (str): The directory path where the git repository is\n                        located. If None, uses the current directory. - version_patch_prefix\n                        (str): A prefix to be added to the patch version. - output_mode (str): How\n                        to output the version: - \"auto\": Detect if running in GitHub Actions and\n                        adjust accordingly - \"print\": Only print to stdout (for shell capture) -\n                        \"return\": Only return (for Python API use) - \"both\": Both print and return\n                        Returns: - str: The new version string if output_mode is \"return\" or\n                        \"both\". - None: If output_mode is \"print\".\n    tag-repo\n    install-requires    Install the project's runtime dependencies. Reads them from\n                        ``pyproject.toml`` ``[project].dependencies`` when present, otherwise\n                        ``setup.cfg`` ``[options] install_requires``.\n    tests-require       Install the project's test dependencies. Reads them from\n                        ``pyproject.toml`` ``[project.optional-dependencies]`` (the first present\n                        of ``test_extras``) when present, otherwise ``setup.cfg`` ``[options]\n                        tests_require``.\n\noptions:\n  -h, --help            show this help message and exit\n",
+      "tier": 3,
+      "usage": "usage: isee [-h] {update-helm-tpl,update-manifest,update-pyproject-toml,update-setup-cfg,update-setup-py,gen-semver,tag-repo,install-requires,tests-require} ..."
+    }
+  ],
+  "cw_golden": 1,
+  "env": {
+    "COLUMNS": "100",
+    "NO_COLOR": "1",
+    "PYTHONHASHSEED": "0",
+    "PYTHONIOENCODING": "utf-8",
+    "PYTHONUTF8": "1",
+    "TERM": "dumb"
+  },
+  "newlines": "lf",
+  "note": "Recorded from the argh implementation at isee 0.2.77, immediately before the argh->cw migration. Re-record only with a deliberate, documented CLI change.",
+  "prog": [
+    "isee"
+  ],
+  "recorded_with": {
+    "implementation": "CPython",
+    "platform": "Darwin",
+    "python": "3.12.12"
+  }
+}
