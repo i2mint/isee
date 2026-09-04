@@ -18,8 +18,7 @@ def temp_workflow_file():
         workflow_dir.mkdir(parents=True, exist_ok=True)
 
         workflow_file = workflow_dir / "ci.yml"
-        workflow_file.write_text(
-            """
+        workflow_file.write_text("""
 name: Test CI
 on: [push]
 jobs:
@@ -29,8 +28,7 @@ jobs:
       - uses: actions/checkout@v3
       - name: Run tests
         run: echo "Testing"
-"""
-        )
+""")
         yield str(workflow_file)
 
 

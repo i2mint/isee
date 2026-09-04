@@ -12,7 +12,6 @@ from isee.git_utils import tag_repo
 from isee.pip_utils import install_requires, tests_require
 from isee.pylint_log_synopsis import print_report_followed_by_log
 
-
 #: The commands ``isee`` exposes, in the order they appear in ``isee --help``.
 #: Eight GitHub Action definitions in this repo invoke them by name, so this
 #: list -- and every flag these functions' signatures imply -- is a public

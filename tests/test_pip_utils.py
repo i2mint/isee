@@ -14,8 +14,7 @@ from isee.pip_utils import (
     resolve_tests_require,
 )
 
-PYPROJECT = dedent(
-    """
+PYPROJECT = dedent("""
     [build-system]
     requires = ["hatchling"]
 
@@ -27,11 +26,9 @@ PYPROJECT = dedent(
     [project.optional-dependencies]
     testing = ["pytest", "coverage"]
     docs = ["sphinx"]
-    """
-)
+    """)
 
-SETUP_CFG = dedent(
-    """
+SETUP_CFG = dedent("""
     [options]
     install_requires =
         requests>=2
@@ -39,8 +36,7 @@ SETUP_CFG = dedent(
     tests_require =
         pytest
         coverage
-    """
-)
+    """)
 
 
 def _write(tmp_path, name, content):

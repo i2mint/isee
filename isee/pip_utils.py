@@ -167,7 +167,9 @@ def install_requires(*, project_dir=None):
     Reads them from ``pyproject.toml`` ``[project].dependencies`` when present,
     otherwise ``setup.cfg`` ``[options] install_requires``.
     """
-    _pip_install(resolve_install_requires(project_dir=project_dir), label="install_requires")
+    _pip_install(
+        resolve_install_requires(project_dir=project_dir), label="install_requires"
+    )
 
 
 def tests_require(*, project_dir=None, test_extras=DFLT_TEST_EXTRAS):
