@@ -5,18 +5,18 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>isee.file_modification_utils &mdash; isee 0.2.76 documentation</title>
+  <title>isee.file_modification_utils &mdash; isee 0.2.77 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
-      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
       <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
 
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=63906913"></script>
-      <script src="../../_static/doctools.js?v=9bcbadda"></script>
-      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/documentation_options.js?v=c7e8ed0a"></script>
+      <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../_static/toggleprompt.js?v=d7ede5d2"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
       <script src="../../_static/copybutton.js?v=f281be69"></script>
@@ -71,6 +71,7 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../isee.html">isee</a></li>
       <li class="breadcrumb-item active">isee.file_modification_utils</li>
       <li class="wy-breadcrumbs-aside">
       </li>
@@ -81,7 +82,7 @@
            <div itemprop="articleBody">
              
   <h1>Source code for isee.file_modification_utils</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span></span><span class="sd">"""</span>
 <span class="sd">This module provides utilities for updating files.</span>
 
 <span class="sd">Functions:</span>
@@ -92,7 +93,7 @@
 <span class="sd">- _get_setup_filepath: Get the setup file path.</span>
 <span class="sd">- _update_file: Update the file content.</span>
 
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
@@ -103,35 +104,35 @@
 
 <span class="k">def</span><span class="w"> </span><span class="nf">update_helm_tpl</span><span class="p">():</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">update_helpers_tpl</span><span class="p">(</span><span class="n">root_path</span><span class="p">):</span>
-        <span class="n">hostname</span> <span class="o">=</span> <span class="n">get_env_var</span><span class="p">(</span><span class="s2">&quot;AWS_HOSTNAME&quot;</span><span class="p">)</span>
-        <span class="n">repository</span> <span class="o">=</span> <span class="n">get_env_var</span><span class="p">(</span><span class="s2">&quot;AWS_REPOSITORY&quot;</span><span class="p">)</span>
-        <span class="n">image_version</span> <span class="o">=</span> <span class="n">get_env_var</span><span class="p">(</span><span class="s2">&quot;IMAGE_VERSION&quot;</span><span class="p">)</span>
-        <span class="n">path</span> <span class="o">=</span> <span class="n">get_file_path</span><span class="p">(</span><span class="s2">&quot;_helpers.tpl&quot;</span><span class="p">,</span> <span class="n">root_path</span><span class="p">)</span>
-        <span class="n">pattern</span> <span class="o">=</span> <span class="sa">rf</span><span class="s1">&#39;(</span><span class="se">{{{{</span><span class="s1">- define &quot;</span><span class="si">{</span><span class="n">repository</span><span class="si">}</span><span class="s1">.image&quot; </span><span class="se">}}}}</span><span class="si">{</span><span class="n">hostname</span><span class="si">}</span><span class="s1">\/</span><span class="si">{</span><span class="n">repository</span><span class="si">}</span><span class="s1">:).+(</span><span class="se">{{{{</span><span class="s1">- end -</span><span class="se">}}}}</span><span class="s1">)&#39;</span>
-        <span class="n">_update_file</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">pattern</span><span class="p">,</span> <span class="sa">rf</span><span class="s2">&quot;\g&lt;1&gt;</span><span class="si">{</span><span class="n">image_version</span><span class="si">}</span><span class="s2">\g&lt;2&gt;&quot;</span><span class="p">)</span>
+        <span class="n">hostname</span> <span class="o">=</span> <span class="n">get_env_var</span><span class="p">(</span><span class="s2">"AWS_HOSTNAME"</span><span class="p">)</span>
+        <span class="n">repository</span> <span class="o">=</span> <span class="n">get_env_var</span><span class="p">(</span><span class="s2">"AWS_REPOSITORY"</span><span class="p">)</span>
+        <span class="n">image_version</span> <span class="o">=</span> <span class="n">get_env_var</span><span class="p">(</span><span class="s2">"IMAGE_VERSION"</span><span class="p">)</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="n">get_file_path</span><span class="p">(</span><span class="s2">"_helpers.tpl"</span><span class="p">,</span> <span class="n">root_path</span><span class="p">)</span>
+        <span class="n">pattern</span> <span class="o">=</span> <span class="sa">rf</span><span class="s1">'(</span><span class="se">{{{{</span><span class="s1">- define "</span><span class="si">{</span><span class="n">repository</span><span class="si">}</span><span class="s1">.image" </span><span class="se">}}}}</span><span class="si">{</span><span class="n">hostname</span><span class="si">}</span><span class="s1">\/</span><span class="si">{</span><span class="n">repository</span><span class="si">}</span><span class="s1">:).+(</span><span class="se">{{{{</span><span class="s1">- end -</span><span class="se">}}}}</span><span class="s1">)'</span>
+        <span class="n">_update_file</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">pattern</span><span class="p">,</span> <span class="sa">rf</span><span class="s2">"\g&lt;1&gt;</span><span class="si">{</span><span class="n">image_version</span><span class="si">}</span><span class="s2">\g&lt;2&gt;"</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">update_chart_config</span><span class="p">(</span><span class="n">root_path</span><span class="p">):</span>
-        <span class="n">chart_version</span> <span class="o">=</span> <span class="n">get_env_var</span><span class="p">(</span><span class="s2">&quot;CHART_VERSION&quot;</span><span class="p">)</span>
-        <span class="n">path</span> <span class="o">=</span> <span class="n">get_file_path</span><span class="p">(</span><span class="s2">&quot;Chart.yaml&quot;</span><span class="p">,</span> <span class="n">root_path</span><span class="p">)</span>
-        <span class="n">_update_file</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="sa">r</span><span class="s2">&quot;version: [\d.]+&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;version: </span><span class="si">{</span><span class="n">chart_version</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">chart_version</span> <span class="o">=</span> <span class="n">get_env_var</span><span class="p">(</span><span class="s2">"CHART_VERSION"</span><span class="p">)</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="n">get_file_path</span><span class="p">(</span><span class="s2">"Chart.yaml"</span><span class="p">,</span> <span class="n">root_path</span><span class="p">)</span>
+        <span class="n">_update_file</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="sa">r</span><span class="s2">"version: [\d.]+"</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"version: </span><span class="si">{</span><span class="n">chart_version</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
-    <span class="n">root_path</span> <span class="o">=</span> <span class="n">get_env_var</span><span class="p">(</span><span class="s2">&quot;HELM_TPL_DIR&quot;</span><span class="p">)</span>
+    <span class="n">root_path</span> <span class="o">=</span> <span class="n">get_env_var</span><span class="p">(</span><span class="s2">"HELM_TPL_DIR"</span><span class="p">)</span>
     <span class="n">update_helpers_tpl</span><span class="p">(</span><span class="n">root_path</span><span class="p">)</span>
     <span class="n">update_chart_config</span><span class="p">(</span><span class="n">root_path</span><span class="p">)</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">update_manifest</span><span class="p">(</span><span class="n">manifest_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-    <span class="n">repository</span> <span class="o">=</span> <span class="n">get_env_var</span><span class="p">(</span><span class="s2">&quot;AWS_REPOSITORY&quot;</span><span class="p">)</span>
-    <span class="n">chart_version</span> <span class="o">=</span> <span class="n">get_env_var</span><span class="p">(</span><span class="s2">&quot;CHART_VERSION&quot;</span><span class="p">)</span>
-    <span class="n">pattern</span> <span class="o">=</span> <span class="sa">rf</span><span class="s1">&#39;(&quot;chartName&quot;:&quot;adi\/</span><span class="si">{</span><span class="n">repository</span><span class="si">}</span><span class="s1">&quot;,(\n\s*)?&quot;chartVersion&quot;:&quot;)[\d.]+&#39;</span>
-    <span class="n">_update_file</span><span class="p">(</span><span class="n">manifest_path</span><span class="p">,</span> <span class="n">pattern</span><span class="p">,</span> <span class="sa">rf</span><span class="s2">&quot;\g&lt;1&gt;</span><span class="si">{</span><span class="n">chart_version</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">repository</span> <span class="o">=</span> <span class="n">get_env_var</span><span class="p">(</span><span class="s2">"AWS_REPOSITORY"</span><span class="p">)</span>
+    <span class="n">chart_version</span> <span class="o">=</span> <span class="n">get_env_var</span><span class="p">(</span><span class="s2">"CHART_VERSION"</span><span class="p">)</span>
+    <span class="n">pattern</span> <span class="o">=</span> <span class="sa">rf</span><span class="s1">'("chartName":"adi\/</span><span class="si">{</span><span class="n">repository</span><span class="si">}</span><span class="s1">",(\n\s*)?"chartVersion":")[\d.]+'</span>
+    <span class="n">_update_file</span><span class="p">(</span><span class="n">manifest_path</span><span class="p">,</span> <span class="n">pattern</span><span class="p">,</span> <span class="sa">rf</span><span class="s2">"\g&lt;1&gt;</span><span class="si">{</span><span class="n">chart_version</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
 
 <span class="c1"># NOTE: Deprecating setup.cfg</span>
 <span class="c1"># def update_setup_cfg(*, project_dir=None, version=None):</span>
-<span class="c1">#     path = _get_setup_filepath(&quot;setup.cfg&quot;, project_dir)</span>
-<span class="c1">#     version = version or get_env_var(&quot;VERSION&quot;)</span>
-<span class="c1">#     _update_file(path, r&quot;version\s=\s.+&quot;, f&quot;version = {version}&quot;)</span>
+<span class="c1">#     path = _get_setup_filepath("setup.cfg", project_dir)</span>
+<span class="c1">#     version = version or get_env_var("VERSION")</span>
+<span class="c1">#     _update_file(path, r"version\s=\s.+", f"version = {version}")</span>
 
 
 <span class="c1"># NOTE: Deprecating setup.cfg - use update_pyproject_toml for new projects</span>
@@ -141,9 +142,9 @@
     <span class="o">*</span><span class="p">,</span>
     <span class="n">file_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">version</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">pkg_dir</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;.&quot;</span><span class="p">,</span>
+    <span class="n">pkg_dir</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"."</span><span class="p">,</span>
 <span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Update the version in setup.cfg file.</span>
 
 <span class="sd">    NOTE: This function is deprecated. For new projects using pyproject.toml,</span>
@@ -153,23 +154,23 @@
 <span class="sd">        file_path: (Deprecated) Path to the config file. Use pkg_dir instead.</span>
 <span class="sd">        version: The version to set. If None, tries to get it from the VERSION environment variable.</span>
 <span class="sd">        pkg_dir: Directory containing the package config files (default: current directory)</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="c1"># NOTE: Deprecating setup.cfg</span>
-    <span class="n">version</span> <span class="o">=</span> <span class="n">version</span> <span class="ow">or</span> <span class="n">get_env_var</span><span class="p">(</span><span class="s2">&quot;VERSION&quot;</span><span class="p">)</span>
+    <span class="n">version</span> <span class="o">=</span> <span class="n">version</span> <span class="ow">or</span> <span class="n">get_env_var</span><span class="p">(</span><span class="s2">"VERSION"</span><span class="p">)</span>
 
     <span class="c1"># If file_path is provided (deprecated usage), extract the directory</span>
-    <span class="k">if</span> <span class="n">file_path</span> <span class="ow">and</span> <span class="n">file_path</span> <span class="o">!=</span> <span class="s2">&quot;setup.cfg&quot;</span><span class="p">:</span>
-        <span class="n">pkg_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span> <span class="ow">or</span> <span class="s2">&quot;.&quot;</span>
+    <span class="k">if</span> <span class="n">file_path</span> <span class="ow">and</span> <span class="n">file_path</span> <span class="o">!=</span> <span class="s2">"setup.cfg"</span><span class="p">:</span>
+        <span class="n">pkg_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span> <span class="ow">or</span> <span class="s2">"."</span>
 
-    <span class="n">setup_cfg_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">pkg_dir</span><span class="p">,</span> <span class="s2">&quot;setup.cfg&quot;</span><span class="p">)</span>
+    <span class="n">setup_cfg_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">pkg_dir</span><span class="p">,</span> <span class="s2">"setup.cfg"</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">setup_cfg_path</span><span class="p">):</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No setup.cfg found in </span><span class="si">{</span><span class="n">pkg_dir</span><span class="si">}</span><span class="s2">, skipping update&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"No setup.cfg found in </span><span class="si">{</span><span class="n">pkg_dir</span><span class="si">}</span><span class="s2">, skipping update"</span><span class="p">)</span>
         <span class="k">return</span>
 
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Updating setup.cfg version to </span><span class="si">{</span><span class="n">version</span><span class="si">}</span><span class="s2"> in </span><span class="si">{</span><span class="n">pkg_dir</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="n">_update_file</span><span class="p">(</span><span class="n">setup_cfg_path</span><span class="p">,</span> <span class="sa">r</span><span class="s2">&quot;version\s=\s.+&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;version = </span><span class="si">{</span><span class="n">version</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Successfully updated setup.cfg version to </span><span class="si">{</span><span class="n">version</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Updating setup.cfg version to </span><span class="si">{</span><span class="n">version</span><span class="si">}</span><span class="s2"> in </span><span class="si">{</span><span class="n">pkg_dir</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="n">_update_file</span><span class="p">(</span><span class="n">setup_cfg_path</span><span class="p">,</span> <span class="sa">r</span><span class="s2">"version\s=\s.+"</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"version = </span><span class="si">{</span><span class="n">version</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Successfully updated setup.cfg version to </span><span class="si">{</span><span class="n">version</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span></div>
 
 
 
@@ -179,60 +180,60 @@
     <span class="o">*</span><span class="p">,</span>
     <span class="n">file_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">version</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">pkg_dir</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;.&quot;</span><span class="p">,</span>
+    <span class="n">pkg_dir</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"."</span><span class="p">,</span>
 <span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Update the version in pyproject.toml file.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        file_path: (Deprecated) Path to the config file. Use pkg_dir instead.</span>
 <span class="sd">        version: The version to set. If None, tries to get it from the VERSION environment variable.</span>
 <span class="sd">        pkg_dir: Directory containing the package config files (default: current directory)</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">version</span> <span class="o">=</span> <span class="n">version</span> <span class="ow">or</span> <span class="n">get_env_var</span><span class="p">(</span><span class="s2">&quot;VERSION&quot;</span><span class="p">)</span>
+<span class="sd">    """</span>
+    <span class="n">version</span> <span class="o">=</span> <span class="n">version</span> <span class="ow">or</span> <span class="n">get_env_var</span><span class="p">(</span><span class="s2">"VERSION"</span><span class="p">)</span>
 
     <span class="c1"># If file_path is provided (deprecated usage), extract the directory</span>
-    <span class="k">if</span> <span class="n">file_path</span> <span class="ow">and</span> <span class="n">file_path</span> <span class="o">!=</span> <span class="s2">&quot;pyproject.toml&quot;</span><span class="p">:</span>
-        <span class="n">pkg_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span> <span class="ow">or</span> <span class="s2">&quot;.&quot;</span>
+    <span class="k">if</span> <span class="n">file_path</span> <span class="ow">and</span> <span class="n">file_path</span> <span class="o">!=</span> <span class="s2">"pyproject.toml"</span><span class="p">:</span>
+        <span class="n">pkg_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span> <span class="ow">or</span> <span class="s2">"."</span>
 
-    <span class="n">pyproject_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">pkg_dir</span><span class="p">,</span> <span class="s2">&quot;pyproject.toml&quot;</span><span class="p">)</span>
+    <span class="n">pyproject_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">pkg_dir</span><span class="p">,</span> <span class="s2">"pyproject.toml"</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">pyproject_path</span><span class="p">):</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No pyproject.toml found in </span><span class="si">{</span><span class="n">pkg_dir</span><span class="si">}</span><span class="s2">, skipping update&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"No pyproject.toml found in </span><span class="si">{</span><span class="n">pkg_dir</span><span class="si">}</span><span class="s2">, skipping update"</span><span class="p">)</span>
         <span class="k">return</span>
 
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Updating pyproject.toml version to </span><span class="si">{</span><span class="n">version</span><span class="si">}</span><span class="s2"> in </span><span class="si">{</span><span class="n">pkg_dir</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Updating pyproject.toml version to </span><span class="si">{</span><span class="n">version</span><span class="si">}</span><span class="s2"> in </span><span class="si">{</span><span class="n">pkg_dir</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
     <span class="c1"># Update version in [project] section</span>
     <span class="n">_update_file</span><span class="p">(</span>
         <span class="n">pyproject_path</span><span class="p">,</span>
-        <span class="sa">r</span><span class="s1">&#39;(\[project\][\s\S]*?version\s*=\s*&quot;)[^&quot;]*(&quot;)&#39;</span><span class="p">,</span>
-        <span class="sa">rf</span><span class="s2">&quot;\g&lt;1&gt;</span><span class="si">{</span><span class="n">version</span><span class="si">}</span><span class="s2">\g&lt;2&gt;&quot;</span><span class="p">,</span>
+        <span class="sa">r</span><span class="s1">'(\[project\][\s\S]*?version\s*=\s*")[^"]*(")'</span><span class="p">,</span>
+        <span class="sa">rf</span><span class="s2">"\g&lt;1&gt;</span><span class="si">{</span><span class="n">version</span><span class="si">}</span><span class="s2">\g&lt;2&gt;"</span><span class="p">,</span>
     <span class="p">)</span>
 
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Successfully updated pyproject.toml version to </span><span class="si">{</span><span class="n">version</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Successfully updated pyproject.toml version to </span><span class="si">{</span><span class="n">version</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span></div>
 
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">update_setup_py</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">project_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="n">path</span> <span class="o">=</span> <span class="n">_get_setup_filepath</span><span class="p">(</span><span class="s2">&quot;setup.py&quot;</span><span class="p">,</span> <span class="n">project_dir</span><span class="p">)</span>
-    <span class="n">version</span> <span class="o">=</span> <span class="n">version</span> <span class="ow">or</span> <span class="n">get_env_var</span><span class="p">(</span><span class="s2">&quot;VERSION&quot;</span><span class="p">)</span>
-    <span class="n">_update_file</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="sa">r</span><span class="s2">&quot;version=&#39;.+&#39;,&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;version=&#39;</span><span class="si">{</span><span class="n">version</span><span class="si">}</span><span class="s2">&#39;,&quot;</span><span class="p">)</span>
+    <span class="n">path</span> <span class="o">=</span> <span class="n">_get_setup_filepath</span><span class="p">(</span><span class="s2">"setup.py"</span><span class="p">,</span> <span class="n">project_dir</span><span class="p">)</span>
+    <span class="n">version</span> <span class="o">=</span> <span class="n">version</span> <span class="ow">or</span> <span class="n">get_env_var</span><span class="p">(</span><span class="s2">"VERSION"</span><span class="p">)</span>
+    <span class="n">_update_file</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="sa">r</span><span class="s2">"version='.+',"</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"version='</span><span class="si">{</span><span class="n">version</span><span class="si">}</span><span class="s2">',"</span><span class="p">)</span>
 
 
 <span class="c1"># NOTE: Deprecating setup.cfg</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">_get_setup_filepath</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">project_dir</span><span class="p">):</span>
-    <span class="n">project_dir</span> <span class="o">=</span> <span class="n">project_dir</span> <span class="ow">or</span> <span class="n">get_env_var</span><span class="p">(</span><span class="s2">&quot;GITHUB_WORKSPACE&quot;</span><span class="p">)</span>
+    <span class="n">project_dir</span> <span class="o">=</span> <span class="n">project_dir</span> <span class="ow">or</span> <span class="n">get_env_var</span><span class="p">(</span><span class="s2">"GITHUB_WORKSPACE"</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">project_dir</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_update_file</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">pattern</span><span class="p">,</span> <span class="n">replace</span><span class="p">,</span> <span class="n">content_must_change</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;r+&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">"r+"</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
         <span class="n">content</span> <span class="o">=</span> <span class="n">file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
         <span class="n">content_new</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="n">replace</span><span class="p">,</span> <span class="n">content</span><span class="p">,</span> <span class="n">flags</span><span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">M</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">content_new</span> <span class="o">==</span> <span class="n">content</span> <span class="ow">and</span> <span class="n">content_must_change</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s1">&#39;File content unchanged. Failed to update file &quot;</span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s1">&quot;!&#39;</span>
+                <span class="sa">f</span><span class="s1">'File content unchanged. Failed to update file "</span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s1">"!'</span>
             <span class="p">)</span>
         <span class="n">file</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
         <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">content_new</span><span class="p">)</span>
@@ -246,7 +247,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright NO COPYRIGHT.</p>
+    <p></p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

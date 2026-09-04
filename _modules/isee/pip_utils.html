@@ -5,18 +5,18 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>isee.pip_utils &mdash; isee 0.2.76 documentation</title>
+  <title>isee.pip_utils &mdash; isee 0.2.77 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
-      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
       <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
 
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=63906913"></script>
-      <script src="../../_static/doctools.js?v=9bcbadda"></script>
-      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/documentation_options.js?v=c7e8ed0a"></script>
+      <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../_static/toggleprompt.js?v=d7ede5d2"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
       <script src="../../_static/copybutton.js?v=f281be69"></script>
@@ -71,6 +71,7 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../isee.html">isee</a></li>
       <li class="breadcrumb-item active">isee.pip_utils</li>
       <li class="wy-breadcrumbs-aside">
       </li>
@@ -81,77 +82,255 @@
            <div itemprop="articleBody">
              
   <h1>Source code for isee.pip_utils</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">This module provides utilities for working with pip and setup.cfg files.</span>
+<span></span><span class="sd">"""</span>
+<span class="sd">Utilities for reading a project's declared dependencies and installing them.</span>
+
+<span class="sd">These functions back the ``isee install-requires`` and ``isee tests-require``</span>
+<span class="sd">CLI commands (and therefore the ``install-packages`` action). They understand</span>
+<span class="sd">both modern ``pyproject.toml`` (PEP 621 ``[project]``) and legacy ``setup.cfg``</span>
+<span class="sd">projects, preferring ``pyproject.toml`` whenever it declares a ``[project]``</span>
+<span class="sd">table.</span>
 
 <span class="sd">Functions:</span>
-<span class="sd">- read_setup_config: Read the setup.cfg file in the project directory.</span>
-<span class="sd">- install_packages_from_options: Install packages from the options in setup.cfg.</span>
-<span class="sd">- install_requires: Install packages from the install_requires option in setup.cfg.</span>
-<span class="sd">- tests_require: Install packages from the tests_require option in setup.cfg.</span>
+<span class="sd">- install_requires: Install the project's runtime dependencies.</span>
+<span class="sd">- tests_require: Install the project's test dependencies.</span>
+<span class="sd">- resolve_install_requires: Resolve (without installing) the runtime deps.</span>
+<span class="sd">- resolve_tests_require: Resolve (without installing) the test deps.</span>
+<span class="sd">- read_setup_config: (legacy) Read the setup.cfg file in the project directory.</span>
 <span class="sd">- build_dependency_wheels: Build dependency wheels for the project.</span>
+<span class="sd">- extras_require / install_extras: (legacy) setup.cfg extras_require helpers.</span>
 
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">configparser</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">pip</span>
+
+<span class="k">try</span><span class="p">:</span>  <span class="c1"># Python 3.11+</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">tomllib</span>
+<span class="k">except</span> <span class="ne">ModuleNotFoundError</span><span class="p">:</span>  <span class="c1"># Python 3.10 (pyproject declares tomli as fallback)</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">tomli</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">tomllib</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">isee.common</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_env_var</span><span class="p">,</span> <span class="n">get_file_path</span>
 
-
-<span class="k">def</span><span class="w"> </span><span class="nf">read_setup_config</span><span class="p">(</span><span class="n">project_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">project_dir</span><span class="p">:</span>
-        <span class="n">project_dir</span> <span class="o">=</span> <span class="n">get_env_var</span><span class="p">(</span><span class="s2">&quot;GITHUB_WORKSPACE&quot;</span><span class="p">)</span>
-    <span class="n">path</span> <span class="o">=</span> <span class="n">get_file_path</span><span class="p">(</span><span class="s2">&quot;setup.cfg&quot;</span><span class="p">,</span> <span class="n">project_dir</span><span class="p">)</span>
-    <span class="n">config</span> <span class="o">=</span> <span class="n">configparser</span><span class="o">.</span><span class="n">ConfigParser</span><span class="p">()</span>
-    <span class="n">config</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">config</span>
+<span class="c1"># Extras (in priority order) treated as the project's "test" dependencies when</span>
+<span class="c1"># reading [project.optional-dependencies] from a pyproject.toml. The first one</span>
+<span class="c1"># present wins. Override via the ``test_extras`` argument of tests_require.</span>
+<span class="n">DFLT_TEST_EXTRAS</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"testing"</span><span class="p">,</span> <span class="s2">"test"</span><span class="p">,</span> <span class="s2">"tests"</span><span class="p">,</span> <span class="s2">"dev"</span><span class="p">)</span>
 
 
-<span class="k">def</span><span class="w"> </span><span class="nf">install_packages_from_options</span><span class="p">(</span><span class="n">config_options</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
-    <span class="k">if</span> <span class="n">_p</span> <span class="o">:=</span> <span class="n">config_options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">):</span>
-        <span class="n">pkgs</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">_p</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span> <span class="k">if</span> <span class="n">x</span><span class="p">]</span>
-        <span class="n">pip</span><span class="o">.</span><span class="n">main</span><span class="p">([</span><span class="s2">&quot;install&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">pkgs</span><span class="p">)</span>
+<span class="c1"># --------------------------------------------------------------------------- #</span>
+<span class="c1"># Metadata source resolution (pyproject.toml preferred, setup.cfg fallback)</span>
+<span class="c1"># --------------------------------------------------------------------------- #</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_resolve_project_dir</span><span class="p">(</span><span class="n">project_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">project_dir</span> <span class="ow">or</span> <span class="n">get_env_var</span><span class="p">(</span><span class="s2">"GITHUB_WORKSPACE"</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_find_file</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">project_dir</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Return the path to ``filename`` within ``project_dir``.</span>
+
+<span class="sd">    The project root is preferred; failing that we fall back to a recursive</span>
+<span class="sd">    search (matching the legacy ``get_file_path`` behaviour). Returns ``None``</span>
+<span class="sd">    when no such file is found.</span>
+<span class="sd">    """</span>
+    <span class="n">root_candidate</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">project_dir</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">root_candidate</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">root_candidate</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">get_file_path</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">project_dir</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">RuntimeError</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_load_toml</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">"rb"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">tomllib</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_metadata_source</span><span class="p">(</span><span class="n">project_dir</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Detect the project's dependency-metadata source.</span>
+
+<span class="sd">    Returns one of:</span>
+<span class="sd">    - ``("pyproject", data)`` when a ``pyproject.toml`` with a ``[project]``</span>
+<span class="sd">      table is present (``data`` is the parsed toml dict),</span>
+<span class="sd">    - ``("setup_cfg", config)`` when only a ``setup.cfg`` is present</span>
+<span class="sd">      (``config`` is a parsed ``ConfigParser``),</span>
+<span class="sd">    - ``(None, None)`` when neither is found.</span>
+<span class="sd">    """</span>
+    <span class="n">pyproject_path</span> <span class="o">=</span> <span class="n">_find_file</span><span class="p">(</span><span class="s2">"pyproject.toml"</span><span class="p">,</span> <span class="n">project_dir</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">pyproject_path</span><span class="p">:</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">_load_toml</span><span class="p">(</span><span class="n">pyproject_path</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s2">"project"</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">"pyproject"</span><span class="p">,</span> <span class="n">data</span>
+    <span class="n">setup_cfg_path</span> <span class="o">=</span> <span class="n">_find_file</span><span class="p">(</span><span class="s2">"setup.cfg"</span><span class="p">,</span> <span class="n">project_dir</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">setup_cfg_path</span><span class="p">:</span>
+        <span class="n">config</span> <span class="o">=</span> <span class="n">configparser</span><span class="o">.</span><span class="n">ConfigParser</span><span class="p">()</span>
+        <span class="n">config</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">setup_cfg_path</span><span class="p">)</span>
+        <span class="k">return</span> <span class="s2">"setup_cfg"</span><span class="p">,</span> <span class="n">config</span>
+    <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_no_metadata_error</span><span class="p">(</span><span class="n">project_dir</span><span class="p">):</span>
+    <span class="k">return</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s1">'No dependency metadata found in "</span><span class="si">{</span><span class="n">project_dir</span><span class="si">}</span><span class="s1">": expected a '</span>
+        <span class="sa">f</span><span class="s2">"pyproject.toml with a [project] table or a setup.cfg with an "</span>
+        <span class="sa">f</span><span class="s2">"[options] section. If this project genuinely declares no "</span>
+        <span class="sa">f</span><span class="s2">"dependencies, drop the dependency-files step from your CI."</span>
+    <span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_cfg_option_list</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">section</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Return the newline-separated list under ``config[section][key]``."""</span>
+    <span class="k">if</span> <span class="n">section</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">config</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">[]</span>
+    <span class="n">raw</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="n">section</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">raw</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">[]</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">raw</span><span class="o">.</span><span class="n">splitlines</span><span class="p">()</span> <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()]</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_pyproject_test_deps</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">test_extras</span><span class="p">):</span>
+    <span class="n">optional</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"project"</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"optional-dependencies"</span><span class="p">,</span> <span class="p">{})</span>
+    <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">test_extras</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">optional</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">optional</span><span class="p">[</span><span class="n">name</span><span class="p">])</span>
+    <span class="k">return</span> <span class="p">[]</span>
+
+
+<span class="c1"># --------------------------------------------------------------------------- #</span>
+<span class="c1"># Public resolvers (no side effects) and installers</span>
+<span class="c1"># --------------------------------------------------------------------------- #</span>
+
+
+<div class="viewcode-block" id="resolve_install_requires">
+<a class="viewcode-back" href="../../module_docs/isee/pip_utils.html#isee.pip_utils.resolve_install_requires">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">resolve_install_requires</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">project_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Return the project's runtime dependencies as a list of requirement strings.</span>
+
+<span class="sd">    Reads ``[project].dependencies`` from ``pyproject.toml`` when present,</span>
+<span class="sd">    otherwise ``[options] install_requires`` from ``setup.cfg``. Raises a</span>
+<span class="sd">    ``RuntimeError`` only when neither metadata file exists.</span>
+<span class="sd">    """</span>
+    <span class="n">project_dir</span> <span class="o">=</span> <span class="n">_resolve_project_dir</span><span class="p">(</span><span class="n">project_dir</span><span class="p">)</span>
+    <span class="n">source</span><span class="p">,</span> <span class="n">meta</span> <span class="o">=</span> <span class="n">_metadata_source</span><span class="p">(</span><span class="n">project_dir</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">source</span> <span class="o">==</span> <span class="s2">"pyproject"</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">meta</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"project"</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"dependencies"</span><span class="p">,</span> <span class="p">[]))</span>
+    <span class="k">if</span> <span class="n">source</span> <span class="o">==</span> <span class="s2">"setup_cfg"</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">_cfg_option_list</span><span class="p">(</span><span class="n">meta</span><span class="p">,</span> <span class="s2">"options"</span><span class="p">,</span> <span class="s2">"install_requires"</span><span class="p">)</span>
+    <span class="k">raise</span> <span class="n">_no_metadata_error</span><span class="p">(</span><span class="n">project_dir</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="resolve_tests_require">
+<a class="viewcode-back" href="../../module_docs/isee/pip_utils.html#isee.pip_utils.resolve_tests_require">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">resolve_tests_require</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">project_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">test_extras</span><span class="o">=</span><span class="n">DFLT_TEST_EXTRAS</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Return the project's test dependencies as a list of requirement strings.</span>
+
+<span class="sd">    Reads ``[project.optional-dependencies]`` from ``pyproject.toml`` (the first</span>
+<span class="sd">    of ``test_extras`` that is present) when a ``[project]`` table exists,</span>
+<span class="sd">    otherwise ``[options] tests_require`` from ``setup.cfg``. Raises a</span>
+<span class="sd">    ``RuntimeError`` only when neither metadata file exists.</span>
+<span class="sd">    """</span>
+    <span class="n">project_dir</span> <span class="o">=</span> <span class="n">_resolve_project_dir</span><span class="p">(</span><span class="n">project_dir</span><span class="p">)</span>
+    <span class="n">source</span><span class="p">,</span> <span class="n">meta</span> <span class="o">=</span> <span class="n">_metadata_source</span><span class="p">(</span><span class="n">project_dir</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">source</span> <span class="o">==</span> <span class="s2">"pyproject"</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">_pyproject_test_deps</span><span class="p">(</span><span class="n">meta</span><span class="p">,</span> <span class="n">test_extras</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">source</span> <span class="o">==</span> <span class="s2">"setup_cfg"</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">_cfg_option_list</span><span class="p">(</span><span class="n">meta</span><span class="p">,</span> <span class="s2">"options"</span><span class="p">,</span> <span class="s2">"tests_require"</span><span class="p">)</span>
+    <span class="k">raise</span> <span class="n">_no_metadata_error</span><span class="p">(</span><span class="n">project_dir</span><span class="p">)</span></div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_pip_install</span><span class="p">(</span><span class="n">pkgs</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">label</span><span class="p">):</span>
+    <span class="n">pkgs</span> <span class="o">=</span> <span class="p">[</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">pkgs</span> <span class="k">if</span> <span class="n">p</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">pkgs</span><span class="p">:</span>
+        <span class="n">pip</span><span class="o">.</span><span class="n">main</span><span class="p">([</span><span class="s2">"install"</span><span class="p">]</span> <span class="o">+</span> <span class="n">pkgs</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2"> packages to install&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"No </span><span class="si">{</span><span class="n">label</span><span class="si">}</span><span class="s2"> packages to install"</span><span class="p">)</span>
 
 
+<div class="viewcode-block" id="install_requires">
+<a class="viewcode-back" href="../../module_docs/isee/pip_utils.html#isee.pip_utils.install_requires">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">install_requires</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">project_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="n">config</span> <span class="o">=</span> <span class="n">read_setup_config</span><span class="p">(</span><span class="n">project_dir</span><span class="p">)</span>
-    <span class="n">install_packages_from_options</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;options&quot;</span><span class="p">],</span> <span class="s2">&quot;install_requires&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">"""Install the project's runtime dependencies.</span>
+
+<span class="sd">    Reads them from ``pyproject.toml`` ``[project].dependencies`` when present,</span>
+<span class="sd">    otherwise ``setup.cfg`` ``[options] install_requires``.</span>
+<span class="sd">    """</span>
+    <span class="n">_pip_install</span><span class="p">(</span><span class="n">resolve_install_requires</span><span class="p">(</span><span class="n">project_dir</span><span class="o">=</span><span class="n">project_dir</span><span class="p">),</span> <span class="n">label</span><span class="o">=</span><span class="s2">"install_requires"</span><span class="p">)</span></div>
+
 
 
 <div class="viewcode-block" id="tests_require">
 <a class="viewcode-back" href="../../module_docs/isee/pip_utils.html#isee.pip_utils.tests_require">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">tests_require</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">project_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Install from tests_require in setup.cfg options&quot;&quot;&quot;</span>
-    <span class="n">config</span> <span class="o">=</span> <span class="n">read_setup_config</span><span class="p">(</span><span class="n">project_dir</span><span class="p">)</span>
-    <span class="n">install_packages_from_options</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;options&quot;</span><span class="p">],</span> <span class="s2">&quot;tests_require&quot;</span><span class="p">)</span></div>
+<span class="k">def</span><span class="w"> </span><span class="nf">tests_require</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">project_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">test_extras</span><span class="o">=</span><span class="n">DFLT_TEST_EXTRAS</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Install the project's test dependencies.</span>
+
+<span class="sd">    Reads them from ``pyproject.toml`` ``[project.optional-dependencies]`` (the</span>
+<span class="sd">    first present of ``test_extras``) when present, otherwise ``setup.cfg``</span>
+<span class="sd">    ``[options] tests_require``.</span>
+<span class="sd">    """</span>
+    <span class="n">_pip_install</span><span class="p">(</span>
+        <span class="n">resolve_tests_require</span><span class="p">(</span><span class="n">project_dir</span><span class="o">=</span><span class="n">project_dir</span><span class="p">,</span> <span class="n">test_extras</span><span class="o">=</span><span class="n">test_extras</span><span class="p">),</span>
+        <span class="n">label</span><span class="o">=</span><span class="s2">"tests_require"</span><span class="p">,</span>
+    <span class="p">)</span></div>
 
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">build_dependency_wheels</span><span class="p">(</span><span class="n">repository_dir</span><span class="p">,</span> <span class="n">wheelhouse</span><span class="p">,</span> <span class="n">requirements_filepath</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="n">args</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;wheel&quot;</span><span class="p">,</span> <span class="s2">&quot;--wheel-dir&quot;</span><span class="p">,</span> <span class="n">wheelhouse</span><span class="p">,</span> <span class="s2">&quot;--find-links&quot;</span><span class="p">,</span> <span class="n">wheelhouse</span><span class="p">]</span>
+    <span class="n">args</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"wheel"</span><span class="p">,</span> <span class="s2">"--wheel-dir"</span><span class="p">,</span> <span class="n">wheelhouse</span><span class="p">,</span> <span class="s2">"--find-links"</span><span class="p">,</span> <span class="n">wheelhouse</span><span class="p">]</span>
     <span class="k">if</span> <span class="n">requirements_filepath</span><span class="p">:</span>
-        <span class="n">args</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="s2">&quot;--requirement&quot;</span><span class="p">,</span> <span class="n">requirements_filepath</span><span class="p">])</span>
-    <span class="n">args</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="s2">&quot;--editable&quot;</span><span class="p">,</span> <span class="n">repository_dir</span><span class="p">])</span>
+        <span class="n">args</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="s2">"--requirement"</span><span class="p">,</span> <span class="n">requirements_filepath</span><span class="p">])</span>
+    <span class="n">args</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="s2">"--editable"</span><span class="p">,</span> <span class="n">repository_dir</span><span class="p">])</span>
     <span class="n">pip</span><span class="o">.</span><span class="n">main</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+
+
+<span class="c1"># --------------------------------------------------------------------------- #</span>
+<span class="c1"># Legacy setup.cfg helpers (kept for backward compatibility)</span>
+<span class="c1"># --------------------------------------------------------------------------- #</span>
+
+
+<div class="viewcode-block" id="read_setup_config">
+<a class="viewcode-back" href="../../module_docs/isee/pip_utils.html#isee.pip_utils.read_setup_config">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">read_setup_config</span><span class="p">(</span><span class="n">project_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""(legacy) Read and return the ``setup.cfg`` ConfigParser for the project.</span>
+
+<span class="sd">    Prefer :func:`resolve_install_requires` / :func:`resolve_tests_require`,</span>
+<span class="sd">    which also understand ``pyproject.toml``.</span>
+<span class="sd">    """</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">project_dir</span><span class="p">:</span>
+        <span class="n">project_dir</span> <span class="o">=</span> <span class="n">get_env_var</span><span class="p">(</span><span class="s2">"GITHUB_WORKSPACE"</span><span class="p">)</span>
+    <span class="n">path</span> <span class="o">=</span> <span class="n">get_file_path</span><span class="p">(</span><span class="s2">"setup.cfg"</span><span class="p">,</span> <span class="n">project_dir</span><span class="p">)</span>
+    <span class="n">config</span> <span class="o">=</span> <span class="n">configparser</span><span class="o">.</span><span class="n">ConfigParser</span><span class="p">()</span>
+    <span class="n">config</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">config</span></div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">install_packages_from_options</span><span class="p">(</span><span class="n">config_options</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">_p</span> <span class="o">:=</span> <span class="n">config_options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">):</span>
+        <span class="n">pkgs</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">_p</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span> <span class="k">if</span> <span class="n">x</span><span class="p">]</span>
+        <span class="n">pip</span><span class="o">.</span><span class="n">main</span><span class="p">([</span><span class="s2">"install"</span><span class="p">]</span> <span class="o">+</span> <span class="n">pkgs</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"No </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2"> packages to install"</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="extras_require">
 <a class="viewcode-back" href="../../module_docs/isee/pip_utils.html#isee.pip_utils.extras_require">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">extras_require</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;testing&quot;</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">project_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return a list of packages for the given extras_require key (e.g. &#39;testing&#39;).</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">extras_require</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"testing"</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">project_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Return a list of packages for the given extras_require key (e.g. 'testing').</span>
 
 <span class="sd">    If setup.cfg or the section/key is missing return an empty list instead of</span>
 <span class="sd">    raising so callers can safely act on the result.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">config</span> <span class="o">=</span> <span class="n">read_setup_config</span><span class="p">(</span><span class="n">project_dir</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">RuntimeError</span><span class="p">:</span>
         <span class="k">return</span> <span class="p">[]</span>
 
-    <span class="n">section</span> <span class="o">=</span> <span class="s2">&quot;options.extras_require&quot;</span>
+    <span class="n">section</span> <span class="o">=</span> <span class="s2">"options.extras_require"</span>
     <span class="k">if</span> <span class="n">section</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">config</span><span class="p">:</span>
         <span class="k">return</span> <span class="p">[]</span>
 
@@ -166,17 +345,17 @@
 
 <div class="viewcode-block" id="install_extras">
 <a class="viewcode-back" href="../../module_docs/isee/pip_utils.html#isee.pip_utils.install_extras">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">install_extras</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;testing&quot;</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">project_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Install packages listed under extras_require[name] in setup.cfg.</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">install_extras</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"testing"</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">project_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Install packages listed under extras_require[name] in setup.cfg.</span>
 
 <span class="sd">    This is a convenience wrapper used by CI when present. If no packages are</span>
 <span class="sd">    found the function prints a message and does nothing.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">pkgs</span> <span class="o">=</span> <span class="n">extras_require</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">project_dir</span><span class="o">=</span><span class="n">project_dir</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">pkgs</span><span class="p">:</span>
-        <span class="n">pip</span><span class="o">.</span><span class="n">main</span><span class="p">([</span><span class="s2">&quot;install&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">pkgs</span><span class="p">)</span>
+        <span class="n">pip</span><span class="o">.</span><span class="n">main</span><span class="p">([</span><span class="s2">"install"</span><span class="p">]</span> <span class="o">+</span> <span class="n">pkgs</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No extras_require[</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">] packages to install&quot;</span><span class="p">)</span></div>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"No extras_require[</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">] packages to install"</span><span class="p">)</span></div>
 
 </pre></div>
 
@@ -187,7 +366,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright NO COPYRIGHT.</p>
+    <p></p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

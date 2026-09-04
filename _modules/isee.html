@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Overview: module code &mdash; isee 0.2.77 documentation</title>
+  <title>isee &mdash; isee 0.2.77 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -70,7 +70,8 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">Overview: module code</li>
+          <li class="breadcrumb-item"><a href="index.html">Module code</a></li>
+      <li class="breadcrumb-item active">isee</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -79,14 +80,52 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <h1>All modules for which code is available</h1>
-<ul><li><a href="isee.html">isee</a></li>
-<ul><li><a href="isee/common.html">isee.common</a></li>
-<li><a href="isee/file_modification_utils.html">isee.file_modification_utils</a></li>
-<li><a href="isee/generation_utils.html">isee.generation_utils</a></li>
-<li><a href="isee/local_cli.html">isee.local_cli</a></li>
-<li><a href="isee/pip_utils.html">isee.pip_utils</a></li>
-</ul></ul>
+  <h1>Source code for isee</h1><div class="highlight"><pre>
+<span></span><span class="sd">"""Tools for CI"""</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">isee.file_modification_utils</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">update_helm_tpl</span><span class="p">,</span>
+    <span class="n">update_manifest</span><span class="p">,</span>
+    <span class="n">update_pyproject_toml</span><span class="p">,</span>
+    <span class="n">update_setup_cfg</span><span class="p">,</span>
+    <span class="n">update_setup_py</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">isee.generation_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">gen_semver</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">isee.git_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">tag_repo</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">isee.pip_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">install_requires</span><span class="p">,</span> <span class="n">tests_require</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">isee.pylint_log_synopsis</span><span class="w"> </span><span class="kn">import</span> <span class="n">print_report_followed_by_log</span>
+
+
+<span class="c1">#: The commands ``isee`` exposes, in the order they appear in ``isee --help``.</span>
+<span class="c1">#: Eight GitHub Action definitions in this repo invoke them by name, so this</span>
+<span class="c1">#: list -- and every flag these functions' signatures imply -- is a public</span>
+<span class="c1">#: interface, pinned by ``tests/test_cli_surface.py``.</span>
+<span class="n">COMMANDS</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">update_helm_tpl</span><span class="p">,</span>
+    <span class="n">update_manifest</span><span class="p">,</span>
+    <span class="n">update_pyproject_toml</span><span class="p">,</span>
+    <span class="n">update_setup_cfg</span><span class="p">,</span>  <span class="c1"># NOTE: Deprecating setup.cfg</span>
+    <span class="n">update_setup_py</span><span class="p">,</span>
+    <span class="n">gen_semver</span><span class="p">,</span>
+    <span class="n">tag_repo</span><span class="p">,</span>
+    <span class="n">install_requires</span><span class="p">,</span>
+    <span class="n">tests_require</span><span class="p">,</span>
+<span class="p">]</span>
+
+
+<div class="viewcode-block" id="main">
+<a class="viewcode-back" href="../module_docs/isee.html#isee.main">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">"""Entry point of the ``isee`` console script."""</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">cw</span>
+
+    <span class="k">raise</span> <span class="ne">SystemExit</span><span class="p">(</span><span class="n">cw</span><span class="o">.</span><span class="n">dispatch</span><span class="p">(</span><span class="n">COMMANDS</span><span class="p">))</span></div>
+
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
+    <span class="n">main</span><span class="p">()</span>
+</pre></div>
 
            </div>
           </div>

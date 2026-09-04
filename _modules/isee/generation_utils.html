@@ -5,18 +5,18 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>isee.generation_utils &mdash; isee 0.2.76 documentation</title>
+  <title>isee.generation_utils &mdash; isee 0.2.77 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
-      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
       <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
 
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=63906913"></script>
-      <script src="../../_static/doctools.js?v=9bcbadda"></script>
-      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/documentation_options.js?v=c7e8ed0a"></script>
+      <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../_static/toggleprompt.js?v=d7ede5d2"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
       <script src="../../_static/copybutton.js?v=f281be69"></script>
@@ -71,6 +71,7 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../isee.html">isee</a></li>
       <li class="breadcrumb-item active">isee.generation_utils</li>
       <li class="wy-breadcrumbs-aside">
       </li>
@@ -81,13 +82,13 @@
            <div itemprop="articleBody">
              
   <h1>Source code for isee.generation_utils</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;Generation utils for the isee package.</span>
+<span></span><span class="sd">"""Generation utils for the isee package.</span>
 
 <span class="sd">Has two main functions:</span>
 <span class="sd">- gen_semver: Generate a new semantic version based on git commit messages and tags.</span>
 <span class="sd">- generate_documentation: Generate documentation for the project.</span>
 
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
@@ -99,28 +100,28 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">wads.pack</span><span class="w"> </span><span class="kn">import</span> <span class="n">versions_from_different_sources</span><span class="p">,</span> <span class="n">validate_versions</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">isee.common</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_env_var</span><span class="p">,</span> <span class="n">git</span> <span class="k">as</span> <span class="n">_git</span>
 
-<span class="n">DFLT_NEW_VERSION</span> <span class="o">=</span> <span class="s2">&quot;0.1.0&quot;</span>  <span class="c1"># Default version if no tags are found</span>
+<span class="n">DFLT_NEW_VERSION</span> <span class="o">=</span> <span class="s2">"0.1.0"</span>  <span class="c1"># Default version if no tags are found</span>
 
 
 <div class="viewcode-block" id="get_new_version">
 <a class="viewcode-back" href="../../module_docs/isee/generation_utils.html#isee.generation_utils.get_new_version">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">get_new_version</span><span class="p">(</span>
     <span class="o">*</span><span class="p">,</span>
-    <span class="n">work_tree</span><span class="o">=</span><span class="s2">&quot;.&quot;</span><span class="p">,</span>
-    <span class="n">version_patch_prefix</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+    <span class="n">work_tree</span><span class="o">=</span><span class="s2">"."</span><span class="p">,</span>
+    <span class="n">version_patch_prefix</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">""</span><span class="p">,</span>
     <span class="n">action_when_versions_not_valid</span><span class="o">=</span><span class="n">warn</span><span class="p">,</span>
 <span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Get the latest version from git tags and determine the new version based on</span>
 <span class="sd">    the commit message.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="n">work_tree</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">work_tree</span><span class="p">))</span>
 
     <span class="n">git</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">_git</span><span class="p">,</span> <span class="n">work_tree</span><span class="o">=</span><span class="n">work_tree</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">bump</span><span class="p">(</span><span class="n">latest</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Bump the version based on the commit message.</span>
 
 <span class="sd">        Args:</span>
@@ -128,19 +129,19 @@
 
 <span class="sd">        Returns:</span>
 <span class="sd">        - str: The new bumped version.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="c1"># Get the latest commit message</span>
-        <span class="n">commit_message</span> <span class="o">=</span> <span class="n">git</span><span class="p">(</span><span class="s2">&quot;show-branch&quot;</span><span class="p">,</span> <span class="s2">&quot;--no-name&quot;</span><span class="p">,</span> <span class="s2">&quot;HEAD&quot;</span><span class="p">)</span>
+        <span class="n">commit_message</span> <span class="o">=</span> <span class="n">git</span><span class="p">(</span><span class="s2">"show-branch"</span><span class="p">,</span> <span class="s2">"--no-name"</span><span class="p">,</span> <span class="s2">"HEAD"</span><span class="p">)</span>
         <span class="c1"># Check if the commit message contains bump directives</span>
-        <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\[bump major\]&quot;</span><span class="p">,</span> <span class="n">commit_message</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="sa">r</span><span class="s2">"\[bump major\]"</span><span class="p">,</span> <span class="n">commit_message</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">semver</span><span class="o">.</span><span class="n">bump_major</span><span class="p">(</span><span class="n">latest</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\[bump minor\]&quot;</span><span class="p">,</span> <span class="n">commit_message</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="sa">r</span><span class="s2">"\[bump minor\]"</span><span class="p">,</span> <span class="n">commit_message</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">semver</span><span class="o">.</span><span class="n">bump_minor</span><span class="p">(</span><span class="n">latest</span><span class="p">)</span>
         <span class="c1"># Default to bumping the patch version</span>
         <span class="k">return</span> <span class="n">semver</span><span class="o">.</span><span class="n">bump_patch</span><span class="p">(</span><span class="n">latest</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">format_version</span><span class="p">(</span><span class="n">version</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Format the version by adding the patch prefix.</span>
 
 <span class="sd">        Args:</span>
@@ -148,17 +149,17 @@
 
 <span class="sd">        Returns:</span>
 <span class="sd">        - str: The formatted version.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">version_parts</span> <span class="o">=</span> <span class="n">version</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)</span>
-        <span class="n">version_parts</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">version_patch_prefix</span><span class="si">}{</span><span class="n">version_parts</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
-        <span class="k">return</span> <span class="s2">&quot;.&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">version_parts</span><span class="p">)</span>
+<span class="sd">        """</span>
+        <span class="n">version_parts</span> <span class="o">=</span> <span class="n">version</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"."</span><span class="p">)</span>
+        <span class="n">version_parts</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">version_patch_prefix</span><span class="si">}{</span><span class="n">version_parts</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span>
+        <span class="k">return</span> <span class="s2">"."</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">version_parts</span><span class="p">)</span>
 
     <span class="n">versions</span> <span class="o">=</span> <span class="n">versions_from_different_sources</span><span class="p">(</span><span class="n">work_tree</span><span class="p">)</span>
 
     <span class="c1"># remove all None versions</span>
     <span class="n">versions</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">versions</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">v</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">}</span>
     <span class="c1"># NOTE: Deprecating setup.cfg</span>
-    <span class="k">if</span> <span class="nb">list</span><span class="p">(</span><span class="n">versions</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="o">!=</span> <span class="p">[</span><span class="s2">&quot;setup_cfg&quot;</span><span class="p">]:</span>
+    <span class="k">if</span> <span class="nb">list</span><span class="p">(</span><span class="n">versions</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="o">!=</span> <span class="p">[</span><span class="s2">"setup_cfg"</span><span class="p">]:</span>
         <span class="n">validate_versions</span><span class="p">(</span>
             <span class="n">versions</span><span class="p">,</span> <span class="n">action_when_not_valid</span><span class="o">=</span><span class="n">action_when_versions_not_valid</span>
         <span class="p">)</span>
@@ -179,9 +180,9 @@
 <div class="viewcode-block" id="gen_semver">
 <a class="viewcode-back" href="../../module_docs/isee/generation_utils.html#isee.generation_utils.gen_semver">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">gen_semver</span><span class="p">(</span>
-    <span class="o">*</span><span class="p">,</span> <span class="n">dir_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">version_patch_prefix</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">output_mode</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;auto&quot;</span>
+    <span class="o">*</span><span class="p">,</span> <span class="n">dir_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">version_patch_prefix</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">""</span><span class="p">,</span> <span class="n">output_mode</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"auto"</span>
 <span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Generate a new semantic version based on git commit messages and tags.</span>
 
 <span class="sd">    Args:</span>
@@ -189,25 +190,25 @@
 <span class="sd">        If None, uses the current directory.</span>
 <span class="sd">    - version_patch_prefix (str): A prefix to be added to the patch version.</span>
 <span class="sd">    - output_mode (str): How to output the version:</span>
-<span class="sd">        - &quot;auto&quot;: Detect if running in GitHub Actions and adjust accordingly</span>
-<span class="sd">        - &quot;print&quot;: Only print to stdout (for shell capture)</span>
-<span class="sd">        - &quot;return&quot;: Only return (for Python API use)</span>
-<span class="sd">        - &quot;both&quot;: Both print and return</span>
+<span class="sd">        - "auto": Detect if running in GitHub Actions and adjust accordingly</span>
+<span class="sd">        - "print": Only print to stdout (for shell capture)</span>
+<span class="sd">        - "return": Only return (for Python API use)</span>
+<span class="sd">        - "both": Both print and return</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">    - str: The new version string if output_mode is &quot;return&quot; or &quot;both&quot;.</span>
-<span class="sd">    - None: If output_mode is &quot;print&quot;.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    - str: The new version string if output_mode is "return" or "both".</span>
+<span class="sd">    - None: If output_mode is "print".</span>
+<span class="sd">    """</span>
     <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 
     <span class="c1"># Determine if running in GitHub Actions</span>
-    <span class="n">in_github_actions</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;GITHUB_ACTIONS&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;true&quot;</span>
+    <span class="n">in_github_actions</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"GITHUB_ACTIONS"</span><span class="p">)</span> <span class="o">==</span> <span class="s2">"true"</span>
 
-    <span class="k">if</span> <span class="n">output_mode</span> <span class="o">==</span> <span class="s2">&quot;auto&quot;</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">output_mode</span> <span class="o">==</span> <span class="s2">"auto"</span><span class="p">:</span>
         <span class="c1"># Auto-detect the best output mode</span>
-        <span class="n">output_mode</span> <span class="o">=</span> <span class="s2">&quot;print&quot;</span> <span class="k">if</span> <span class="n">in_github_actions</span> <span class="k">else</span> <span class="s2">&quot;return&quot;</span>
+        <span class="n">output_mode</span> <span class="o">=</span> <span class="s2">"print"</span> <span class="k">if</span> <span class="n">in_github_actions</span> <span class="k">else</span> <span class="s2">"return"</span>
 
-    <span class="n">work_tree</span> <span class="o">=</span> <span class="n">dir_path</span> <span class="ow">or</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)</span>
+    <span class="n">work_tree</span> <span class="o">=</span> <span class="n">dir_path</span> <span class="ow">or</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="s2">"."</span><span class="p">)</span>
 
     <span class="c1"># Generate the new version:</span>
     <span class="n">version</span> <span class="o">=</span> <span class="n">get_new_version</span><span class="p">(</span>
@@ -215,14 +216,14 @@
     <span class="p">)</span>
 
     <span class="k">if</span> <span class="n">version</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;No version found&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"No version found"</span><span class="p">)</span>
 
     <span class="c1"># Handle output based on the mode</span>
-    <span class="k">if</span> <span class="n">output_mode</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;print&quot;</span><span class="p">,</span> <span class="s2">&quot;both&quot;</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">output_mode</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">"print"</span><span class="p">,</span> <span class="s2">"both"</span><span class="p">):</span>
         <span class="c1"># Print clean version string with no extra characters</span>
         <span class="nb">print</span><span class="p">(</span><span class="n">version</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
 
-    <span class="k">if</span> <span class="n">output_mode</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;return&quot;</span><span class="p">,</span> <span class="s2">&quot;both&quot;</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">output_mode</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">"return"</span><span class="p">,</span> <span class="s2">"both"</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">version</span>
 
     <span class="k">return</span> <span class="kc">None</span></div>
@@ -236,7 +237,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright NO COPYRIGHT.</p>
+    <p></p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

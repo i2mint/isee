@@ -6,18 +6,18 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>isee.pip_utils &mdash; isee 0.2.76 documentation</title>
+  <title>isee.pip_utils &mdash; isee 0.2.77 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
-      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
       <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
 
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=63906913"></script>
-      <script src="../../_static/doctools.js?v=9bcbadda"></script>
-      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/documentation_options.js?v=c7e8ed0a"></script>
+      <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../_static/toggleprompt.js?v=d7ede5d2"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
       <script src="../../_static/copybutton.js?v=f281be69"></script>
@@ -58,6 +58,10 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">isee.pip_utils</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#isee.pip_utils.extras_require"><code class="docutils literal notranslate"><span class="pre">extras_require()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#isee.pip_utils.install_extras"><code class="docutils literal notranslate"><span class="pre">install_extras()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#isee.pip_utils.install_requires"><code class="docutils literal notranslate"><span class="pre">install_requires()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#isee.pip_utils.read_setup_config"><code class="docutils literal notranslate"><span class="pre">read_setup_config()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#isee.pip_utils.resolve_install_requires"><code class="docutils literal notranslate"><span class="pre">resolve_install_requires()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#isee.pip_utils.resolve_tests_require"><code class="docutils literal notranslate"><span class="pre">resolve_tests_require()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#isee.pip_utils.tests_require"><code class="docutils literal notranslate"><span class="pre">tests_require()</span></code></a></li>
 </ul>
 </li>
@@ -90,16 +94,23 @@
              
   <section id="module-isee.pip_utils">
 <span id="isee-pip-utils"></span><h1>isee.pip_utils<a class="headerlink" href="#module-isee.pip_utils" title="Link to this heading"></a></h1>
-<p>This module provides utilities for working with pip and setup.cfg files.</p>
+<p>Utilities for reading a project’s declared dependencies and installing them.</p>
+<p>These functions back the <code class="docutils literal notranslate"><span class="pre">isee</span> <span class="pre">install-requires</span></code> and <code class="docutils literal notranslate"><span class="pre">isee</span> <span class="pre">tests-require</span></code>
+CLI commands (and therefore the <code class="docutils literal notranslate"><span class="pre">install-packages</span></code> action). They understand
+both modern <code class="docutils literal notranslate"><span class="pre">pyproject.toml</span></code> (PEP 621 <code class="docutils literal notranslate"><span class="pre">[project]</span></code>) and legacy <code class="docutils literal notranslate"><span class="pre">setup.cfg</span></code>
+projects, preferring <code class="docutils literal notranslate"><span class="pre">pyproject.toml</span></code> whenever it declares a <code class="docutils literal notranslate"><span class="pre">[project]</span></code>
+table.</p>
 <p>Functions:
-- read_setup_config: Read the setup.cfg file in the project directory.
-- install_packages_from_options: Install packages from the options in setup.cfg.
-- install_requires: Install packages from the install_requires option in setup.cfg.
-- tests_require: Install packages from the tests_require option in setup.cfg.
-- build_dependency_wheels: Build dependency wheels for the project.</p>
+- install_requires: Install the project’s runtime dependencies.
+- tests_require: Install the project’s test dependencies.
+- resolve_install_requires: Resolve (without installing) the runtime deps.
+- resolve_tests_require: Resolve (without installing) the test deps.
+- read_setup_config: (legacy) Read the setup.cfg file in the project directory.
+- build_dependency_wheels: Build dependency wheels for the project.
+- extras_require / install_extras: (legacy) setup.cfg extras_require helpers.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="isee.pip_utils.extras_require">
-<span class="sig-prename descclassname"><span class="pre">isee.pip_utils.</span></span><span class="sig-name descname"><span class="pre">extras_require</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'testing'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">project_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/isee/pip_utils.html#extras_require"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#isee.pip_utils.extras_require" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">isee.pip_utils.</span></span><span class="sig-name descname"><span class="pre">extras_require</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'testing'</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">project_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/isee/pip_utils.html#extras_require"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#isee.pip_utils.extras_require" title="Link to this definition"></a></dt>
 <dd><p>Return a list of packages for the given extras_require key (e.g. ‘testing’).</p>
 <p>If setup.cfg or the section/key is missing return an empty list instead of
 raising so callers can safely act on the result.</p>
@@ -107,16 +118,54 @@ raising so callers can safely act on the result.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="isee.pip_utils.install_extras">
-<span class="sig-prename descclassname"><span class="pre">isee.pip_utils.</span></span><span class="sig-name descname"><span class="pre">install_extras</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'testing'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">project_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/isee/pip_utils.html#install_extras"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#isee.pip_utils.install_extras" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">isee.pip_utils.</span></span><span class="sig-name descname"><span class="pre">install_extras</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'testing'</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">project_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/isee/pip_utils.html#install_extras"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#isee.pip_utils.install_extras" title="Link to this definition"></a></dt>
 <dd><p>Install packages listed under extras_require[name] in setup.cfg.</p>
 <p>This is a convenience wrapper used by CI when present. If no packages are
 found the function prints a message and does nothing.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="isee.pip_utils.install_requires">
+<span class="sig-prename descclassname"><span class="pre">isee.pip_utils.</span></span><span class="sig-name descname"><span class="pre">install_requires</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">project_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/isee/pip_utils.html#install_requires"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#isee.pip_utils.install_requires" title="Link to this definition"></a></dt>
+<dd><p>Install the project’s runtime dependencies.</p>
+<p>Reads them from <code class="docutils literal notranslate"><span class="pre">pyproject.toml</span></code> <code class="docutils literal notranslate"><span class="pre">[project].dependencies</span></code> when present,
+otherwise <code class="docutils literal notranslate"><span class="pre">setup.cfg</span></code> <code class="docutils literal notranslate"><span class="pre">[options]</span> <span class="pre">install_requires</span></code>.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="isee.pip_utils.read_setup_config">
+<span class="sig-prename descclassname"><span class="pre">isee.pip_utils.</span></span><span class="sig-name descname"><span class="pre">read_setup_config</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">project_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/isee/pip_utils.html#read_setup_config"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#isee.pip_utils.read_setup_config" title="Link to this definition"></a></dt>
+<dd><p>(legacy) Read and return the <code class="docutils literal notranslate"><span class="pre">setup.cfg</span></code> ConfigParser for the project.</p>
+<p>Prefer <a class="reference internal" href="#isee.pip_utils.resolve_install_requires" title="isee.pip_utils.resolve_install_requires"><code class="xref py py-func docutils literal notranslate"><span class="pre">resolve_install_requires()</span></code></a> / <a class="reference internal" href="#isee.pip_utils.resolve_tests_require" title="isee.pip_utils.resolve_tests_require"><code class="xref py py-func docutils literal notranslate"><span class="pre">resolve_tests_require()</span></code></a>,
+which also understand <code class="docutils literal notranslate"><span class="pre">pyproject.toml</span></code>.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="isee.pip_utils.resolve_install_requires">
+<span class="sig-prename descclassname"><span class="pre">isee.pip_utils.</span></span><span class="sig-name descname"><span class="pre">resolve_install_requires</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">project_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/isee/pip_utils.html#resolve_install_requires"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#isee.pip_utils.resolve_install_requires" title="Link to this definition"></a></dt>
+<dd><p>Return the project’s runtime dependencies as a list of requirement strings.</p>
+<p>Reads <code class="docutils literal notranslate"><span class="pre">[project].dependencies</span></code> from <code class="docutils literal notranslate"><span class="pre">pyproject.toml</span></code> when present,
+otherwise <code class="docutils literal notranslate"><span class="pre">[options]</span> <span class="pre">install_requires</span></code> from <code class="docutils literal notranslate"><span class="pre">setup.cfg</span></code>. Raises a
+<code class="docutils literal notranslate"><span class="pre">RuntimeError</span></code> only when neither metadata file exists.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="isee.pip_utils.resolve_tests_require">
+<span class="sig-prename descclassname"><span class="pre">isee.pip_utils.</span></span><span class="sig-name descname"><span class="pre">resolve_tests_require</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">project_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_extras</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">('testing',</span> <span class="pre">'test',</span> <span class="pre">'tests',</span> <span class="pre">'dev')</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/isee/pip_utils.html#resolve_tests_require"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#isee.pip_utils.resolve_tests_require" title="Link to this definition"></a></dt>
+<dd><p>Return the project’s test dependencies as a list of requirement strings.</p>
+<p>Reads <code class="docutils literal notranslate"><span class="pre">[project.optional-dependencies]</span></code> from <code class="docutils literal notranslate"><span class="pre">pyproject.toml</span></code> (the first
+of <code class="docutils literal notranslate"><span class="pre">test_extras</span></code> that is present) when a <code class="docutils literal notranslate"><span class="pre">[project]</span></code> table exists,
+otherwise <code class="docutils literal notranslate"><span class="pre">[options]</span> <span class="pre">tests_require</span></code> from <code class="docutils literal notranslate"><span class="pre">setup.cfg</span></code>. Raises a
+<code class="docutils literal notranslate"><span class="pre">RuntimeError</span></code> only when neither metadata file exists.</p>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="isee.pip_utils.tests_require">
-<span class="sig-prename descclassname"><span class="pre">isee.pip_utils.</span></span><span class="sig-name descname"><span class="pre">tests_require</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">project_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/isee/pip_utils.html#tests_require"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#isee.pip_utils.tests_require" title="Link to this definition"></a></dt>
-<dd><p>Install from tests_require in setup.cfg options</p>
+<span class="sig-prename descclassname"><span class="pre">isee.pip_utils.</span></span><span class="sig-name descname"><span class="pre">tests_require</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">project_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_extras</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">('testing',</span> <span class="pre">'test',</span> <span class="pre">'tests',</span> <span class="pre">'dev')</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/isee/pip_utils.html#tests_require"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#isee.pip_utils.tests_require" title="Link to this definition"></a></dt>
+<dd><p>Install the project’s test dependencies.</p>
+<p>Reads them from <code class="docutils literal notranslate"><span class="pre">pyproject.toml</span></code> <code class="docutils literal notranslate"><span class="pre">[project.optional-dependencies]</span></code> (the
+first present of <code class="docutils literal notranslate"><span class="pre">test_extras</span></code>) when present, otherwise <code class="docutils literal notranslate"><span class="pre">setup.cfg</span></code>
+<code class="docutils literal notranslate"><span class="pre">[options]</span> <span class="pre">tests_require</span></code>.</p>
 </dd></dl>
 
 </section>
@@ -132,7 +181,7 @@ found the function prints a message and does nothing.</p>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright NO COPYRIGHT.</p>
+    <p></p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
