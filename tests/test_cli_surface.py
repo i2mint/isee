@@ -35,6 +35,7 @@ and only ever alongside a deliberate, documented change to the CLI.
 
 import json
 import os
+import re
 import sys
 from pathlib import Path
 
@@ -45,6 +46,34 @@ cw_testing = pytest.importorskip(
 )
 
 GOLDEN = Path(__file__).parent / "cli_goldens" / "isee.json"
+ACTIONS_DIR = Path(__file__).parent.parent / "actions"
+
+#: A ``#`` comment, so that prose mentioning a command is not mistaken for a
+#: call to it.
+_YAML_COMMENT = re.compile(r"#.*$", re.M)
+
+#: ``isee <subcommand>`` where ``isee`` starts a command -- at the start of a
+#: line, right after ``run:``, after a pipe/``&&``/``;``, or inside ``$(...)``
+#: or backticks. Anchoring on the prefix is what keeps prose like
+#: ``echo "Installing isee from pip"`` out of the results.
+_ISEE_INVOCATION = re.compile(
+    r"(?:^|run:|[|&;(`]|\$\()\s*isee\s+([a-z][a-z0-9-]*)", re.M
+)
+
+
+def _subcommands_invoked_by_this_repos_actions():
+    """Every ``isee <subcommand>`` the ``actions/`` definitions actually run.
+
+    Reading them off the YAML rather than maintaining a list by hand is the
+    point: a hand-maintained list drifts silently, and drift here is exactly
+    the bug this test exists to catch.
+    """
+    invoked = {}
+    for action_yml in sorted(ACTIONS_DIR.glob("*/action.yml")):
+        script = _YAML_COMMENT.sub("", action_yml.read_text(encoding="utf-8"))
+        for match in _ISEE_INVOCATION.finditer(script):
+            invoked.setdefault(match.group(1), set()).add(action_yml.parent.name)
+    return invoked
 
 
 def _console_script(name):
@@ -86,30 +115,36 @@ def test_the_golden_carries_no_machine_specific_prog():
 
 
 def test_every_command_the_repo_s_own_actions_invoke_still_exists():
-    """MUTATION: drop a command from `isee.COMMANDS`.
+    """MUTATION: drop a command from `isee.COMMANDS`; add an action that calls
+    a command that does not exist.
 
-    The golden above would catch a drop too, but only as an opaque `--help`
-    diff. This says which name went missing, and it reads the command names off
-    the same list `main()` dispatches, so it cannot drift from the CLI.
+    The golden above would catch a dropped command too, but only as an opaque
+    `--help` diff. This says which name went missing, and it reads *both* sides
+    of the contract off their sources -- the exposed names off the same list
+    `main()` dispatches, the invoked names off the action definitions -- so
+    neither side can drift without this failing.
 
-    `generate-documentation` is deliberately NOT in this list: `actions/
-    generate-documentation/action.yml` runs `isee generate-documentation`, and
-    no such command has ever existed. That action is broken independently of
-    this migration -- see i2mint/isee#43 -- and asserting it here
-    would only encode the bug.
+    Both directions of drift have already happened once: `gen_semver` and
+    friends were preserved across the argh-to-cw migration only because the
+    golden pinned them, and `actions/generate-documentation` went on invoking
+    `isee generate-documentation` for ten months after the command was removed
+    (i2mint/isee#43).
     """
     import isee
 
     exposed = {f.__name__.replace("_", "-") for f in isee.COMMANDS}
-    invoked_by_this_repos_actions = {
-        "gen-semver",
-        "install-requires",
-        "tag-repo",
-        "tests-require",
-        "update-pyproject-toml",
-        "update-setup-cfg",
+    invoked = _subcommands_invoked_by_this_repos_actions()
+    assert invoked, (
+        f"no `isee <cmd>` invocations found under {ACTIONS_DIR}; the scanner "
+        "has stopped scanning and this test is no longer guarding anything"
+    )
+
+    missing = {
+        cmd: sorted(where) for cmd, where in invoked.items() if cmd not in exposed
     }
-    assert invoked_by_this_repos_actions <= exposed, (
-        f"actions/ invoke commands that no longer exist: "
-        f"{sorted(invoked_by_this_repos_actions - exposed)}"
+    assert not missing, (
+        "actions/ invoke commands that `isee` does not expose: "
+        + "; ".join(
+            f"{cmd} (in {', '.join(where)})" for cmd, where in sorted(missing.items())
+        )
     )
