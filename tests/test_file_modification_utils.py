@@ -24,14 +24,12 @@ import pytest
 #: undefined in cp1252, so a Windows runner hard-fails on them too.
 NON_ASCII_DESCRIPTION = "Café “smart” quotes"
 
-PYPROJECT_TEMPLATE = textwrap.dedent(
-    f"""\
+PYPROJECT_TEMPLATE = textwrap.dedent(f"""\
     [project]
     name = "encoding-probe"
     version = "0.1.0"
     description = "{NON_ASCII_DESCRIPTION}"
-    """
-)
+    """)
 
 #: Force the child onto an ASCII-only locale default. ``PYTHONUTF8=0`` and
 #: ``PYTHONCOERCECLOCALE=0`` are both needed: without them CPython quietly
@@ -43,13 +41,11 @@ ASCII_LOCALE_ENV = {
     "PYTHONCOERCECLOCALE": "0",
 }
 
-BUMP_SCRIPT = textwrap.dedent(
-    """\
+BUMP_SCRIPT = textwrap.dedent("""\
     import sys
     from isee.file_modification_utils import update_pyproject_toml
     update_pyproject_toml(pkg_dir=sys.argv[1], version=sys.argv[2])
-    """
-)
+    """)
 
 
 def _bump_in_ascii_locale(pkg_dir, version):
@@ -78,14 +74,14 @@ def test_version_bump_survives_a_non_utf8_locale(tmp_path):
 
     result = _bump_in_ascii_locale(tmp_path, "9.9.9")
 
-    assert result.returncode == 0, (
-        f"version bump failed under an ASCII locale:\n{result.stderr}"
-    )
+    assert (
+        result.returncode == 0
+    ), f"version bump failed under an ASCII locale:\n{result.stderr}"
     updated = pyproject.read_text(encoding="utf-8")
     assert 'version = "9.9.9"' in updated
-    assert NON_ASCII_DESCRIPTION in updated, (
-        "non-ASCII text was corrupted by the round trip"
-    )
+    assert (
+        NON_ASCII_DESCRIPTION in updated
+    ), "non-ASCII text was corrupted by the round trip"
 
 
 def test_version_bump_preserves_non_ascii_bytes(tmp_path):

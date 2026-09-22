@@ -142,9 +142,8 @@ def test_every_command_the_repo_s_own_actions_invoke_still_exists():
     missing = {
         cmd: sorted(where) for cmd, where in invoked.items() if cmd not in exposed
     }
-    assert not missing, (
-        "actions/ invoke commands that `isee` does not expose: "
-        + "; ".join(
-            f"{cmd} (in {', '.join(where)})" for cmd, where in sorted(missing.items())
-        )
+    assert (
+        not missing
+    ), "actions/ invoke commands that `isee` does not expose: " + "; ".join(
+        f"{cmd} (in {', '.join(where)})" for cmd, where in sorted(missing.items())
     )
