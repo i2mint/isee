@@ -1,4 +1,4 @@
-> built 2026-09-22 14:02 UTC from b6e5bc5 (master) · isee 0.2.80. Details: build_info.json
+> built 2026-09-22 14:24 UTC from 0b5f84e (master) · isee 0.2.81. Details: build_info.json
 
 # index.html.md
 
@@ -625,6 +625,11 @@ Functions:
 - build_dependency_wheels: Build dependency wheels for the project.
 - extras_require / install_extras: (legacy) setup.cfg extras_require helpers.
 
+### Module Attributes
+
+| [`SETUP_CFG_ENCODING`](_autosummary/isee.pip_utils.html.md#isee.pip_utils.SETUP_CFG_ENCODING)   | `setup.cfg` is read as UTF-8, whatever the locale says -- the same reasoning as `_update_file`'s explicit encoding: otherwise a non-ASCII byte crashes the read under a C/POSIX locale, or (e.g. U+0141 in cp1252) on a Windows runner.   |
+|-----------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+
 ### Functions
 
 | `build_dependency_wheels`(repository_dir, ...)                                                 |                                                                              |
@@ -637,6 +642,12 @@ Functions:
 | [`resolve_install_requires`](_autosummary/isee.pip_utils.html.md#isee.pip_utils.resolve_install_requires)(\*[, project_dir])   | Return the project's runtime dependencies as a list of requirement strings.  |
 | [`resolve_tests_require`](_autosummary/isee.pip_utils.html.md#isee.pip_utils.resolve_tests_require)(\*[, project_dir, ...]) | Return the project's test dependencies as a list of requirement strings.     |
 | [`tests_require`](_autosummary/isee.pip_utils.html.md#isee.pip_utils.tests_require)(\*[, project_dir, test_extras]) | Install the project's test dependencies.                                     |
+
+### isee.pip_utils.SETUP_CFG_ENCODING *= 'utf-8'*
+
+`setup.cfg` is read as UTF-8, whatever the locale says – the same reasoning
+as `_update_file`’s explicit encoding: otherwise a non-ASCII byte crashes the
+read under a C/POSIX locale, or (e.g. U+0141 in cp1252) on a Windows runner.
 
 ### isee.pip_utils.extras_require(name='testing', , project_dir=None)
 
@@ -788,20 +799,18 @@ Perhaps pylint already has such a synopsis report maker?
 
 # About this build
 
-This documentation was built on **2026-09-22 14:02 UTC** from commit <a href="https://github.com/i2mint/isee/commit/b6e5bc5bc2b423e84934d0274628ed2d3788ae64"><code>b6e5bc5</code></a> on branch <code>master</code>, for **isee 0.2.80** (from <code>pyproject.toml</code>).
+This documentation was built on **2026-09-22 14:24 UTC** from commit <a href="https://github.com/i2mint/isee/commit/0b5f84e0c3f0f324d030c2b12249bda131423248"><code>0b5f84e</code></a> on branch <code>master</code>, for **isee 0.2.81** (from <code>pyproject.toml</code>).
 
-#### WARNING
-The documentation and the package may be misaligned:
-
-- The documented version (0.2.80) is ahead of the latest release on PyPI (0.2.79): these docs describe unreleased code.
+#### NOTE
+Nothing suggests a mismatch: the tree was clean at the commit above, and the documented version is the one on PyPI.
 
 ## Source
 
 |                     |                                                                                                                                                    |
 |---------------------|----------------------------------------------------------------------------------------------------------------------------------------------------|
-| Commit              | <a href="https://github.com/i2mint/isee/commit/b6e5bc5bc2b423e84934d0274628ed2d3788ae64"><code>b6e5bc5bc2b423e84934d0274628ed2d3788ae64</code></a> |
+| Commit              | <a href="https://github.com/i2mint/isee/commit/0b5f84e0c3f0f324d030c2b12249bda131423248"><code>0b5f84e0c3f0f324d030c2b12249bda131423248</code></a> |
 | Branch              | <code>master</code>                                                                                                                                |
-| Tags at this commit | <code>0.2.80</code>                                                                                                                                |
+| Tags at this commit | <code>0.2.81</code>                                                                                                                                |
 | Working tree        | clean                                                                                                                                              |
 | Remote              | <code>https://github.com/i2mint/isee</code>                                                                                                        |
 
@@ -810,9 +819,9 @@ The documentation and the package may be misaligned:
 |              |                                                                                            |
 |--------------|--------------------------------------------------------------------------------------------|
 | Repository   | <code>i2mint/isee</code>                                                                   |
-| Run          | <a href="https://github.com/i2mint/isee/actions/runs/35737399390">35737399390</a>          |
+| Run          | <a href="https://github.com/i2mint/isee/actions/runs/35739967106">35739967106</a>          |
 | Ref          | <code>refs/heads/master</code>                                                             |
-| Event commit | <code>ec93ef52d1d8a30ed84eb49b799f8a9d9b2dd789</code> (in the history of the built commit) |
+| Event commit | <code>662046b20cc91b9704c005b1bd1f672cc084375c</code> (in the history of the built commit) |
 
 ## Tools
 
@@ -837,13 +846,13 @@ The documentation and the package may be misaligned:
 
 ## Package on PyPI
 
-Latest release: <a href="https://pypi.org/project/isee/0.2.79/">0.2.79</a>, older than the documented version (0.2.80).
+Latest release: <a href="https://pypi.org/project/isee/0.2.81/">0.2.81</a>, the same as the documented version.
 
 ## Reproduce
 
 ```bash
 git clone https://github.com/i2mint/isee && cd isee
-git checkout b6e5bc5bc2b423e84934d0274628ed2d3788ae64
+git checkout 0b5f84e0c3f0f324d030c2b12249bda131423248
 pip install "epythet==0.2.12"
 epythet quickstart . --ignore tests/ scrap/ examples/
 ```

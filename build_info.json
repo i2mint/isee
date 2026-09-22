@@ -1,34 +1,34 @@
 {
   "schema_version": 1,
-  "built_at": "2026-09-22T14:02:41Z",
+  "built_at": "2026-09-22T14:24:48Z",
   "package": {
     "name": "isee",
-    "version": "0.2.80",
+    "version": "0.2.81",
     "display_name": "isee",
     "source": "pyproject.toml"
   },
   "git": {
     "available": true,
-    "commit": "b6e5bc5bc2b423e84934d0274628ed2d3788ae64",
-    "short_commit": "b6e5bc5",
+    "commit": "0b5f84e0c3f0f324d030c2b12249bda131423248",
+    "short_commit": "0b5f84e",
     "branch": "master",
     "tags": [
-      "0.2.80"
+      "0.2.81"
     ],
     "dirty": false,
     "remote_url": "https://github.com/i2mint/isee",
-    "commit_url": "https://github.com/i2mint/isee/commit/b6e5bc5bc2b423e84934d0274628ed2d3788ae64",
+    "commit_url": "https://github.com/i2mint/isee/commit/0b5f84e0c3f0f324d030c2b12249bda131423248",
     "error": null
   },
   "ci": {
     "provider": "github",
     "repository": "i2mint/isee",
-    "sha": "ec93ef52d1d8a30ed84eb49b799f8a9d9b2dd789",
+    "sha": "662046b20cc91b9704c005b1bd1f672cc084375c",
     "sha_in_history": true,
     "ref": "refs/heads/master",
     "ref_name": "master",
-    "run_id": "35737399390",
-    "run_url": "https://github.com/i2mint/isee/actions/runs/35737399390",
+    "run_id": "35739967106",
+    "run_url": "https://github.com/i2mint/isee/actions/runs/35739967106",
     "server_url": "https://github.com"
   },
   "tools": {
@@ -58,20 +58,18 @@
   },
   "site": {
     "modules_documented": 8,
-    "objects_documented": 19
+    "objects_documented": 20
   },
   "pypi": {
     "checked": true,
-    "latest": "0.2.79",
-    "relation": "ahead",
+    "latest": "0.2.81",
+    "relation": "same",
     "error": null
   },
-  "reproduce": "git clone https://github.com/i2mint/isee && cd isee\ngit checkout b6e5bc5bc2b423e84934d0274628ed2d3788ae64\npip install \"epythet==0.2.12\"\nepythet quickstart . --ignore tests/ scrap/ examples/",
+  "reproduce": "git clone https://github.com/i2mint/isee && cd isee\ngit checkout 0b5f84e0c3f0f324d030c2b12249bda131423248\npip install \"epythet==0.2.12\"\nepythet quickstart . --ignore tests/ scrap/ examples/",
   "warnings": [],
   "alignment": {
-    "aligned": false,
-    "notes": [
-      "The documented version (0.2.80) is ahead of the latest release on PyPI (0.2.79): these docs describe unreleased code."
-    ]
+    "aligned": true,
+    "notes": []
   }
 }

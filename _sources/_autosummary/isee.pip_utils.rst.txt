@@ -4,6 +4,12 @@ isee.pip\_utils
 .. automodule:: isee.pip_utils
 
    
+   .. rubric:: Module Attributes
+
+   .. autosummary::
+   
+      SETUP_CFG_ENCODING
+   
    .. rubric:: Functions
 
    .. autosummary::

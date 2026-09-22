@@ -271,6 +271,16 @@ table.</p>
 <li><p>build_dependency_wheels: Build dependency wheels for the project.</p></li>
 <li><p>extras_require / install_extras: (legacy) setup.cfg extras_require helpers.</p></li>
 </ul>
+<p class="rubric">Module Attributes</p>
+<div class="table-wrapper autosummary longtable docutils container">
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#isee.pip_utils.SETUP_CFG_ENCODING" title="isee.pip_utils.SETUP_CFG_ENCODING"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SETUP_CFG_ENCODING</span></code></a></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">setup.cfg</span></code> is read as UTF-8, whatever the locale says -- the same reasoning as <code class="docutils literal notranslate"><span class="pre">_update_file</span></code>'s explicit encoding: otherwise a non-ASCII byte crashes the read under a C/POSIX locale, or (e.g. U+0141 in cp1252) on a Windows runner.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
 <p class="rubric">Functions</p>
 <div class="table-wrapper autosummary longtable docutils container">
 <table class="autosummary longtable docutils align-default">
@@ -305,6 +315,14 @@ table.</p>
 </tbody>
 </table>
 </div>
+<dl class="py data">
+<dt class="sig sig-object py" id="isee.pip_utils.SETUP_CFG_ENCODING">
+<span class="sig-prename descclassname"><span class="pre">isee.pip_utils.</span></span><span class="sig-name descname"><span class="pre">SETUP_CFG_ENCODING</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'utf-8'</span></span><a class="headerlink" href="#isee.pip_utils.SETUP_CFG_ENCODING" title="Link to this definition">¶</a></dt>
+<dd><p><code class="docutils literal notranslate"><span class="pre">setup.cfg</span></code> is read as UTF-8, whatever the locale says – the same reasoning
+as <code class="docutils literal notranslate"><span class="pre">_update_file</span></code>’s explicit encoding: otherwise a non-ASCII byte crashes the
+read under a C/POSIX locale, or (e.g. U+0141 in cp1252) on a Windows runner.</p>
+</dd></dl>
+
 <dl class="py function">
 <dt class="sig sig-object py" id="isee.pip_utils.extras_require">
 <span class="sig-prename descclassname"><span class="pre">isee.pip_utils.</span></span><span class="sig-name descname"><span class="pre">extras_require</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'testing'</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">project_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/isee/pip_utils.html#extras_require"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#isee.pip_utils.extras_require" title="Link to this definition">¶</a></dt>
@@ -419,6 +437,7 @@ first present of <code class="docutils literal notranslate"><span class="pre">te
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">isee.pip_utils</a><ul>
+<li><a class="reference internal" href="#isee.pip_utils.SETUP_CFG_ENCODING"><code class="docutils literal notranslate"><span class="pre">SETUP_CFG_ENCODING</span></code></a></li>
 <li><a class="reference internal" href="#isee.pip_utils.extras_require"><code class="docutils literal notranslate"><span class="pre">extras_require()</span></code></a></li>
 <li><a class="reference internal" href="#isee.pip_utils.install_extras"><code class="docutils literal notranslate"><span class="pre">install_extras()</span></code></a></li>
 <li><a class="reference internal" href="#isee.pip_utils.install_requires"><code class="docutils literal notranslate"><span class="pre">install_requires()</span></code></a></li>
@@ -437,7 +456,7 @@ first present of <code class="docutils literal notranslate"><span class="pre">te
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=2ff91030"></script>
+</div><script src="../_static/documentation_options.js?v=86b96456"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/scripts/furo.js?v=46bd48cc"></script>

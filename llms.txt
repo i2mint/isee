@@ -15,7 +15,7 @@
 - [isee.local_cli](_autosummary/isee.local_cli.html.md): Run GitHub Actions workflows locally using act.
 - [isee.pip_utils](_autosummary/isee.pip_utils.html.md): Utilities for reading a project’s declared dependencies and installing them.
 - [isee.pylint_log_synopsis](_autosummary/isee.pylint_log_synopsis.html.md): This module provides utilities for working with pylint logs.
-- [About this build](about-this-build.html.md): This documentation was built on &#42;&#42;2026-09-22 14:02 UTC&#42;&#42; from commit &lt;a href="https://github.com/i2m...
+- [About this build](about-this-build.html.md): This documentation was built on &#42;&#42;2026-09-22 14:24 UTC&#42;&#42; from commit &lt;a href="https://github.com/i2m...
 
 ## Optional
 

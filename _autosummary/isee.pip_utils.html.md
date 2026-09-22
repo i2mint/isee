@@ -18,6 +18,11 @@ Functions:
 - build_dependency_wheels: Build dependency wheels for the project.
 - extras_require / install_extras: (legacy) setup.cfg extras_require helpers.
 
+### Module Attributes
+
+| [`SETUP_CFG_ENCODING`](#isee.pip_utils.SETUP_CFG_ENCODING)   | `setup.cfg` is read as UTF-8, whatever the locale says -- the same reasoning as `_update_file`'s explicit encoding: otherwise a non-ASCII byte crashes the read under a C/POSIX locale, or (e.g. U+0141 in cp1252) on a Windows runner.   |
+|-----------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+
 ### Functions
 
 | `build_dependency_wheels`(repository_dir, ...)                                                 |                                                                              |
@@ -30,6 +35,12 @@ Functions:
 | [`resolve_install_requires`](#isee.pip_utils.resolve_install_requires)(\*[, project_dir])   | Return the project's runtime dependencies as a list of requirement strings.  |
 | [`resolve_tests_require`](#isee.pip_utils.resolve_tests_require)(\*[, project_dir, ...]) | Return the project's test dependencies as a list of requirement strings.     |
 | [`tests_require`](#isee.pip_utils.tests_require)(\*[, project_dir, test_extras]) | Install the project's test dependencies.                                     |
+
+### isee.pip_utils.SETUP_CFG_ENCODING *= 'utf-8'*
+
+`setup.cfg` is read as UTF-8, whatever the locale says – the same reasoning
+as `_update_file`’s explicit encoding: otherwise a non-ASCII byte crashes the
+read under a C/POSIX locale, or (e.g. U+0141 in cp1252) on a Windows runner.
 
 ### isee.pip_utils.extras_require(name='testing', , project_dir=None)
 
