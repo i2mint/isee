@@ -60,6 +60,12 @@ def _find_file(filename, project_dir):
         return None
 
 
+#: ``setup.cfg`` is read as UTF-8, whatever the locale says -- the same reasoning
+#: as ``_update_file``'s explicit encoding: otherwise a non-ASCII byte crashes the
+#: read under a C/POSIX locale, or (e.g. U+0141 in cp1252) on a Windows runner.
+SETUP_CFG_ENCODING = "utf-8"
+
+
 def _load_toml(path):
     with open(path, "rb") as f:
         return tomllib.load(f)
@@ -83,7 +89,7 @@ def _metadata_source(project_dir):
     setup_cfg_path = _find_file("setup.cfg", project_dir)
     if setup_cfg_path:
         config = configparser.ConfigParser()
-        config.read(setup_cfg_path)
+        config.read(setup_cfg_path, encoding=SETUP_CFG_ENCODING)
         return "setup_cfg", config
     return None, None
 
@@ -208,7 +214,7 @@ def read_setup_config(project_dir=None):
         project_dir = get_env_var("GITHUB_WORKSPACE")
     path = get_file_path("setup.cfg", project_dir)
     config = configparser.ConfigParser()
-    config.read(path)
+    config.read(path, encoding=SETUP_CFG_ENCODING)
     return config
 
 
