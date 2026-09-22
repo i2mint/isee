@@ -1,0 +1,14 @@
+isee.common
+===========
+
+.. automodule:: isee.common
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      get_env_var
+      get_file_path
+      git
+   

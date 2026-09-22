@@ -1,0 +1,75 @@
+{
+  "schema_version": 1,
+  "built_at": "2026-09-22T12:56:06Z",
+  "package": {
+    "name": "isee",
+    "version": "0.2.79",
+    "display_name": "isee",
+    "source": "pyproject.toml"
+  },
+  "git": {
+    "available": true,
+    "commit": "382eb3e4d38ad95cb53a88e2ccaf96b997744068",
+    "short_commit": "382eb3e",
+    "branch": "master",
+    "tags": [
+      "0.2.79"
+    ],
+    "dirty": false,
+    "remote_url": "https://github.com/i2mint/isee",
+    "commit_url": "https://github.com/i2mint/isee/commit/382eb3e4d38ad95cb53a88e2ccaf96b997744068",
+    "error": null
+  },
+  "ci": {
+    "provider": "github",
+    "repository": "i2mint/isee",
+    "sha": "de00f18589fd71f594c1c2d7b32a2dd8dc25b274",
+    "sha_in_history": true,
+    "ref": "refs/heads/master",
+    "ref_name": "master",
+    "run_id": "35730047404",
+    "run_url": "https://github.com/i2mint/isee/actions/runs/35730047404",
+    "server_url": "https://github.com"
+  },
+  "tools": {
+    "epythet": "0.2.12",
+    "sphinx": "9.1.0",
+    "docutils": "0.22.4",
+    "python": "3.12.14"
+  },
+  "config": {
+    "theme": "auto",
+    "html_theme": "furo",
+    "accent": "#006a7b",
+    "mode": "auto",
+    "api_generator": "autosummary",
+    "ignore": [
+      "tests/",
+      "scrap/",
+      "examples/"
+    ],
+    "agent_outputs": true,
+    "aggregates": [
+      "md"
+    ],
+    "ai_artifacts": true,
+    "provenance": true,
+    "docs_dir": "docsrc"
+  },
+  "site": {
+    "modules_documented": 8,
+    "objects_documented": 19
+  },
+  "pypi": {
+    "checked": true,
+    "latest": "0.2.79",
+    "relation": "same",
+    "error": null
+  },
+  "reproduce": "git clone https://github.com/i2mint/isee && cd isee\ngit checkout 382eb3e4d38ad95cb53a88e2ccaf96b997744068\npip install \"epythet==0.2.12\"\nepythet quickstart . --ignore tests/ scrap/ examples/",
+  "warnings": [],
+  "alignment": {
+    "aligned": true,
+    "notes": []
+  }
+}

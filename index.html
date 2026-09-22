@@ -1,173 +1,559 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="./">
+  <head><meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<link rel="alternate" type="text/markdown" href="index.html.md">
+<link rel="describedby" href="llms.txt" type="text/markdown">
+<link rel="alternate" type="text/markdown" href="index.html.md">
+<link rel="describedby" href="llms.txt"><link rel="index" title="Index" href="genindex.html"><link rel="search" title="Search" href="search.html"><link rel="next" title="API reference" href="api.html">
+
+    <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
+        <title>isee</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=d75fae25" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=7bdb33bb" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=8dab3a3b" />
+    
+    
 
 
-<!DOCTYPE html>
-<html class="writer-html5" lang="en" data-content_root="./">
-<head>
-  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
-
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Welcome to isee’s documentation! &mdash; isee 0.2.77 documentation</title>
-      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
-      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
-      <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
-      <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=4ae1632d" />
-
+<style>
+  body {
+    --color-code-background: #f0f0f0;
+  --color-code-foreground: black;
+  --color-brand-primary: #006a7b;
+  --color-brand-content: #006a7b;
   
-      <script src="_static/jquery.js?v=5d32c60e"></script>
-      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=c7e8ed0a"></script>
-      <script src="_static/doctools.js?v=fd6eb6e6"></script>
-      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
-      <script src="_static/toggleprompt.js?v=d7ede5d2"></script>
-      <script src="_static/clipboard.min.js?v=a7894cd8"></script>
-      <script src="_static/copybutton.js?v=f281be69"></script>
-    <script src="_static/js/theme.js"></script>
-    <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="isee" href="module_docs/isee.html" /> 
-</head>
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  --color-brand-primary: #1ccee0;
+  --color-brand-content: #1ccee0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  --color-brand-primary: #1ccee0;
+  --color-brand-content: #1ccee0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
 
-<body class="wy-body-for-nav"> 
-  <div class="wy-grid-for-nav">
-    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
-      <div class="wy-side-scroll">
-        <div class="wy-side-nav-search" >
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
 
-          
-          
-          <a href="#" class="icon icon-home">
-            isee
-          </a>
-<div role="search">
-  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
-    <input type="hidden" name="check_keywords" value="yes" />
-    <input type="hidden" name="area" value="default" />
-  </form>
-</div>
-        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="module_docs/isee.html">isee</a></li>
-<li class="toctree-l1"><a class="reference internal" href="module_docs/isee/common.html">isee.common</a></li>
-<li class="toctree-l1"><a class="reference internal" href="module_docs/isee/file_modification_utils.html">isee.file_modification_utils</a></li>
-<li class="toctree-l1"><a class="reference internal" href="module_docs/isee/generation_utils.html">isee.generation_utils</a></li>
-<li class="toctree-l1"><a class="reference internal" href="module_docs/isee/git_utils.html">isee.git_utils</a></li>
-<li class="toctree-l1"><a class="reference internal" href="module_docs/isee/local_cli.html">isee.local_cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="module_docs/isee/pip_utils.html">isee.pip_utils</a></li>
-<li class="toctree-l1"><a class="reference internal" href="module_docs/isee/pylint_log_synopsis.html">isee.pylint_log_synopsis</a></li>
-</ul>
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle site navigation sidebar">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc" aria-label="Toggle table of contents sidebar">
+<label class="overlay sidebar-overlay" for="__navigation"></label>
+<label class="overlay toc-overlay" for="__toc"></label>
 
-        </div>
-      </div>
-    </nav>
-
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
-          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="#">isee</a>
-      </nav>
-
-      <div class="wy-nav-content">
-        <div class="rst-content">
-          <div role="navigation" aria-label="Page navigation">
-  <ul class="wy-breadcrumbs">
-      <li><a href="#" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">Welcome to isee’s documentation!</li>
-      <li class="wy-breadcrumbs-aside">
-            <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
-      </li>
-  </ul>
-  <hr/>
-</div>
-          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
-           <div itemprop="articleBody">
-             
-  <section id="welcome-to-isee-s-documentation">
-<h1>Welcome to isee’s documentation!<a class="headerlink" href="#welcome-to-isee-s-documentation" title="Link to this heading"></a></h1>
-<div class="toctree-wrapper compound">
-<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="module_docs/isee.html">isee</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="module_docs/isee.html#isee.COMMANDS"><code class="docutils literal notranslate"><span class="pre">COMMANDS</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="module_docs/isee.html#isee.main"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="module_docs/isee/common.html">isee.common</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="module_docs/isee/common.html#isee.common.get_env_var"><code class="docutils literal notranslate"><span class="pre">get_env_var()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="module_docs/isee/common.html#isee.common.git"><code class="docutils literal notranslate"><span class="pre">git()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="module_docs/isee/file_modification_utils.html">isee.file_modification_utils</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="module_docs/isee/file_modification_utils.html#isee.file_modification_utils.update_pyproject_toml"><code class="docutils literal notranslate"><span class="pre">update_pyproject_toml()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="module_docs/isee/file_modification_utils.html#isee.file_modification_utils.update_setup_cfg"><code class="docutils literal notranslate"><span class="pre">update_setup_cfg()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="module_docs/isee/generation_utils.html">isee.generation_utils</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="module_docs/isee/generation_utils.html#isee.generation_utils.gen_semver"><code class="docutils literal notranslate"><span class="pre">gen_semver()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="module_docs/isee/generation_utils.html#isee.generation_utils.get_new_version"><code class="docutils literal notranslate"><span class="pre">get_new_version()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="module_docs/isee/git_utils.html">isee.git_utils</a></li>
-<li class="toctree-l1"><a class="reference internal" href="module_docs/isee/local_cli.html">isee.local_cli</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="module_docs/isee/local_cli.html#isee.local_cli.check_dependencies"><code class="docutils literal notranslate"><span class="pre">check_dependencies()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="module_docs/isee/local_cli.html#isee.local_cli.main"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="module_docs/isee/local_cli.html#isee.local_cli.run_ci"><code class="docutils literal notranslate"><span class="pre">run_ci()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="module_docs/isee/local_cli.html#isee.local_cli.run_workflow_locally"><code class="docutils literal notranslate"><span class="pre">run_workflow_locally()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="module_docs/isee/pip_utils.html">isee.pip_utils</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="module_docs/isee/pip_utils.html#isee.pip_utils.extras_require"><code class="docutils literal notranslate"><span class="pre">extras_require()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="module_docs/isee/pip_utils.html#isee.pip_utils.install_extras"><code class="docutils literal notranslate"><span class="pre">install_extras()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="module_docs/isee/pip_utils.html#isee.pip_utils.install_requires"><code class="docutils literal notranslate"><span class="pre">install_requires()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="module_docs/isee/pip_utils.html#isee.pip_utils.read_setup_config"><code class="docutils literal notranslate"><span class="pre">read_setup_config()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="module_docs/isee/pip_utils.html#isee.pip_utils.resolve_install_requires"><code class="docutils literal notranslate"><span class="pre">resolve_install_requires()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="module_docs/isee/pip_utils.html#isee.pip_utils.resolve_tests_require"><code class="docutils literal notranslate"><span class="pre">resolve_tests_require()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="module_docs/isee/pip_utils.html#isee.pip_utils.tests_require"><code class="docutils literal notranslate"><span class="pre">tests_require()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="module_docs/isee/pylint_log_synopsis.html">isee.pylint_log_synopsis</a></li>
-</ul>
-</div>
-</section>
-<section id="indices-and-tables">
-<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Link to this heading"></a></h1>
-<ul class="simple">
-<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
-<li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
-<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
-</ul>
-<p>Release: 0.2.77</p>
-<p>Last change: Sep 04, 2026</p>
-</section>
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
 
 
-           </div>
-          </div>
-          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="module_docs/isee.html" class="btn btn-neutral float-right" title="isee" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <span class="icon"><svg><use href="#svg-menu"></use></svg></span>
+      </label>
     </div>
-
-  <hr/>
-
-  <div role="contentinfo">
-    <p></p>
-  </div>
-
-  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
-    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    provided by <a href="https://readthedocs.org">Read the Docs</a>.
-   
-
-</footer>
-        </div>
+    <div class="header-center">
+      <a href="#"><div class="brand">isee</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
       </div>
-    </section>
-  </div>
-  <script>
-      jQuery(function () {
-          SphinxRtdTheme.Navigation.enable(true);
-      });
-  </script> 
+      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+        <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="#">
+  
+  <span class="sidebar-brand-text">isee</span>
+  
+</a><form class="sidebar-search-container" method="get" action="search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="api.html">API reference</a><input aria-label="Toggle navigation of API reference" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="_autosummary/isee.html">isee</a><input aria-label="Toggle navigation of isee" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/isee.common.html">isee.common</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/isee.file_modification_utils.html">isee.file_modification_utils</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/isee.generation_utils.html">isee.generation_utils</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/isee.git_utils.html">isee.git_utils</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/isee.local_cli.html">isee.local_cli</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/isee.pip_utils.html">isee.pip_utils</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/isee.pylint_log_synopsis.html">isee.pylint_log_synopsis</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
 
-</body>
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="view-this-page">
+  <a class="muted-link" href="_sources/index.md.txt" title="View this page">
+    <svg><use href="#svg-eye"></use></svg>
+    <span class="visually-hidden">View this page</span>
+  </a>
+</div>
+<div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+            <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <!-- generated by epythet -->
+<p><a id="introduction"></a></p>
+<section id="introduction">
+<h1>Introduction<a class="headerlink" href="#introduction" title="Link to this heading">¶</a></h1>
+<p>Python continuous integration (CI) support tools.</p>
+<p>To install:	<code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">isee</span></code></p>
+<p><a class="reference external" href="https://i2mint.github.io/isee/index.html">Documentation here</a>.</p>
+<ol class="arabic simple">
+<li><p><a class="reference internal" href="#introduction">Introduction</a></p></li>
+<li><p><a class="reference internal" href="#goal">Goal</a></p></li>
+<li><p><a class="reference internal" href="#workflow">Workflow</a></p></li>
+<li><p><a class="reference internal" href="#results-and-logs">Results and Logs</a></p></li>
+<li><p><a class="reference internal" href="#versioning">Versioning</a></p></li>
+<li><p><a class="reference internal" href="#skip-ci">Skip CI</a></p></li>
+<li><p><a class="reference internal" href="#hosting">Hosting</a></p></li>
+<li><p><a class="reference internal" href="#how-to-setup-ci">How to setup CI</a></p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#for-a-github-repository">For a GitHub repository</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#running-ci-locally">Running CI Locally</a></p></li>
+<li><p><a class="reference internal" href="#useful-resources">Useful resources</a></p></li>
+<li><p><a class="reference internal" href="#troubleshooting">Troubleshooting</a></p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#common-non-fatal-error-during-publishing">Common non fatal error during publishing</a></p></li>
+<li><p><a class="reference internal" href="#github-token-problems"><span class="xref myst">Github token problems (e.g. tagging)</span></a></p></li>
+<li><p><a class="reference internal" href="#version-tag-misalignment">Version tag misalignment</a></p></li>
+</ul>
+</li>
+</ol>
+<p><a id="goal"></a></p>
+</section>
+<section id="goal">
+<h1>Goal<a class="headerlink" href="#goal" title="Link to this heading">¶</a></h1>
+<p>The goal of CI is to automate code formatting, validation, deployment and publishing of packages.</p>
+<p><a id="workflow"></a></p>
+</section>
+<section id="workflow">
+<h1>Workflow<a class="headerlink" href="#workflow" title="Link to this heading">¶</a></h1>
+<p>A CI pipeline is triggered when new code is pushed to a remote repository.
+Every CI pipeline does at least:</p>
+<ol class="arabic simple">
+<li><p>Code formatting</p>
+<ul class="simple">
+<li><p>Apply automated linting on source code</p></li>
+<li><p>Push back the formatted code to the remote repository</p></li>
+</ul>
+</li>
+<li><p>Code validation</p>
+<ul class="simple">
+<li><p>Testing (unit tests, integration tests, doctests)</p></li>
+<li><p>Docstring validation (only for frameworks)</p></li>
+</ul>
+</li>
+<li><p>Deployment to an integration environment for applications / Publishing for frameworks – (only on <em>master</em> and only if the <em>Validation</em> step succeeded)</p>
+<ul class="simple">
+<li><p>Semi-automated versioning (see the <a class="reference internal" href="#versioning">Versioning</a> section) + Tag the repository with the new generated version number</p></li>
+<li><p>Packaging</p></li>
+<li><p>Deployment / Publishing</p></li>
+</ul>
+</li>
+</ol>
+<p><a id="results-and-logs"></a></p>
+</section>
+<section id="results-and-logs">
+<h1>Results and Logs<a class="headerlink" href="#results-and-logs" title="Link to this heading">¶</a></h1>
+<p>You can see your CI pipeline’s result and logs:</p>
+<ul class="simple">
+<li><p>From your <strong>GitLab project page → CI/CD → Pipelines</strong></p></li>
+<li><p>From your <strong>GitHub project page → Actions → Continuous Integration</strong></p></li>
+</ul>
+<p><a id="versioning"></a></p>
+</section>
+<section id="versioning">
+<h1>Versioning<a class="headerlink" href="#versioning" title="Link to this heading">¶</a></h1>
+<p>Versioning is semi-automatically resolved: if you want the major or minor part to be bumped, you only have to add <em><strong>[bump major]</strong></em> or <em><strong>[bump minor]</strong></em> to your commit message on <em>master</em> (versioning is not applied to other branches).</p>
+<p>Example, the current version number is <strong>1.0.5</strong>.
+If you commit with the following message:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Added</span> <span class="n">some</span> <span class="n">new</span> <span class="n">stuff</span><span class="o">.</span>
+</pre></div>
+</div>
+<p>the new version number will be <strong>1.0.6</strong>.
+But if you commit with the following message:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>Added some great new stuff! [bump minor]
+</pre></div>
+</div>
+<p>the new version number will be <strong>1.1.0</strong>.
+Finally, if you commit with the following message:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>Added some extraordinary new stuff!!! [bump major]
+</pre></div>
+</div>
+<p>the new version number will be <strong>2.0.0</strong>.</p>
+<p><a id="skip-ci"></a></p>
+</section>
+<section id="skip-ci">
+<h1>Skip CI<a class="headerlink" href="#skip-ci" title="Link to this heading">¶</a></h1>
+<p>You can prevent the CI pipeline from being triggered by adding <em><strong>[skip ci]</strong></em> to your commit message.
+Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Updated</span> <span class="n">the</span> <span class="n">README</span> <span class="n">file</span><span class="o">.</span> <span class="p">[</span><span class="n">skip</span> <span class="n">ci</span><span class="p">]</span>
+</pre></div>
+</div>
+<p><strong>Be careful!</strong> If you skip the CI process, any new code will not be validated and no new version will be deployed/published. So, think twice before using it.</p>
+<p><a id="hosting"></a></p>
+</section>
+<section id="hosting">
+<h1>Hosting<a class="headerlink" href="#hosting" title="Link to this heading">¶</a></h1>
+<p>CI pipelines for GitHub public repositories are run on GitHub-hosted runners. See the <a class="reference external" href="https://docs.github.com/en/free-pro-team&#64;latest/actions/learn-github-actions/introduction-to-github-actions#runners">GitHub documentation</a> for more details</p>
+<p><a id="how-to-setup-ci"></a></p>
+</section>
+<section id="how-to-setup-ci">
+<h1>How to setup CI<a class="headerlink" href="#how-to-setup-ci" title="Link to this heading">¶</a></h1>
+<p>This “How to” section applies to python package projects only. If you want to setup CI to an application project or another programing language, you will have to modify the CI pipeline definition according to your needs.</p>
+<p><a id="for-a-github-repository"></a></p>
+<section id="for-a-github-repository">
+<h2>For a GitHub repository<a class="headerlink" href="#for-a-github-repository" title="Link to this heading">¶</a></h2>
+<ol class="arabic simple">
+<li><p>Add this <a class="reference internal" href="#resources/ci.yml"><span class="xref myst">ci.yml</span></a> file to the <code class="docutils literal notranslate"><span class="pre">github/workflow/</span></code> directory (create the directory if it doesn’t exist) into your local repository.
+Note that <a class="reference external" href="https://pypi.org/project/wads/">wads</a> does it for you by running the following command from the project’s root directory (documentation <a class="reference external" href="https://i2mint.github.io/wads/module_docs/wads/populate.html">here</a>):</p></li>
+</ol>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span> <span class="n">populate</span> <span class="o">.</span> <span class="o">--</span><span class="n">root</span><span class="o">-</span><span class="n">url</span><span class="o">=</span><span class="n">GITHUB_ROOT_URL</span>
+</pre></div>
+</div>
+<p>Note that you can specify the root directory (in case you’re not in the root directory), root url (in case the directory is not already associated to a git repo), and have many other parametrization choices.</p>
+<p>Fear not: <code class="docutils literal notranslate"><span class="pre">populate</span></code> will <strong>not</strong> create or modify the <code class="docutils literal notranslate"><span class="pre">ci.yml</span></code> file (or any other file) if there is one already.</p>
+<ol class="arabic simple" start="2">
+<li><p>In the <code class="docutils literal notranslate"><span class="pre">ci.yml</span></code> file, replace <code class="docutils literal notranslate"><span class="pre">#PROJECT_NAME#</span></code> with the project name (must be the exact same name as the main module of the project, not needed if you ran the <code class="docutils literal notranslate"><span class="pre">populate</span></code> tool because it did it for you) and modify the pipeline workflow to suit the project’s needs. Documentation <a class="reference external" href="https://docs.github.com/en/free-pro-team&#64;latest/actions/reference/workflow-syntax-for-github-actions">here</a>.</p></li>
+<li><p>Add secrets <code class="docutils literal notranslate"><span class="pre">PYPI_USERNAME</span></code> and <code class="docutils literal notranslate"><span class="pre">PYPI_PASSWORD</span></code> with your PYPI credentials to the remote repository. Documentation <a class="reference external" href="https://docs.github.com/en/free-pro-team&#64;latest/actions/reference/encrypted-secrets">here</a>.</p></li>
+<li><p>If you want the project’s documentation to be published, configure the project’s Github Pages for the project by selecting the <code class="docutils literal notranslate"><span class="pre">/docs</span></code> folder. Documentation <a class="reference external" href="https://guides.github.com/features/pages/">here</a>.</p></li>
+<li><p>Push your code and see the execution of the new <code class="docutils literal notranslate"><span class="pre">Continuous</span> <span class="pre">Integration</span></code> workflow. Documentation <a class="reference external" href="https://docs.github.com/en/free-pro-team&#64;latest/actions/managing-workflow-runs">here</a>.
+Consider using <a class="reference external" href="https://pypi.org/project/wads/">wads</a> to automatically validate your code locally, commit and push by running the following command (documentation <a class="reference external" href="https://i2mint.github.io/wads/module_docs/wads/pack.html">here</a>):</p></li>
+</ol>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pack</span> <span class="n">check</span><span class="o">-</span><span class="ow">in</span> <span class="s1">'Your commit message.'</span>
+</pre></div>
+</div>
+<p><a id="running-ci-locally"></a></p>
+</section>
+</section>
+<section id="running-ci-locally">
+<h1>Running CI Locally<a class="headerlink" href="#running-ci-locally" title="Link to this heading">¶</a></h1>
+<p>You can run your GitHub Actions CI workflow locally before pushing, using <a class="reference external" href="https://github.com/nektos/act"><code class="docutils literal notranslate"><span class="pre">act</span></code></a>. This helps catch issues early and saves CI minutes.</p>
+<section id="quick-start">
+<h2>Quick Start<a class="headerlink" href="#quick-start" title="Link to this heading">¶</a></h2>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Check if dependencies are installed</span>
+python<span class="w"> </span>-m<span class="w"> </span>isee.local_cli<span class="w"> </span>--check-deps
+
+<span class="c1"># Run your entire CI workflow locally</span>
+python<span class="w"> </span>-m<span class="w"> </span>isee.local_cli
+
+<span class="c1"># Run a specific job (e.g., validation)</span>
+python<span class="w"> </span>-m<span class="w"> </span>isee.local_cli<span class="w"> </span>-j<span class="w"> </span>validation
+
+<span class="c1"># Dry run to see what would execute</span>
+python<span class="w"> </span>-m<span class="w"> </span>isee.local_cli<span class="w"> </span>--dry-run
+</pre></div>
+</div>
+</section>
+<section id="prerequisites">
+<h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Link to this heading">¶</a></h2>
+<p>Install <code class="docutils literal notranslate"><span class="pre">act</span></code> and ensure Docker is running:</p>
+<p><strong>macOS:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>brew<span class="w"> </span>install<span class="w"> </span>act
+</pre></div>
+</div>
+<p><strong>Linux:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>https://raw.githubusercontent.com/nektos/act/master/install.sh<span class="w"> </span><span class="p">|</span><span class="w"> </span>sudo<span class="w"> </span>bash
+</pre></div>
+</div>
+</section>
+<section id="common-options">
+<h2>Common Options<a class="headerlink" href="#common-options" title="Link to this heading">¶</a></h2>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Run with specific Python version</span>
+python<span class="w"> </span>-m<span class="w"> </span>isee.local_cli<span class="w"> </span>-j<span class="w"> </span>validation<span class="w"> </span>-m<span class="w"> </span>python-version:3.10
+
+<span class="c1"># Use custom workflow file</span>
+python<span class="w"> </span>-m<span class="w"> </span>isee.local_cli<span class="w"> </span>-w<span class="w"> </span>.github/workflows/test.yml
+
+<span class="c1"># Quiet mode (less output)</span>
+python<span class="w"> </span>-m<span class="w"> </span>isee.local_cli<span class="w"> </span>-q
+</pre></div>
+</div>
+<p>For detailed documentation, see <a class="reference external" href="https://github.com/i2mint/isee/blob/master/LOCAL_CLI_USAGE.md">LOCAL_CLI_USAGE.md</a>.</p>
+<p><a id="useful-resources"></a></p>
+</section>
+</section>
+<section id="useful-resources">
+<h1>Useful resources<a class="headerlink" href="#useful-resources" title="Link to this heading">¶</a></h1>
+<p><a class="reference external" href="https://github.com/i2mint/tested/wiki/Troubleshooting-Tests">troubleshooting tests</a></p>
+<p><a id="troubleshooting"></a></p>
+</section>
+<section id="troubleshooting">
+<h1>Troubleshooting<a class="headerlink" href="#troubleshooting" title="Link to this heading">¶</a></h1>
+<p><a id="common-non-fatal-error-during-publishing"></a></p>
+<section id="common-non-fatal-error-during-publishing">
+<h2>Common (non fatal) error during publishing<a class="headerlink" href="#common-non-fatal-error-during-publishing" title="Link to this heading">¶</a></h2>
+<p>It has been reported that users get this error:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">runner</span><span class="o">/</span><span class="n">work</span><span class="o">/</span><span class="n">_temp</span><span class="o">/</span><span class="mi">1</span><span class="n">a136567</span><span class="o">-</span><span class="n">cb0c</span><span class="o">-</span><span class="mi">4</span><span class="n">c9f</span><span class="o">-</span><span class="n">a44f</span><span class="o">-</span><span class="mi">4</span><span class="n">cbe6633d4eb</span><span class="o">.</span><span class="n">sh</span><span class="p">:</span> <span class="n">line</span> <span class="mi">2</span><span class="p">:</span> <span class="o">--</span><span class="n">non</span><span class="o">-</span><span class="n">interactive</span><span class="p">:</span> <span class="n">command</span> <span class="ow">not</span> <span class="n">found</span>
+<span class="n">Error</span><span class="p">:</span> <span class="n">Process</span> <span class="n">completed</span> <span class="k">with</span> <span class="n">exit</span> <span class="n">code</span> <span class="mf">127.</span>
+</pre></div>
+</div>
+<p>when publishing. The package publishes fine, but this error causes the CI “publish” part to show up as red, which is annoying.</p>
+<p>Solution: This will happen when any of the variables (most of the time, the PYPI_PASSWORD contain newlines in it, which breaks the <code class="docutils literal notranslate"><span class="pre">twine</span> <span class="pre">upload</span> <span class="pre">...</span></code> command into several pieces.
+This can happen, for example, when copy/pasting from doing a <code class="docutils literal notranslate"><span class="pre">echo</span> <span class="pre">$PYPI_TOKEN</span> <span class="pre">|</span> <span class="pre">pbcopy</span></code> since the echo adds a newline.
+Try copying the pypi token again and ensure there’s no newline in it.</p>
+<p><a id="github-token-problems"></a></p>
+</section>
+<section id="github-token-problems-e-g-tagging">
+<h2>Github token problems (e.g. tagging)<a class="headerlink" href="#github-token-problems-e-g-tagging" title="Link to this heading">¶</a></h2>
+<p>At the point of writing this, some jobs don’t fail when there are (non-essential) errors.
+One hidden problem that you might get in when “Tag Repository With New Version Number” does a <code class="docutils literal notranslate"><span class="pre">Run</span> <span class="pre">isee</span> <span class="pre">tag-repo</span> <span class="pre">$VERSION</span></code>. You’ll get:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">remote</span><span class="p">:</span> <span class="n">Permission</span> <span class="n">to</span> <span class="n">thorwhalen</span><span class="o">/</span><span class="n">sung</span><span class="o">.</span><span class="n">git</span> <span class="n">denied</span> <span class="n">to</span> <span class="n">github</span><span class="o">-</span><span class="n">actions</span><span class="p">[</span><span class="n">bot</span><span class="p">]</span><span class="o">.</span>
+<span class="n">fatal</span><span class="p">:</span> <span class="n">unable</span> <span class="n">to</span> <span class="n">access</span> <span class="s1">'https://github.com/thorwhalen/sung/'</span><span class="p">:</span> <span class="n">The</span> <span class="n">requested</span> <span class="n">URL</span> <span class="n">returned</span> <span class="n">error</span><span class="p">:</span> <span class="mi">403</span>
+<span class="n">Error</span> <span class="n">executing</span> <span class="n">git</span> <span class="n">command</span><span class="p">:</span> <span class="n">Command</span> <span class="s1">'git --git-dir="/home/runner/work/sung/sung/.git" --work-tree="/home/runner/work/sung/sung" push origin 0.0.16'</span> <span class="n">returned</span> <span class="n">non</span><span class="o">-</span><span class="n">zero</span> <span class="n">exit</span> <span class="n">status</span> <span class="mf">128.</span>
+<span class="n">Standard</span> <span class="n">output</span><span class="p">:</span> 
+<span class="n">Exit</span> <span class="n">code</span><span class="p">:</span> <span class="mi">128</span>
+</pre></div>
+</div>
+<p>Top cause and solution:</p>
+<ul class="simple">
+<li><p>Check Repository Permissions: Ensure that the <code class="docutils literal notranslate"><span class="pre">GITHUB_TOKEN</span></code> has the necessary permissions (i.e. read <strong>and write</strong>) to push to the repository.
+You can configure this in the repository settings under Actions -&gt; General -&gt; Workflow permissions (<code class="docutils literal notranslate"><span class="pre">https://github.com/{username_or_org}/{repo}/settings/actions</span></code>).</p></li>
+</ul>
+<p><img alt="image" src="https://github.com/user-attachments/assets/0a35c514-216c-4616-92fa-b8978762594c" /></p>
+<p>Other possible problesm:</p>
+<ul class="simple">
+<li><p>Verify SSH keys: Did you put a ssh public key, and a corresponding SSH_PRIVATE_KEY in your environment), and are they correct?
+Global ssh public keys can be managed <a class="reference external" href="https://github.com/settings/keys">here in user or org level settings</a>.
+Set repository secrets (envoronment variable) here: <code class="docutils literal notranslate"><span class="pre">https://github.com/{username_or_org}/{repo}/settings/secrets/actions</span></code>.</p></li>
+<li><p>Review the Token Usage</p></li>
+<li><p>Check Branch Protection Rules</p></li>
+</ul>
+<p><a id="version-tag-misalignment"></a></p>
+</section>
+<section id="version-tag-misalignment">
+<h2>Version tag misalignment<a class="headerlink" href="#version-tag-misalignment" title="Link to this heading">¶</a></h2>
+<p>(Note: Normally this shouldn’t happen anymore, since I included a
+“version alignment” logic in <a class="reference external" href="https://github.com/i2mint/isee/blob/master/isee/generation_utils.py">get_new_version</a>, which is used in the <a class="reference external" href="https://github.com/i2mint/isee/blob/master/actions/bump-version-number/action.yml">bump-version-number action</a> via <code class="docutils literal notranslate"><span class="pre">gen_semver</span></code>. Still, I’ll keep this around for historical reasons.)</p>
+<p>Sometimes the twine PYPI publishing may fail with such a message:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">WARNING</span>  <span class="n">Skipping</span> <span class="n">PKGNAME</span><span class="o">-</span><span class="mf">0.1.4</span><span class="o">-</span><span class="n">py3</span><span class="o">-</span><span class="n">none</span><span class="o">-</span><span class="nb">any</span><span class="o">.</span><span class="n">whl</span> <span class="n">because</span> <span class="n">it</span> <span class="n">appears</span> <span class="n">to</span> <span class="n">already</span> <span class="n">exist</span> 
+<span class="n">WARNING</span>  <span class="n">Skipping</span> <span class="n">PKGNAME</span><span class="o">-</span><span class="mf">0.1.4</span><span class="o">.</span><span class="n">tar</span><span class="o">.</span><span class="n">gz</span> <span class="n">because</span> <span class="n">it</span> <span class="n">appears</span> <span class="n">to</span> <span class="n">already</span> <span class="n">exist</span>
+</pre></div>
+</div>
+<p>This often means that your git tags are misaligned with the <code class="docutils literal notranslate"><span class="pre">pyproject.toml</span></code>
+(or in older versions, <code class="docutils literal notranslate"><span class="pre">setup.cfg</span></code>) version.</p>
+<p>You can see your git tags here: <code class="docutils literal notranslate"><span class="pre">https://github.com/ORG/REPO/tags</span></code>.</p>
+<p>To repair, do this:</p>
+<ul class="simple">
+<li><p>go to the https://pypi.org/project/ project page and note the PYPI_VERSION number</p></li>
+<li><p>got to <code class="docutils literal notranslate"><span class="pre">setup.cfg</span></code> and see what version is there, called it SETUP_VERSION</p></li>
+<li><p>make a NEW_VERSION, which is a version number ABOVE the SETUP_VERSION and PYPI_VERSION.</p></li>
+<li><p>edit the <code class="docutils literal notranslate"><span class="pre">setup.cfg</span></code> so it shows NEW_VERSION</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">tag</span> <span class="pre">NEW_VERSION</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">push</span> <span class="pre">origin</span> <span class="pre">NEW_VERSION</span></code></p></li>
+</ul>
+<p>Sometimes I need to update the setup version again, and push again.</p>
+<p class="epythet-aggregates">This documentation as a single file: <a href="isee.md">isee.md</a> (Markdown, for agents).</p>
+<div class="toctree-wrapper compound">
+</div>
+</section>
+</section>
+
+<p class="epythet-provenance" style="font-size:.8em;opacity:.65;margin-top:2.5em;text-align:right">built 2026-09-22 12:56 UTC from <a href="https://github.com/i2mint/isee/commit/382eb3e4d38ad95cb53a88e2ccaf96b997744068">382eb3e</a> (master) · isee 0.2.79 · <a href="about-this-build.html">about this build</a></p>
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="api.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">API reference</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            Made with 
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer no-toc">
+      
+      
+      
+    </aside>
+  </div>
+</div><script src="_static/documentation_options.js?v=24f77763"></script>
+    <script src="_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="_static/scripts/furo.js?v=46bd48cc"></script>
+    <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="_static/copybutton.js?v=fd10adb8"></script>
+    </body>
 </html>

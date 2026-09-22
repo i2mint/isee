@@ -1,0 +1,19 @@
+# isee
+
+> Python continuous integration (CI) support tools.
+
+
+## Pages in this subsection
+
+- [isee](isee.html.md): Tools for CI
+- [isee.common](isee.common.html.md): This module contains common functions that are used in multiple modules.
+- [isee.file_modification_utils](isee.file_modification_utils.html.md): This module provides utilities for updating files.
+- [isee.generation_utils](isee.generation_utils.html.md): Generation utils for the isee package.
+- [isee.git_utils](isee.git_utils.html.md): Utilities for working with git repositories.
+- [isee.local_cli](isee.local_cli.html.md): Run GitHub Actions workflows locally using act.
+- [isee.pip_utils](isee.pip_utils.html.md): Utilities for reading a project’s declared dependencies and installing them.
+- [isee.pylint_log_synopsis](isee.pylint_log_synopsis.html.md): This module provides utilities for working with pylint logs.
+
+## Optional
+
+- [Top-level llms.txt](../llms.txt): Complete documentation index.

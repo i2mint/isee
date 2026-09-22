@@ -1,0 +1,20 @@
+isee.pip\_utils
+===============
+
+.. automodule:: isee.pip_utils
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      build_dependency_wheels
+      extras_require
+      install_extras
+      install_packages_from_options
+      install_requires
+      read_setup_config
+      resolve_install_requires
+      resolve_tests_require
+      tests_require
+   

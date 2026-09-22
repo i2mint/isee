@@ -1,0 +1,12 @@
+isee.git\_utils
+===============
+
+.. automodule:: isee.git_utils
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      tag_repo
+   

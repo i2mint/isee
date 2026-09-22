@@ -1,0 +1,15 @@
+isee.local\_cli
+===============
+
+.. automodule:: isee.local_cli
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      check_dependencies
+      main
+      run_ci
+      run_workflow_locally
+   

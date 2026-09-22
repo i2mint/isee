@@ -1,0 +1,13 @@
+isee.generation\_utils
+======================
+
+.. automodule:: isee.generation_utils
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      gen_semver
+      get_new_version
+   

@@ -1,0 +1,16 @@
+isee.file\_modification\_utils
+==============================
+
+.. automodule:: isee.file_modification_utils
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      update_helm_tpl
+      update_manifest
+      update_pyproject_toml
+      update_setup_cfg
+      update_setup_py
+   

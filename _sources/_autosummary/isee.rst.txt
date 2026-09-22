@@ -1,0 +1,31 @@
+﻿isee
+====
+
+.. automodule:: isee
+
+   
+   .. rubric:: Module Attributes
+
+   .. autosummary::
+   
+      COMMANDS
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      main
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   common
+   file_modification_utils
+   generation_utils
+   git_utils
+   local_cli
+   pip_utils
+   pylint_log_synopsis

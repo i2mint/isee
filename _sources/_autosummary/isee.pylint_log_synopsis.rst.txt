@@ -1,0 +1,18 @@
+isee.pylint\_log\_synopsis
+==========================
+
+.. automodule:: isee.pylint_log_synopsis
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      analyze_log
+      log_analysis_string
+      missing_import_module
+      parsed_lines
+      print_log_analysis
+      print_report_followed_by_log
+      process_parsed_line
+   
