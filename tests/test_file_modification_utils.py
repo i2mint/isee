@@ -95,3 +95,50 @@ def test_version_bump_preserves_non_ascii_bytes(tmp_path):
 
     expected = PYPROJECT_TEMPLATE.replace('version = "0.1.0"', 'version = "9.9.9"')
     assert pyproject.read_bytes() == expected.encode("utf-8")
+
+
+SETUP_CFG_TEMPLATE = textwrap.dedent(f"""\
+    [metadata]
+    name = encoding-probe
+    description = {NON_ASCII_DESCRIPTION}
+
+    [options]
+    install_requires =
+        requests
+    """)
+
+#: ``ascii()`` keeps the expected text ASCII-only in the script source, so it
+#: survives being passed to a child whose locale can't decode anything else.
+READ_DEPS_SCRIPT = textwrap.dedent(f"""\
+    import sys
+    from isee.pip_utils import read_setup_config, resolve_install_requires
+    config = read_setup_config(sys.argv[1])
+    print(config["metadata"]["description"] == {ascii(NON_ASCII_DESCRIPTION)})
+    print(resolve_install_requires(project_dir=sys.argv[1]))
+    """)
+
+
+@pytest.mark.skipif(
+    sys.platform == "win32",
+    reason="LC_ALL/LANG do not select the ANSI codepage that Windows would use",
+)
+def test_setup_cfg_reads_survive_a_non_utf8_locale(tmp_path):
+    """MUTATION: drop ``encoding=`` from the ``ConfigParser.read`` calls in pip_utils.
+
+    The dependency-install actions read ``setup.cfg`` with ``ConfigParser.read``,
+    which, like ``open()``, falls back to the locale encoding and so hit the same
+    ``UnicodeDecodeError`` that #45 fixed for the version bump.
+    """
+    (tmp_path / "setup.cfg").write_text(SETUP_CFG_TEMPLATE, encoding="utf-8")
+
+    result = subprocess.run(
+        [sys.executable, "-c", READ_DEPS_SCRIPT, str(tmp_path)],
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+        env={**os.environ, **ASCII_LOCALE_ENV, "PYTHONIOENCODING": "utf-8"},
+    )
+
+    assert result.returncode == 0, result.stderr
+    assert result.stdout.split()[0] == "True", result.stdout
+    assert "requests" in result.stdout
