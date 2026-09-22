@@ -149,7 +149,7 @@ class TestCommandConstruction:
         cmd = mock_subprocess.call_args[0][0]
         assert cmd[0] == "act"
         assert "-W" in cmd
-        assert "--bind" in cmd
+        assert "--bind" not in cmd  # opt-in, see run_ci's `bind` argument
 
     @patch("subprocess.run")
     @patch("isee.local_cli.check_dependencies")
@@ -163,6 +163,8 @@ class TestCommandConstruction:
             matrix="python-version:3.10",
             workflow_file=".github/workflows/ci.yml",
             verbose=False,
+            bind=True,
+            container_arch="linux/amd64",
         )
 
         cmd = mock_subprocess.call_args[0][0]
@@ -174,6 +176,8 @@ class TestCommandConstruction:
         assert "--matrix" in cmd
         assert "python-version:3.10" in cmd
         assert "--bind" in cmd
+        assert "--container-architecture" in cmd
+        assert "linux/amd64" in cmd
 
 
 @pytest.mark.integration

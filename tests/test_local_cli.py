@@ -308,12 +308,26 @@ class TestRunCI:
 
     @patch("subprocess.run")
     @patch("isee.local_cli.check_dependencies")
-    def test_run_ci_binds_local_directory(self, mock_check_deps, mock_subprocess):
-        """Test that local directory is bound for debugging."""
+    def test_run_ci_does_not_bind_by_default(self, mock_check_deps, mock_subprocess):
+        """Binding is opt-in: it writes act's artifacts into the working tree."""
         mock_check_deps.return_value = (True, [])
         mock_subprocess.return_value = MagicMock(returncode=0)
 
         run_ci(verbose=False)
+
+        cmd = mock_subprocess.call_args[0][0]
+        assert "--bind" not in cmd
+
+    @patch("subprocess.run")
+    @patch("isee.local_cli.check_dependencies")
+    def test_run_ci_binds_local_directory_when_asked(
+        self, mock_check_deps, mock_subprocess
+    ):
+        """`bind=True` mounts the working directory, for debugging."""
+        mock_check_deps.return_value = (True, [])
+        mock_subprocess.return_value = MagicMock(returncode=0)
+
+        run_ci(bind=True, verbose=False)
 
         cmd = mock_subprocess.call_args[0][0]
         assert "--bind" in cmd

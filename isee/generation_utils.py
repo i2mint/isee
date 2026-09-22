@@ -1,8 +1,11 @@
 """Generation utils for the isee package.
 
-Has two main functions:
+Main function:
 - gen_semver: Generate a new semantic version based on git commit messages and tags.
-- generate_documentation: Generate documentation for the project.
+
+Documentation generation used to live here too; it moved out to
+``i2mint/epythet/actions/publish-github-pages``, which is what this repo's own
+CI uses.
 
 """
 

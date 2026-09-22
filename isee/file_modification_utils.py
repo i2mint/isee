@@ -138,7 +138,12 @@ def _get_setup_filepath(filename, project_dir):
 
 
 def _update_file(path, pattern, replace, content_must_change=False):
-    with open(path, "r+") as file:
+    # UTF-8 explicitly: the files edited here (pyproject.toml, setup.cfg,
+    # Chart.yaml) are UTF-8 by their own specs, so the locale default only gets
+    # to decide whether a non-ASCII project file crashes the version bump
+    # (C/POSIX locale) or mojibakes it (Windows cp1252). `newline=` is left
+    # alone -- the `version\s=\s.+` patterns would eat a trailing \r without it.
+    with open(path, "r+", encoding="utf-8") as file:
         content = file.read()
         content_new = re.sub(pattern, replace, content, flags=re.M)
         if content_new == content and content_must_change:
