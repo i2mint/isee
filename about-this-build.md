@@ -2,18 +2,20 @@
 
 # About this build
 
-This documentation was built on **2026-09-22 12:56 UTC** from commit <a href="https://github.com/i2mint/isee/commit/382eb3e4d38ad95cb53a88e2ccaf96b997744068"><code>382eb3e</code></a> on branch <code>master</code>, for **isee 0.2.79** (from <code>pyproject.toml</code>).
+This documentation was built on **2026-09-22 14:02 UTC** from commit <a href="https://github.com/i2mint/isee/commit/b6e5bc5bc2b423e84934d0274628ed2d3788ae64"><code>b6e5bc5</code></a> on branch <code>master</code>, for **isee 0.2.80** (from <code>pyproject.toml</code>).
 
-#### NOTE
-Nothing suggests a mismatch: the tree was clean at the commit above, and the documented version is the one on PyPI.
+#### WARNING
+The documentation and the package may be misaligned:
+
+- The documented version (0.2.80) is ahead of the latest release on PyPI (0.2.79): these docs describe unreleased code.
 
 ## Source
 
 |                     |                                                                                                                                                    |
 |---------------------|----------------------------------------------------------------------------------------------------------------------------------------------------|
-| Commit              | <a href="https://github.com/i2mint/isee/commit/382eb3e4d38ad95cb53a88e2ccaf96b997744068"><code>382eb3e4d38ad95cb53a88e2ccaf96b997744068</code></a> |
+| Commit              | <a href="https://github.com/i2mint/isee/commit/b6e5bc5bc2b423e84934d0274628ed2d3788ae64"><code>b6e5bc5bc2b423e84934d0274628ed2d3788ae64</code></a> |
 | Branch              | <code>master</code>                                                                                                                                |
-| Tags at this commit | <code>0.2.79</code>                                                                                                                                |
+| Tags at this commit | <code>0.2.80</code>                                                                                                                                |
 | Working tree        | clean                                                                                                                                              |
 | Remote              | <code>https://github.com/i2mint/isee</code>                                                                                                        |
 
@@ -22,9 +24,9 @@ Nothing suggests a mismatch: the tree was clean at the commit above, and the doc
 |              |                                                                                            |
 |--------------|--------------------------------------------------------------------------------------------|
 | Repository   | <code>i2mint/isee</code>                                                                   |
-| Run          | <a href="https://github.com/i2mint/isee/actions/runs/35730047404">35730047404</a>          |
+| Run          | <a href="https://github.com/i2mint/isee/actions/runs/35737399390">35737399390</a>          |
 | Ref          | <code>refs/heads/master</code>                                                             |
-| Event commit | <code>de00f18589fd71f594c1c2d7b32a2dd8dc25b274</code> (in the history of the built commit) |
+| Event commit | <code>ec93ef52d1d8a30ed84eb49b799f8a9d9b2dd789</code> (in the history of the built commit) |
 
 ## Tools
 
@@ -49,13 +51,13 @@ Nothing suggests a mismatch: the tree was clean at the commit above, and the doc
 
 ## Package on PyPI
 
-Latest release: <a href="https://pypi.org/project/isee/0.2.79/">0.2.79</a>, the same as the documented version.
+Latest release: <a href="https://pypi.org/project/isee/0.2.79/">0.2.79</a>, older than the documented version (0.2.80).
 
 ## Reproduce
 
 ```bash
 git clone https://github.com/i2mint/isee && cd isee
-git checkout 382eb3e4d38ad95cb53a88e2ccaf96b997744068
+git checkout b6e5bc5bc2b423e84934d0274628ed2d3788ae64
 pip install "epythet==0.2.12"
 epythet quickstart . --ignore tests/ scrap/ examples/
 ```

@@ -1,34 +1,34 @@
 {
   "schema_version": 1,
-  "built_at": "2026-09-22T12:56:06Z",
+  "built_at": "2026-09-22T14:02:41Z",
   "package": {
     "name": "isee",
-    "version": "0.2.79",
+    "version": "0.2.80",
     "display_name": "isee",
     "source": "pyproject.toml"
   },
   "git": {
     "available": true,
-    "commit": "382eb3e4d38ad95cb53a88e2ccaf96b997744068",
-    "short_commit": "382eb3e",
+    "commit": "b6e5bc5bc2b423e84934d0274628ed2d3788ae64",
+    "short_commit": "b6e5bc5",
     "branch": "master",
     "tags": [
-      "0.2.79"
+      "0.2.80"
     ],
     "dirty": false,
     "remote_url": "https://github.com/i2mint/isee",
-    "commit_url": "https://github.com/i2mint/isee/commit/382eb3e4d38ad95cb53a88e2ccaf96b997744068",
+    "commit_url": "https://github.com/i2mint/isee/commit/b6e5bc5bc2b423e84934d0274628ed2d3788ae64",
     "error": null
   },
   "ci": {
     "provider": "github",
     "repository": "i2mint/isee",
-    "sha": "de00f18589fd71f594c1c2d7b32a2dd8dc25b274",
+    "sha": "ec93ef52d1d8a30ed84eb49b799f8a9d9b2dd789",
     "sha_in_history": true,
     "ref": "refs/heads/master",
     "ref_name": "master",
-    "run_id": "35730047404",
-    "run_url": "https://github.com/i2mint/isee/actions/runs/35730047404",
+    "run_id": "35737399390",
+    "run_url": "https://github.com/i2mint/isee/actions/runs/35737399390",
     "server_url": "https://github.com"
   },
   "tools": {
@@ -63,13 +63,15 @@
   "pypi": {
     "checked": true,
     "latest": "0.2.79",
-    "relation": "same",
+    "relation": "ahead",
     "error": null
   },
-  "reproduce": "git clone https://github.com/i2mint/isee && cd isee\ngit checkout 382eb3e4d38ad95cb53a88e2ccaf96b997744068\npip install \"epythet==0.2.12\"\nepythet quickstart . --ignore tests/ scrap/ examples/",
+  "reproduce": "git clone https://github.com/i2mint/isee && cd isee\ngit checkout b6e5bc5bc2b423e84934d0274628ed2d3788ae64\npip install \"epythet==0.2.12\"\nepythet quickstart . --ignore tests/ scrap/ examples/",
   "warnings": [],
   "alignment": {
-    "aligned": true,
-    "notes": []
+    "aligned": false,
+    "notes": [
+      "The documented version (0.2.80) is ahead of the latest release on PyPI (0.2.79): these docs describe unreleased code."
+    ]
   }
 }
