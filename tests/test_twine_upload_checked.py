@@ -133,9 +133,20 @@ def test_twine_gets_room_not_to_wrap(tmp_path):
         capture_output=True,
         text=True,
     )
-    assert "COLUMNS=10000" in proc.stdout
+    assert "COLUMNS=500" in proc.stdout
 
 
 def test_allow_skip_is_case_insensitive(tmp_path):
     proc, _ = _run(tmp_path, _SKIPPED, allow_skip="True")
     assert proc.returncode == 0
+
+
+def test_unrelated_skipping_and_already_lines_do_not_fail(tmp_path):
+    output = "INFO Skipping nothing\n" + _UPLOADED + "this appears to already be configured\n"
+    proc, _ = _run(tmp_path, output)
+    assert proc.returncode == 0
+
+
+def test_a_tab_after_skipping_still_fails(tmp_path):
+    proc, _ = _run(tmp_path, "WARNING Skipping\tx-1.0.tar.gz because it appears to already exist\n")
+    assert proc.returncode == 1

@@ -18,9 +18,10 @@ log="$(mktemp)"
 trap 'rm -f "$log"' EXIT
 
 # twine logs through rich, which wraps at the terminal width (80 in CI) and
-# would split the skip message across lines: give it room, and unbuffer it so
+# would split the skip message across lines: give it room (500, not more:
+# its log lines are padded to the width), and unbuffer it so
 # the log keeps stdout and stderr in order.
-COLUMNS=10000 PYTHONUNBUFFERED=1 ${ISEE_TWINE_CMD:-twine} upload "$@" 2>&1 | tee "$log"
+COLUMNS=500 PYTHONUNBUFFERED=1 ${ISEE_TWINE_CMD:-twine} upload "$@" 2>&1 | tee "$log"
 status=${PIPESTATUS[0]}
 if [ "$status" -ne 0 ]; then
   echo "::error title=PyPI upload failed::twine upload exited with status $status; nothing new may be on PyPI. See the log above."
@@ -29,10 +30,10 @@ fi
 
 # Colour codes out, and wrapped lines joined back, in case the width was not
 # honoured: the message must be found however it was printed.
-flat="$(sed 's/\x1b\[[0-9;]*m//g' "$log" | tr '\n' ' ' | tr -s ' ')"
+flat="$(sed 's/\x1b\[[0-9;]*m//g' "$log" | tr -s '[:space:]' ' ')"
 skipped="$(echo "$flat" | grep -oE 'Skipping [^ ]+ because it appears to already exist' | awk '{print $2}' | sort -u)"
 if [ -z "$skipped" ]; then
-  if echo "$flat" | grep -qE 'Skipping .* appears to already'; then
+  if echo "$flat" | grep -qE 'Skipping [^ ]+( [^ ]+){0,8} because it appears to already'; then
     skipped="(files twine reported as skipped; see the log above)"
   else
     exit 0
