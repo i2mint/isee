@@ -1,41 +1,41 @@
 {
   "schema_version": 1,
-  "built_at": "2026-09-22T14:24:48Z",
+  "built_at": "2026-10-13T11:17:14Z",
   "package": {
     "name": "isee",
-    "version": "0.2.81",
+    "version": "0.2.82",
     "display_name": "isee",
     "source": "pyproject.toml"
   },
   "git": {
     "available": true,
-    "commit": "0b5f84e0c3f0f324d030c2b12249bda131423248",
-    "short_commit": "0b5f84e",
+    "commit": "3a3895fc8efea81dc562d245e722e871e755bfcd",
+    "short_commit": "3a3895f",
     "branch": "master",
     "tags": [
-      "0.2.81"
+      "0.2.82"
     ],
     "dirty": false,
     "remote_url": "https://github.com/i2mint/isee",
-    "commit_url": "https://github.com/i2mint/isee/commit/0b5f84e0c3f0f324d030c2b12249bda131423248",
+    "commit_url": "https://github.com/i2mint/isee/commit/3a3895fc8efea81dc562d245e722e871e755bfcd",
     "error": null
   },
   "ci": {
     "provider": "github",
     "repository": "i2mint/isee",
-    "sha": "662046b20cc91b9704c005b1bd1f672cc084375c",
+    "sha": "996d29f0490c2a989785d7313fc8087ceb0e3c76",
     "sha_in_history": true,
     "ref": "refs/heads/master",
     "ref_name": "master",
-    "run_id": "35739967106",
-    "run_url": "https://github.com/i2mint/isee/actions/runs/35739967106",
+    "run_id": "38389008304",
+    "run_url": "https://github.com/i2mint/isee/actions/runs/38389008304",
     "server_url": "https://github.com"
   },
   "tools": {
-    "epythet": "0.2.12",
+    "epythet": "0.2.15",
     "sphinx": "9.1.0",
     "docutils": "0.22.4",
-    "python": "3.12.14"
+    "python": "3.12.15"
   },
   "config": {
     "theme": "auto",
@@ -62,11 +62,11 @@
   },
   "pypi": {
     "checked": true,
-    "latest": "0.2.81",
+    "latest": "0.2.82",
     "relation": "same",
     "error": null
   },
-  "reproduce": "git clone https://github.com/i2mint/isee && cd isee\ngit checkout 0b5f84e0c3f0f324d030c2b12249bda131423248\npip install \"epythet==0.2.12\"\nepythet quickstart . --ignore tests/ scrap/ examples/",
+  "reproduce": "git clone https://github.com/i2mint/isee && cd isee\ngit checkout 3a3895fc8efea81dc562d245e722e871e755bfcd\npip install \"epythet==0.2.15\"\nepythet quickstart . --ignore tests/ scrap/ examples/",
   "warnings": [],
   "alignment": {
     "aligned": true,

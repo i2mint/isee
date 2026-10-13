@@ -5,7 +5,7 @@ orphan: true
 
 # About this build
 
-This documentation was built on **2026-09-22 14:24 UTC** from commit <a href="https://github.com/i2mint/isee/commit/0b5f84e0c3f0f324d030c2b12249bda131423248"><code>0b5f84e</code></a> on branch <code>master</code>, for **isee 0.2.81** (from <code>pyproject.toml</code>).
+This documentation was built on **2026-10-13 11:17 UTC** from commit <a href="https://github.com/i2mint/isee/commit/3a3895fc8efea81dc562d245e722e871e755bfcd"><code>3a3895f</code></a> on branch <code>master</code>, for **isee 0.2.82** (from <code>pyproject.toml</code>).
 
 :::{note}
 Nothing suggests a mismatch: the tree was clean at the commit above, and the documented version is the one on PyPI.
@@ -15,9 +15,9 @@ Nothing suggests a mismatch: the tree was clean at the commit above, and the doc
 
 | | |
 |---|---|
-| Commit | <a href="https://github.com/i2mint/isee/commit/0b5f84e0c3f0f324d030c2b12249bda131423248"><code>0b5f84e0c3f0f324d030c2b12249bda131423248</code></a> |
+| Commit | <a href="https://github.com/i2mint/isee/commit/3a3895fc8efea81dc562d245e722e871e755bfcd"><code>3a3895fc8efea81dc562d245e722e871e755bfcd</code></a> |
 | Branch | <code>master</code> |
-| Tags at this commit | <code>0.2.81</code> |
+| Tags at this commit | <code>0.2.82</code> |
 | Working tree | clean |
 | Remote | <code>https://github.com/i2mint/isee</code> |
 
@@ -26,18 +26,18 @@ Nothing suggests a mismatch: the tree was clean at the commit above, and the doc
 | | |
 |---|---|
 | Repository | <code>i2mint/isee</code> |
-| Run | <a href="https://github.com/i2mint/isee/actions/runs/35739967106">35739967106</a> |
+| Run | <a href="https://github.com/i2mint/isee/actions/runs/38389008304">38389008304</a> |
 | Ref | <code>refs/heads/master</code> |
-| Event commit | <code>662046b20cc91b9704c005b1bd1f672cc084375c</code> (in the history of the built commit) |
+| Event commit | <code>996d29f0490c2a989785d7313fc8087ceb0e3c76</code> (in the history of the built commit) |
 
 ## Tools
 
 | | |
 |---|---|
-| epythet | 0.2.12 |
+| epythet | 0.2.15 |
 | Sphinx | 9.1.0 |
 | docutils | 0.22.4 |
-| Python | 3.12.14 |
+| Python | 3.12.15 |
 
 ## Configuration as resolved
 
@@ -53,14 +53,14 @@ Nothing suggests a mismatch: the tree was clean at the commit above, and the doc
 
 ## Package on PyPI
 
-Latest release: <a href="https://pypi.org/project/isee/0.2.81/">0.2.81</a>, the same as the documented version.
+Latest release: <a href="https://pypi.org/project/isee/0.2.82/">0.2.82</a>, the same as the documented version.
 
 ## Reproduce
 
 ```bash
 git clone https://github.com/i2mint/isee && cd isee
-git checkout 0b5f84e0c3f0f324d030c2b12249bda131423248
-pip install "epythet==0.2.12"
+git checkout 3a3895fc8efea81dc562d245e722e871e755bfcd
+pip install "epythet==0.2.15"
 epythet quickstart . --ignore tests/ scrap/ examples/
 ```
 
