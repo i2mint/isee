@@ -43,7 +43,7 @@ def _run(tmp_path, output, *, status=0, allow_skip=None):
     summary = tmp_path / "summary.md"
     env = {
         **os.environ,
-        "TWINE": _fake_twine(tmp_path, output, status),
+        "ISEE_TWINE_CMD": _fake_twine(tmp_path, output, status),
         "GITHUB_STEP_SUMMARY": str(summary),
     }
     if allow_skip is not None:
@@ -92,7 +92,50 @@ def test_every_publishing_action_uploads_through_the_wrapper(action):
     yaml = pytest.importorskip("yaml")
     path = SCRIPT.parent.parent / action / "action.yml"
     spec = yaml.safe_load(path.read_text())
-    assert spec["inputs"]["allow-skip"]["default"] == "false"
+    # pypi-upload follows its skip-existing input; the others fail by default
+    assert spec["inputs"]["allow-skip"]["default"] in ("false", "")
     runs = [step.get("run", "") for step in spec["runs"]["steps"]]
-    assert any("_shared/twine-upload-checked.sh" in r for r in runs)
+    assert any('"$GITHUB_ACTION_PATH/../_shared/twine-upload-checked.sh"' in r for r in runs)
     assert not any("twine upload" in r for r in runs), "a bare twine upload remains"
+
+
+# The issue's own log: rich wrapped the message at 80 columns, in colour.
+_WRAPPED = (
+    "\x1b[33mWARNING \x1b[0m Skipping some_longer_package_name-1.2.3-py3-none-any.whl because it\n"
+    "         appears to already exist\n"
+    "\x1b[33mWARNING \x1b[0m Skipping graze-0.1.9.tar.gz because it appears to already    \n"
+    "         exist\n"
+)
+
+
+def test_a_wrapped_coloured_skip_message_still_fails(tmp_path):
+    proc, _ = _run(tmp_path, _WRAPPED)
+    assert proc.returncode == 1
+    error = next(l for l in proc.stdout.splitlines() if l.startswith("::error"))
+    assert "some_longer_package_name-1.2.3-py3-none-any.whl" in error
+    assert "graze-0.1.9.tar.gz" in error
+
+
+def test_a_filename_split_mid_word_still_fails(tmp_path):
+    split = "WARNING  Skipping a_very_long_name-1.0-py3-no\nne-any.whl because it appears to already exist\n"
+    proc, _ = _run(tmp_path, split)
+    assert proc.returncode == 1
+    assert "::error title=Nothing new published to PyPI::" in proc.stdout
+
+
+def test_twine_gets_room_not_to_wrap(tmp_path):
+    fake = tmp_path / "twine"
+    fake.write_text('#!/usr/bin/env bash\necho "COLUMNS=$COLUMNS"\n')
+    fake.chmod(0o755)
+    proc = subprocess.run(
+        ["bash", str(SCRIPT)],
+        env={**os.environ, "ISEE_TWINE_CMD": str(fake)},
+        capture_output=True,
+        text=True,
+    )
+    assert "COLUMNS=10000" in proc.stdout
+
+
+def test_allow_skip_is_case_insensitive(tmp_path):
+    proc, _ = _run(tmp_path, _SKIPPED, allow_skip="True")
+    assert proc.returncode == 0

@@ -34,7 +34,9 @@ inputs:
   allow-skip:
     description: "When twine skips files that already exist on PyPI (nothing new is
       published), warn instead of failing the step. Default: fail, so a release
-      that did not happen is never a green run (i2mint/isee#26)."
+      that did not happen is never a green run (i2mint/isee#26). Set it to true
+      to re-run a job whose upload succeeded but whose push or tag failed: the
+      version is then already on PyPI, and the job goes on to push and tag."
     required: false
     default: "false"
 runs:
@@ -88,7 +90,7 @@ runs:
         ALLOW_SKIP: ${{ inputs.allow-skip }}
       run: |
         set -e
-        bash "${{ github.action_path }}/../_shared/twine-upload-checked.sh" dist/${{ inputs.PROJECT_NAME }}-$VERSION.tar.gz -u ${{ inputs.PYPI_USERNAME }} -p ${{ inputs.PYPI_PASSWORD }} --non-interactive  --skip-existing --disable-progress-bar
+        bash "$GITHUB_ACTION_PATH/../_shared/twine-upload-checked.sh" dist/${{ inputs.PROJECT_NAME }}-$VERSION.tar.gz -u ${{ inputs.PYPI_USERNAME }} -p ${{ inputs.PYPI_PASSWORD }} --non-interactive  --skip-existing --disable-progress-bar
       shell: bash
 
     - name: Push Changes

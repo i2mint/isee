@@ -38,4 +38,4 @@ runs:
         ALLOW_SKIP: ${{ inputs.allow-skip }}
       run: |
         set -e
-        bash "${{ github.action_path }}/../_shared/twine-upload-checked.sh" ${{ inputs.package-path }} -u ${{ inputs.pypi-username }} -p ${{ inputs.pypi-password }} ${{ inputs.twine-args }}
+        bash "$GITHUB_ACTION_PATH/../_shared/twine-upload-checked.sh" ${{ inputs.package-path }} -u ${{ inputs.pypi-username }} -p ${{ inputs.pypi-password }} ${{ inputs.twine-args }}
