@@ -62,7 +62,11 @@ def test_a_real_upload_passes(tmp_path):
     assert proc.returncode == 0
     assert "Uploading graze-0.1.10.tar.gz" in proc.stdout
     assert summary == ""
-    assert (tmp_path / "args.txt").read_text().split() == ["upload", "dist/*", "--skip-existing"]
+    assert (tmp_path / "args.txt").read_text().split() == [
+        "upload",
+        "dist/*",
+        "--skip-existing",
+    ]
 
 
 def test_skipped_files_fail_the_step_and_say_so(tmp_path):
@@ -95,7 +99,9 @@ def test_every_publishing_action_uploads_through_the_wrapper(action):
     # pypi-upload follows its skip-existing input; the others fail by default
     assert spec["inputs"]["allow-skip"]["default"] in ("false", "")
     runs = [step.get("run", "") for step in spec["runs"]["steps"]]
-    assert any('"$GITHUB_ACTION_PATH/../_shared/twine-upload-checked.sh"' in r for r in runs)
+    assert any(
+        '"$GITHUB_ACTION_PATH/../_shared/twine-upload-checked.sh"' in r for r in runs
+    )
     assert not any("twine upload" in r for r in runs), "a bare twine upload remains"
 
 
@@ -142,11 +148,17 @@ def test_allow_skip_is_case_insensitive(tmp_path):
 
 
 def test_unrelated_skipping_and_already_lines_do_not_fail(tmp_path):
-    output = "INFO Skipping nothing\n" + _UPLOADED + "this appears to already be configured\n"
+    output = (
+        "INFO Skipping nothing\n"
+        + _UPLOADED
+        + "this appears to already be configured\n"
+    )
     proc, _ = _run(tmp_path, output)
     assert proc.returncode == 0
 
 
 def test_a_tab_after_skipping_still_fails(tmp_path):
-    proc, _ = _run(tmp_path, "WARNING Skipping\tx-1.0.tar.gz because it appears to already exist\n")
+    proc, _ = _run(
+        tmp_path, "WARNING Skipping\tx-1.0.tar.gz because it appears to already exist\n"
+    )
     assert proc.returncode == 1
