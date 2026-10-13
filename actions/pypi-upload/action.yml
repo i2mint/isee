@@ -24,6 +24,13 @@ inputs:
     description: "Verbose output"
     required: false
     default: "true"
+  allow-skip:
+    description: "When twine skips files that already exist on PyPI (nothing new is
+      published), warn instead of failing the step. Default: the value of
+      skip-existing, so asking to skip is a warning, and an unexpected skip a
+      failure (i2mint/isee#26)."
+    required: false
+    default: ""
 
 runs:
   using: 'composite'
@@ -37,6 +44,8 @@ runs:
 
     - name: Upload to PyPI
       shell: bash
+      env:
+        ALLOW_SKIP: ${{ inputs.allow-skip != '' && inputs.allow-skip || inputs.skip-existing }}
       run: |
         set -e
 
@@ -53,7 +62,7 @@ runs:
         echo "Uploading packages from: ${{ inputs.packages-path }}"
         echo "Repository URL: ${{ inputs.repository-url }}"
 
-        twine upload \
+        bash "$GITHUB_ACTION_PATH/../_shared/twine-upload-checked.sh" \
           $twine_args \
           --repository-url "${{ inputs.repository-url }}" \
           --username "${{ inputs.pypi-username }}" \
