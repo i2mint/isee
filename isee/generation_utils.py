@@ -93,6 +93,22 @@ def get_new_version(
     return format_version(new_version)
 
 
+def _write_github_vars(version: str) -> None:
+    """Append the version to the step outputs and the job env files GitHub Actions provides."""
+    import os
+
+    targets = {"GITHUB_OUTPUT": "version", "GITHUB_ENV": "VERSION"}
+    missing = [env for env in targets if not os.environ.get(env)]
+    if missing:
+        raise RuntimeError(
+            f"output_mode='github' needs {' and '.join(missing)} (set inside GitHub Actions); "
+            "use 'print' or 'return' elsewhere"
+        )
+    for env, name in targets.items():
+        with open(os.environ[env], "a", encoding="utf-8") as f:
+            f.write(f"{name}={version}\n")
+
+
 def gen_semver(
     *, dir_path: str = None, version_patch_prefix: str = "", output_mode: str = "auto"
 ):
@@ -108,9 +124,11 @@ def gen_semver(
         - "print": Only print to stdout (for shell capture)
         - "return": Only return (for Python API use)
         - "both": Both print and return
+        - "github": Write ``version=<v>`` to ``$GITHUB_OUTPUT`` (and ``VERSION=<v>`` to
+          ``$GITHUB_ENV``) and return it: no stdout parsing. Needs to run in Actions.
 
     Returns:
-    - str: The new version string if output_mode is "return" or "both".
+    - str: The new version string if output_mode is "return", "both" or "github".
     - None: If output_mode is "print".
     """
     import os
@@ -137,7 +155,10 @@ def gen_semver(
         # Print clean version string with no extra characters
         print(version.strip())
 
-    if output_mode in ("return", "both"):
+    if output_mode == "github":
+        _write_github_vars(version.strip())
+
+    if output_mode in ("return", "both", "github"):
         return version
 
     return None
