@@ -14,8 +14,15 @@ def _jobs():
 
 def test_publishing_jobs_gate_on_the_default_branch_not_a_name():
     jobs = _jobs()
-    gated = {name: job["if"] for name, job in jobs.items() if "refs/heads" in str(job.get("if", ""))}
+    gated = {
+        name: job["if"]
+        for name, job in jobs.items()
+        if "refs/heads" in str(job.get("if", ""))
+    }
     assert gated, "expected the publish jobs to be gated on a branch"
     for name, condition in gated.items():
         assert GATE in condition, f"{name} must gate on the default branch"
-        assert "'refs/heads/master'" not in condition and "'refs/heads/main'" not in condition
+        assert (
+            "'refs/heads/master'" not in condition
+            and "'refs/heads/main'" not in condition
+        )
