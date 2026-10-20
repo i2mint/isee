@@ -1,4 +1,4 @@
-> built 2026-10-13 11:17 UTC from 3a3895f (master) · isee 0.2.82. Details: build_info.json
+> built 2026-10-20 10:28 UTC from 8b0fbf0 (master) · isee 0.2.83. Details: build_info.json
 
 # index.html.md
 
@@ -49,7 +49,7 @@ Every CI pipeline does at least:
 2. Code validation
    * Testing (unit tests, integration tests, doctests)
    * Docstring validation (only for frameworks)
-3. Deployment to an integration environment for applications / Publishing for frameworks – (only on *master* and only if the *Validation* step succeeded)
+3. Deployment to an integration environment for applications / Publishing for frameworks – (only on the repository’s default branch, whatever its name, and only if the *Validation* step succeeded)
    * Semi-automated versioning (see the [Versioning]() section) + Tag the repository with the new generated version number
    * Packaging
    * Deployment / Publishing
@@ -799,18 +799,20 @@ Perhaps pylint already has such a synopsis report maker?
 
 # About this build
 
-This documentation was built on **2026-10-13 11:17 UTC** from commit <a href="https://github.com/i2mint/isee/commit/3a3895fc8efea81dc562d245e722e871e755bfcd"><code>3a3895f</code></a> on branch <code>master</code>, for **isee 0.2.82** (from <code>pyproject.toml</code>).
+This documentation was built on **2026-10-20 10:28 UTC** from commit <a href="https://github.com/i2mint/isee/commit/8b0fbf0d711976285a77cf5dc65fd0a36b1cc9a9"><code>8b0fbf0</code></a> on branch <code>master</code>, for **isee 0.2.83** (from <code>pyproject.toml</code>).
 
-#### NOTE
-Nothing suggests a mismatch: the tree was clean at the commit above, and the documented version is the one on PyPI.
+#### WARNING
+The documentation and the package may be misaligned:
+
+- The documented version (0.2.83) is ahead of the latest release on PyPI (0.2.82): these docs describe unreleased code.
 
 ## Source
 
 |                     |                                                                                                                                                    |
 |---------------------|----------------------------------------------------------------------------------------------------------------------------------------------------|
-| Commit              | <a href="https://github.com/i2mint/isee/commit/3a3895fc8efea81dc562d245e722e871e755bfcd"><code>3a3895fc8efea81dc562d245e722e871e755bfcd</code></a> |
+| Commit              | <a href="https://github.com/i2mint/isee/commit/8b0fbf0d711976285a77cf5dc65fd0a36b1cc9a9"><code>8b0fbf0d711976285a77cf5dc65fd0a36b1cc9a9</code></a> |
 | Branch              | <code>master</code>                                                                                                                                |
-| Tags at this commit | <code>0.2.82</code>                                                                                                                                |
+| Tags at this commit | <code>0.2.83</code>                                                                                                                                |
 | Working tree        | clean                                                                                                                                              |
 | Remote              | <code>https://github.com/i2mint/isee</code>                                                                                                        |
 
@@ -819,16 +821,16 @@ Nothing suggests a mismatch: the tree was clean at the commit above, and the doc
 |              |                                                                                            |
 |--------------|--------------------------------------------------------------------------------------------|
 | Repository   | <code>i2mint/isee</code>                                                                   |
-| Run          | <a href="https://github.com/i2mint/isee/actions/runs/38389008304">38389008304</a>          |
+| Run          | <a href="https://github.com/i2mint/isee/actions/runs/39408048381">39408048381</a>          |
 | Ref          | <code>refs/heads/master</code>                                                             |
-| Event commit | <code>996d29f0490c2a989785d7313fc8087ceb0e3c76</code> (in the history of the built commit) |
+| Event commit | <code>d28f2e67431c4caba414d83c73dcfba1e9dfb926</code> (in the history of the built commit) |
 
 ## Tools
 
 |          |         |
 |----------|---------|
-| epythet  | 0.2.15  |
-| Sphinx   | 9.1.0   |
+| epythet  | 0.2.18  |
+| Sphinx   | 9.1.1   |
 | docutils | 0.22.4  |
 | Python   | 3.12.15 |
 
@@ -846,14 +848,14 @@ Nothing suggests a mismatch: the tree was clean at the commit above, and the doc
 
 ## Package on PyPI
 
-Latest release: <a href="https://pypi.org/project/isee/0.2.82/">0.2.82</a>, the same as the documented version.
+Latest release: <a href="https://pypi.org/project/isee/0.2.82/">0.2.82</a>, older than the documented version (0.2.83).
 
 ## Reproduce
 
 ```bash
 git clone https://github.com/i2mint/isee && cd isee
-git checkout 3a3895fc8efea81dc562d245e722e871e755bfcd
-pip install "epythet==0.2.15"
+git checkout 8b0fbf0d711976285a77cf5dc65fd0a36b1cc9a9
+pip install "epythet==0.2.18"
 epythet quickstart . --ignore tests/ scrap/ examples/
 ```
 

@@ -45,7 +45,7 @@ Every CI pipeline does at least:
 2. Code validation
    * Testing (unit tests, integration tests, doctests)
    * Docstring validation (only for frameworks)
-3. Deployment to an integration environment for applications / Publishing for frameworks – (only on *master* and only if the *Validation* step succeeded)
+3. Deployment to an integration environment for applications / Publishing for frameworks – (only on the repository’s default branch, whatever its name, and only if the *Validation* step succeeded)
    * Semi-automated versioning (see the [Versioning]() section) + Tag the repository with the new generated version number
    * Packaging
    * Deployment / Publishing
