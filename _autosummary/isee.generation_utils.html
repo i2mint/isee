@@ -295,6 +295,8 @@ CI uses.</p>
 <li><p>“print”: Only print to stdout (for shell capture)</p></li>
 <li><p>“return”: Only return (for Python API use)</p></li>
 <li><p>“both”: Both print and return</p></li>
+<li><p>“github”: Write <code class="docutils literal notranslate"><span class="pre">version=&lt;v&gt;</span></code> to <code class="docutils literal notranslate"><span class="pre">$GITHUB_OUTPUT</span></code> (and <code class="docutils literal notranslate"><span class="pre">VERSION=&lt;v&gt;</span></code> to
+<code class="docutils literal notranslate"><span class="pre">$GITHUB_ENV</span></code>) and return it: no stdout parsing. Needs to run in Actions.</p></li>
 </ul>
 </dd>
 </dl>
@@ -302,7 +304,7 @@ CI uses.</p>
 </ul>
 <p class="rubric">Returns</p>
 <ul class="simple">
-<li><p>str: The new version string if output_mode is “return” or “both”.</p></li>
+<li><p>str: The new version string if output_mode is “return”, “both” or “github”.</p></li>
 <li><p>None: If output_mode is “print”.</p></li>
 </ul>
 <dl class="field-list simple">
@@ -385,7 +387,7 @@ the commit message.</p>
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=0f488adb"></script>
+</div><script src="../_static/documentation_options.js?v=e76bcb6b"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/scripts/furo.js?v=46bd48cc"></script>

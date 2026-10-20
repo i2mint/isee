@@ -484,6 +484,17 @@ Set repository secrets (envoronment variable) here: <code class="docutils litera
 <li><p>Review the Token Usage</p></li>
 <li><p>Check Branch Protection Rules</p></li>
 </ul>
+<p><a id="passing-the-version-between-steps"></a></p>
+</section>
+<section id="passing-the-generated-version-between-steps">
+<h2>Passing the generated version between steps<a class="headerlink" href="#passing-the-generated-version-between-steps" title="Link to this heading">¶</a></h2>
+<p>Inside Python, <code class="docutils literal notranslate"><span class="pre">gen_semver(output_mode=&quot;return&quot;)</span></code> returns the version. Between GitHub Actions steps, the supported channel is the step’s output file, and <code class="docutils literal notranslate"><span class="pre">output_mode=&quot;github&quot;</span></code> writes it for you: <code class="docutils literal notranslate"><span class="pre">version=&lt;v&gt;</span></code> to <code class="docutils literal notranslate"><span class="pre">$GITHUB_OUTPUT</span></code> and <code class="docutils literal notranslate"><span class="pre">VERSION=&lt;v&gt;</span></code> to <code class="docutils literal notranslate"><span class="pre">$GITHUB_ENV</span></code>, with nothing printed and nothing to parse.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">gen_version</span>
+<span class="w">  </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">isee gen-semver --output-mode=github</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">echo "new version is ${{ steps.gen_version.outputs.version }}"</span>
+</pre></div>
+</div>
+<p>The bundled actions still capture <code class="docutils literal notranslate"><span class="pre">--output-mode=print</span></code> from stdout; they can move to <code class="docutils literal notranslate"><span class="pre">github</span></code> whenever convenient (both modes stay supported).</p>
 <p><a id="version-tag-misalignment"></a></p>
 </section>
 <section id="version-tag-misalignment">
@@ -514,7 +525,7 @@ Set repository secrets (envoronment variable) here: <code class="docutils litera
 </section>
 </section>
 
-<p class="epythet-provenance" style="font-size:.8em;opacity:.65;margin-top:2.5em;text-align:right">built 2026-10-20 10:28 UTC from <a href="https://github.com/i2mint/isee/commit/8b0fbf0d711976285a77cf5dc65fd0a36b1cc9a9">8b0fbf0</a> (master) · isee 0.2.83 · <a href="about-this-build.html">about this build</a></p>
+<p class="epythet-provenance" style="font-size:.8em;opacity:.65;margin-top:2.5em;text-align:right">built 2026-10-20 11:29 UTC from <a href="https://github.com/i2mint/isee/commit/e08773b0924eff8940cda0e2897d7b6ebd1b0ebd">e08773b</a> (master) · isee 0.2.84 · <a href="about-this-build.html">about this build</a></p>
         </article>
       </div>
       <footer>
@@ -550,7 +561,7 @@ Set repository secrets (envoronment variable) here: <code class="docutils litera
       
     </aside>
   </div>
-</div><script src="_static/documentation_options.js?v=0f488adb"></script>
+</div><script src="_static/documentation_options.js?v=e76bcb6b"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/scripts/furo.js?v=46bd48cc"></script>

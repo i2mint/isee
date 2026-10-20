@@ -30,10 +30,12 @@ Generate a new semantic version based on git commit messages and tags.
     - “print”: Only print to stdout (for shell capture)
     - “return”: Only return (for Python API use)
     - “both”: Both print and return
+    - “github”: Write `version=<v>` to `$GITHUB_OUTPUT` (and `VERSION=<v>` to
+      `$GITHUB_ENV`) and return it: no stdout parsing. Needs to run in Actions.
 
 ### Returns
 
-- str: The new version string if output_mode is “return” or “both”.
+- str: The new version string if output_mode is “return”, “both” or “github”.
 - None: If output_mode is “print”.
 
 ### isee.generation_utils.get_new_version(\*, work_tree='.', version_patch_prefix='', action_when_versions_not_valid=<built-in function warn>)

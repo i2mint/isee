@@ -248,6 +248,20 @@ Other possible problesm:
 * Review the Token Usage
 * Check Branch Protection Rules
 
+<a id="passing-the-version-between-steps"></a>
+
+## Passing the generated version between steps
+
+Inside Python, `gen_semver(output_mode="return")` returns the version. Between GitHub Actions steps, the supported channel is the step’s output file, and `output_mode="github"` writes it for you: `version=<v>` to `$GITHUB_OUTPUT` and `VERSION=<v>` to `$GITHUB_ENV`, with nothing printed and nothing to parse.
+
+```yaml
+- id: gen_version
+  run: isee gen-semver --output-mode=github
+- run: echo "new version is ${{ steps.gen_version.outputs.version }}"
+```
+
+The bundled actions still capture `--output-mode=print` from stdout; they can move to `github` whenever convenient (both modes stay supported).
+
 <a id="version-tag-misalignment"></a>
 
 ## Version tag misalignment

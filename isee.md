@@ -1,4 +1,4 @@
-> built 2026-10-20 10:28 UTC from 8b0fbf0 (master) · isee 0.2.83. Details: build_info.json
+> built 2026-10-20 11:29 UTC from e08773b (master) · isee 0.2.84. Details: build_info.json
 
 # index.html.md
 
@@ -252,6 +252,20 @@ Other possible problesm:
 * Review the Token Usage
 * Check Branch Protection Rules
 
+<a id="passing-the-version-between-steps"></a>
+
+## Passing the generated version between steps
+
+Inside Python, `gen_semver(output_mode="return")` returns the version. Between GitHub Actions steps, the supported channel is the step’s output file, and `output_mode="github"` writes it for you: `version=<v>` to `$GITHUB_OUTPUT` and `VERSION=<v>` to `$GITHUB_ENV`, with nothing printed and nothing to parse.
+
+```yaml
+- id: gen_version
+  run: isee gen-semver --output-mode=github
+- run: echo "new version is ${{ steps.gen_version.outputs.version }}"
+```
+
+The bundled actions still capture `--output-mode=print` from stdout; they can move to `github` whenever convenient (both modes stay supported).
+
 <a id="version-tag-misalignment"></a>
 
 ## Version tag misalignment
@@ -432,10 +446,12 @@ Generate a new semantic version based on git commit messages and tags.
     - “print”: Only print to stdout (for shell capture)
     - “return”: Only return (for Python API use)
     - “both”: Both print and return
+    - “github”: Write `version=<v>` to `$GITHUB_OUTPUT` (and `VERSION=<v>` to
+      `$GITHUB_ENV`) and return it: no stdout parsing. Needs to run in Actions.
 
 ### Returns
 
-- str: The new version string if output_mode is “return” or “both”.
+- str: The new version string if output_mode is “return”, “both” or “github”.
 - None: If output_mode is “print”.
 
 ### isee.generation_utils.get_new_version(\*, work_tree='.', version_patch_prefix='', action_when_versions_not_valid=<built-in function warn>)
@@ -799,20 +815,18 @@ Perhaps pylint already has such a synopsis report maker?
 
 # About this build
 
-This documentation was built on **2026-10-20 10:28 UTC** from commit <a href="https://github.com/i2mint/isee/commit/8b0fbf0d711976285a77cf5dc65fd0a36b1cc9a9"><code>8b0fbf0</code></a> on branch <code>master</code>, for **isee 0.2.83** (from <code>pyproject.toml</code>).
+This documentation was built on **2026-10-20 11:29 UTC** from commit <a href="https://github.com/i2mint/isee/commit/e08773b0924eff8940cda0e2897d7b6ebd1b0ebd"><code>e08773b</code></a> on branch <code>master</code>, for **isee 0.2.84** (from <code>pyproject.toml</code>).
 
-#### WARNING
-The documentation and the package may be misaligned:
-
-- The documented version (0.2.83) is ahead of the latest release on PyPI (0.2.82): these docs describe unreleased code.
+#### NOTE
+Nothing suggests a mismatch: the tree was clean at the commit above, and the documented version is the one on PyPI.
 
 ## Source
 
 |                     |                                                                                                                                                    |
 |---------------------|----------------------------------------------------------------------------------------------------------------------------------------------------|
-| Commit              | <a href="https://github.com/i2mint/isee/commit/8b0fbf0d711976285a77cf5dc65fd0a36b1cc9a9"><code>8b0fbf0d711976285a77cf5dc65fd0a36b1cc9a9</code></a> |
+| Commit              | <a href="https://github.com/i2mint/isee/commit/e08773b0924eff8940cda0e2897d7b6ebd1b0ebd"><code>e08773b0924eff8940cda0e2897d7b6ebd1b0ebd</code></a> |
 | Branch              | <code>master</code>                                                                                                                                |
-| Tags at this commit | <code>0.2.83</code>                                                                                                                                |
+| Tags at this commit | <code>0.2.84</code>                                                                                                                                |
 | Working tree        | clean                                                                                                                                              |
 | Remote              | <code>https://github.com/i2mint/isee</code>                                                                                                        |
 
@@ -821,15 +835,15 @@ The documentation and the package may be misaligned:
 |              |                                                                                            |
 |--------------|--------------------------------------------------------------------------------------------|
 | Repository   | <code>i2mint/isee</code>                                                                   |
-| Run          | <a href="https://github.com/i2mint/isee/actions/runs/39408048381">39408048381</a>          |
+| Run          | <a href="https://github.com/i2mint/isee/actions/runs/39415159045">39415159045</a>          |
 | Ref          | <code>refs/heads/master</code>                                                             |
-| Event commit | <code>d28f2e67431c4caba414d83c73dcfba1e9dfb926</code> (in the history of the built commit) |
+| Event commit | <code>82ad8fbb09239dbe872993d2993f7be65bb2fb4e</code> (in the history of the built commit) |
 
 ## Tools
 
 |          |         |
 |----------|---------|
-| epythet  | 0.2.18  |
+| epythet  | 0.2.19  |
 | Sphinx   | 9.1.1   |
 | docutils | 0.22.4  |
 | Python   | 3.12.15 |
@@ -848,14 +862,14 @@ The documentation and the package may be misaligned:
 
 ## Package on PyPI
 
-Latest release: <a href="https://pypi.org/project/isee/0.2.82/">0.2.82</a>, older than the documented version (0.2.83).
+Latest release: <a href="https://pypi.org/project/isee/0.2.84/">0.2.84</a>, the same as the documented version.
 
 ## Reproduce
 
 ```bash
 git clone https://github.com/i2mint/isee && cd isee
-git checkout 8b0fbf0d711976285a77cf5dc65fd0a36b1cc9a9
-pip install "epythet==0.2.18"
+git checkout e08773b0924eff8940cda0e2897d7b6ebd1b0ebd
+pip install "epythet==0.2.19"
 epythet quickstart . --ignore tests/ scrap/ examples/
 ```
 
