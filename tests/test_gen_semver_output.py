@@ -10,7 +10,9 @@ def _fixed_version(monkeypatch):
     monkeypatch.setattr(gu, "get_new_version", lambda **kw: "1.2.3")
 
 
-def test_github_mode_writes_output_and_env_files_and_returns(tmp_path, monkeypatch, capsys):
+def test_github_mode_writes_output_and_env_files_and_returns(
+    tmp_path, monkeypatch, capsys
+):
     out, env = tmp_path / "out", tmp_path / "env"
     monkeypatch.setenv("GITHUB_OUTPUT", str(out))
     monkeypatch.setenv("GITHUB_ENV", str(env))
