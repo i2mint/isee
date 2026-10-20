@@ -294,3 +294,9 @@ testing =
 ## Questions?
 
 See the main [isee README](../README.md) for general CI documentation.
+
+## Branch names
+
+The template publishes only from the repository's **default branch**, whatever it is called (`main`, `master`, `dev`): the publish and docs jobs gate on `github.ref == format('refs/heads/{0}', github.event.repository.default_branch)`. Nothing in it hardcodes your branch.
+
+The one `master` you will still see is in `uses: i2mint/isee/actions/<name>@master`. That names the branch of the **isee** repository the action is read from, not yours, and GitHub does not allow an expression in a `uses:` reference, so it cannot be a variable. To freeze the actions at a known state, pin a tag or commit instead (`@<tag>` or `@<sha>`).
